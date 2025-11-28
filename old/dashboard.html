@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GSOS - Security Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Dynamic Background -->
+    <div class="background-wrapper">
+        <div class="background-image" id="bgImage"></div>
+        <div class="background-overlay"></div>
+    </div>
+
+    <!-- ========================================= -->
+    <!-- LOGGED OUT DASHBOARD -->
+    <!-- ========================================= -->
+    <div class="dashboard-view" id="loggedOutDashboard">
+        <div class="dashboard-container">
+            <!-- Left Column -->
+            <div class="left-column">
+                <!-- Daily Security Tip Widget -->
+                <div class="glass-card security-tip">
+                    <div class="tip-icon" id="tipIconLoggedOut">🔐</div>
+                    <p class="tip-text" id="tipTextLoggedOut">Never share MFA codes — even if the request looks
+                        legitimate.</p>
+                    <span class="tip-label">Daily Security Tip</span>
+                </div>
+            </div>
+
+            <!-- Middle Column (Blank Space) -->
+            <div class="middle-column"></div>
+
+            <!-- Right Column -->
+            <div class="right-column">
+                <!-- Greeting Widget -->
+                <div class="glass-card greeting-widget">
+                    <div class="greeting-emoji" id="greetingEmoji">🌅</div>
+                    <h2 class="greeting-message" id="greetingMessage">Good Morning</h2>
+                    <p class="greeting-time" id="greetingTime">--:-- --</p>
+                    <p class="greeting-date" id="greetingDate">Loading...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================= -->
+    <!-- USER DASHBOARD -->
+    <!-- ========================================= -->
+    <div class="dashboard-view" id="userDashboard" style="display: none;">
+        <div class="dashboard-container">
+            <!-- Left Column -->
+            <div class="left-column">
+                <!-- Training Status Widget -->
+                <div class="glass-card training-status">
+                    <div class="widget-header">
+                        <h3>Your Training Status</h3>
+                        <div class="rank-badge">
+                            <span class="rank-number" id="userRank">#--</span>
+                        </div>
+                    </div>
+
+                    <div class="training-stats">
+                        <div class="stat-item">
+                            <span class="stat-label">Total Trainings</span>
+                            <span class="stat-value" id="totalTrainings">--</span>
+                        </div>
+                        <div class="stat-row">
+                            <div class="stat-item-small">
+                                <span class="stat-label">Assigned</span>
+                                <span class="stat-value" id="assignedTrainings">--</span>
+                            </div>
+                            <div class="stat-item-small">
+                                <span class="stat-label">Completed</span>
+                                <span class="stat-value" id="completedTrainings">--</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressBar" data-progress="0"></div>
+                        </div>
+                        <span class="progress-text" id="progressText">--% Complete</span>
+                    </div>
+
+                    <!-- Completed Trainings List -->
+                    <div class="completed-trainings-mini">
+                        <div class="completed-label">Recently Completed</div>
+                        <div class="trainings-list-mini" id="completedTrainingsList">
+                            <div class="training-item-mini">
+                                <div class="training-check-mini">✓</div>
+                                <div class="training-info-mini">
+                                    <div class="training-title-mini">Training Name</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Daily Security Tip Widget -->
+                <div class="glass-card security-tip">
+                    <div class="tip-icon" id="tipIconUser">💡</div>
+                    <p class="tip-text" id="tipTextUser">Sample security tip text goes here...</p>
+                    <span class="tip-label">Daily Security Tip</span>
+                </div>
+            </div>
+
+            <!-- Middle Column (Blank Space) -->
+            <div class="middle-column"></div>
+
+            <!-- Right Column -->
+            <div class="right-column">
+                <!-- Leaderboard Widget -->
+                <div class="glass-card leaderboard">
+                    <div class="leaderboard-header">
+                        <h2>Security Champions</h2>
+                        <p class="subtitle">Top performers this month</p>
+                    </div>
+
+                    <!-- Top 3 Podium -->
+                    <div class="podium" id="podium">
+                        <!-- 2nd Place -->
+                        <div class="podium-item second">
+                            <div class="podium-avatar silver-glow">
+                                <span id="secondInitials">--</span>
+                            </div>
+                            <div class="podium-name" id="secondName">User Name</div>
+                            <div class="podium-score" id="secondScore">-- trainings</div>
+                            <div class="podium-medal">🥈</div>
+                            <div class="podium-stand silver-stand">2</div>
+                        </div>
+
+                        <!-- 1st Place -->
+                        <div class="podium-item first">
+                            <div class="podium-avatar gold-glow">
+                                <span id="firstInitials">--</span>
+                            </div>
+                            <div class="podium-name" id="firstName">User Name</div>
+                            <div class="podium-score" id="firstScore">-- trainings</div>
+                            <div class="podium-medal">🥇</div>
+                            <div class="podium-stand gold-stand">1</div>
+                        </div>
+
+                        <!-- 3rd Place -->
+                        <div class="podium-item third">
+                            <div class="podium-avatar bronze-glow">
+                                <span id="thirdInitials">--</span>
+                            </div>
+                            <div class="podium-name" id="thirdName">User Name</div>
+                            <div class="podium-score" id="thirdScore">-- trainings</div>
+                            <div class="podium-medal">🥉</div>
+                            <div class="podium-stand bronze-stand">3</div>
+                        </div>
+                    </div>
+
+                    <!-- Ranked List -->
+                    <div class="ranked-list" id="rankedList">
+                        <!-- Placeholder for ranks 4-10 -->
+                        <div class="rank-item">
+                            <span class="rank-number">4</span>
+                            <div class="rank-avatar"><span>--</span></div>
+                            <span class="rank-name">User Name</span>
+                            <span class="rank-score">--</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Artifacts Widget -->
+                <div class="glass-card artifacts-container">
+                    <div class="artifacts-header">
+                        <h3>Artifacts</h3>
+                    </div>
+
+                    <div class="artifacts-scroll" id="artifactsScroll">
+                        <div class="artifact-card">
+                            <div class="artifact-icon">📄</div>
+                            <div class="artifact-title">Phishing Guide</div>
+                            <div class="artifact-desc">Learn to identify phishing attacks</div>
+                        </div>
+                        <div class="artifact-card">
+                            <div class="artifact-icon">🔒</div>
+                            <div class="artifact-title">Password Best Practices</div>
+                            <div class="artifact-desc">Secure password management tips</div>
+                        </div>
+                        <div class="artifact-card">
+                            <div class="artifact-icon">🛡️</div>
+                            <div class="artifact-title">MFA Setup Guide</div>
+                            <div class="artifact-desc">Enable multi-factor authentication</div>
+                        </div>
+                        <div class="artifact-card">
+                            <div class="artifact-icon">⚠️</div>
+                            <div class="artifact-title">Incident Response</div>
+                            <div class="artifact-desc">What to do if compromised</div>
+                        </div>
+                        <div class="artifact-card">
+                            <div class="artifact-icon">📲</div>
+                            <div class="artifact-title">Mobile Security</div>
+                            <div class="artifact-desc">Protect your mobile devices</div>
+                        </div>
+                        <div class="artifact-card">
+                            <div class="artifact-icon">🌐</div>
+                            <div class="artifact-title">Web Safety</div>
+                            <div class="artifact-desc">Secure browsing practices</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================= -->
+    <!-- ADMIN DASHBOARD -->
+    <!-- ========================================= -->
+    <div class="dashboard-view" id="adminDashboard" style="display: none;">
+        <div class="dashboard-container admin-layout">
+            <!-- Left Column (35%) -->
+            <div class="admin-left-column">
+                <!-- Widget 1: Training Overview -->
+                <div class="glass-card admin-widget training-overview">
+                    <div class="admin-widget-header">
+                        <h3>Training Overview</h3>
+                        <span class="widget-icon">📚</span>
+                    </div>
+
+                    <div class="admin-stat-grid">
+                        <div class="admin-stat-large">
+                            <span class="admin-stat-label">Total Assigned</span>
+                            <span class="admin-stat-value" id="adminTotalTrainings">--</span>
+                        </div>
+
+                        <div class="completion-indicator">
+                            <div class="circular-progress" id="adminTrainingProgress">
+                                <svg class="progress-ring" width="90" height="90">
+                                    <circle class="progress-ring-circle-bg" cx="45" cy="45" r="38"></circle>
+                                    <circle class="progress-ring-circle" cx="45" cy="45" r="38" id="progressCircle">
+                                    </circle>
+                                </svg>
+                                <div class="progress-percentage" id="adminCompletionPercentage">--</div>
+                            </div>
+                        </div>
+
+                        <div class="admin-stats-row">
+                            <div class="admin-stat-mini">
+                                <span class="stat-mini-icon">⏳</span>
+                                <div>
+                                    <div class="stat-mini-value" id="adminPendingEmployees">--</div>
+                                    <div class="stat-mini-label">Pending</div>
+                                </div>
+                            </div>
+                            <div class="admin-stat-mini trend-up">
+                                <span class="stat-mini-icon">📈</span>
+                                <div>
+                                    <div class="stat-mini-value">+12%</div>
+                                    <div class="stat-mini-label">vs Last Month</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="widget-footer">
+                        <span class="last-updated">Last updated: <span id="trainingLastUpdated">--</span></span>
+                    </div>
+                </div>
+
+                <!-- Widget 2: Risk Management -->
+                <div class="glass-card admin-widget risk-management">
+                    <div class="admin-widget-header">
+                        <h3>Risk Management</h3>
+                        <span class="widget-icon">⚠️</span>
+                    </div>
+
+                    <div class="risk-stats">
+                        <div class="risk-stat high-risk">
+                            <div class="risk-count" id="adminHighRisk">--</div>
+                            <div class="risk-label">High Risk</div>
+                        </div>
+                        <div class="risk-stat medium-risk">
+                            <div class="risk-count" id="adminMediumRisk">--</div>
+                            <div class="risk-label">Medium Risk</div>
+                        </div>
+                        <div class="risk-stat low-risk">
+                            <div class="risk-count" id="adminLowRisk">--</div>
+                            <div class="risk-label">Low Risk</div>
+                        </div>
+                    </div>
+
+                    <div class="risk-categories">
+                        <div class="risk-category-item">
+                            <span class="category-name">Cyber Threats</span>
+                            <div class="category-bar">
+                                <div class="category-bar-fill" style="width: 75%"></div>
+                            </div>
+                        </div>
+                        <div class="risk-category-item">
+                            <span class="category-name">Data Privacy</span>
+                            <div class="category-bar">
+                                <div class="category-bar-fill" style="width: 60%"></div>
+                            </div>
+                        </div>
+                        <div class="risk-category-item">
+                            <span class="category-name">Compliance</span>
+                            <div class="category-bar">
+                                <div class="category-bar-fill" style="width: 45%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="widget-footer">
+                        <span class="data-source">Data from GSOS Risk Register</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Middle Column (30%) - Empty for Wallpaper -->
+            <div class="admin-middle-column"></div>
+
+            <!-- Right Column (35%) -->
+            <div class="admin-right-column">
+                <!-- Widget 3: Compliance Management -->
+                <div class="glass-card admin-widget compliance-management">
+                    <div class="admin-widget-header">
+                        <h3>Compliance Management</h3>
+                        <span class="widget-icon">✅</span>
+                    </div>
+
+                    <div class="compliance-overview">
+                        <div class="compliance-percentage">
+                            <span class="compliance-value" id="adminCompliancePercentage">--</span>
+                            <span class="compliance-label">Overall Completion</span>
+                        </div>
+
+                        <div class="compliance-stats-row">
+                            <div class="compliance-stat passed">
+                                <div class="compliance-stat-value" id="adminPassedControls">--</div>
+                                <div class="compliance-stat-label">Passed</div>
+                            </div>
+                            <div class="compliance-stat pending">
+                                <div class="compliance-stat-value" id="adminPendingControls">--</div>
+                                <div class="compliance-stat-label">Pending</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="compliance-progress-bar">
+                        <div class="compliance-progress-fill" id="complianceProgressFill"></div>
+                    </div>
+
+                    <div class="frameworks-list">
+                        <div class="framework-item">
+                            <span class="framework-icon">🔐</span>
+                            <span class="framework-name">ISO 27001</span>
+                            <span class="framework-status complete">85%</span>
+                        </div>
+                        <div class="framework-item">
+                            <span class="framework-icon">📋</span>
+                            <span class="framework-name">SOC 2</span>
+                            <span class="framework-status in-progress">62%</span>
+                        </div>
+                        <div class="framework-item">
+                            <span class="framework-icon">💳</span>
+                            <span class="framework-name">PCI DSS</span>
+                            <span class="framework-status in-progress">48%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Widget 4: Project Management -->
+                <div class="glass-card admin-widget project-management">
+                    <div class="admin-widget-header">
+                        <h3>Project Management</h3>
+                        <span class="widget-icon">📊</span>
+                    </div>
+
+                    <div class="project-stats-grid">
+                        <div class="project-stat active">
+                            <div class="project-stat-value" id="adminActiveProjects">--</div>
+                            <div class="project-stat-label">Active Projects</div>
+                        </div>
+                        <div class="project-stat completed">
+                            <div class="project-stat-value" id="adminCompletedProjects">--</div>
+                            <div class="project-stat-label">Completed</div>
+                        </div>
+                    </div>
+
+                    <div class="projects-alerts">
+                        <div class="project-alert urgent">
+                            <span class="alert-badge">🔴</span>
+                            <div class="alert-content">
+                                <div class="alert-title">Nearing Deadline</div>
+                                <div class="alert-count" id="adminUrgentProjects">--</div>
+                            </div>
+                        </div>
+                        <div class="project-alert warning">
+                            <span class="alert-badge">🟡</span>
+                            <div class="alert-content">
+                                <div class="alert-title">At Risk</div>
+                                <div class="alert-count" id="adminRiskProjects">--</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="widget-footer">
+                        <span class="data-source">Fetched from GSOS Project Module</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Login Button -->
+    <button class="login-btn" id="loginBtn">
+        <span class="btn-icon">🔐</span>
+        <span class="btn-text">Login</span>
+    </button>
+
+    <!-- Floating Logout Button -->
+    <button class="logout-btn" id="logoutBtn" style="display: none;">
+        <span class="btn-icon">🚪</span>
+        <span class="btn-text">Logout</span>
+    </button>
+
+    <!-- Login Role Modal -->
+    <div class="login-modal" id="loginModal">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content">
+            <div class="modal-close" id="closeModalIcon">✕</div>
+            <div class="modal-header">
+                <div class="modal-icon">🔐</div>
+                <h3>Select Your Role</h3>
+                <p class="modal-subtitle">Choose how you want to login</p>
+            </div>
+            <div class="modal-body">
+                <button class="role-btn user-role" id="loginUser">
+                    <span class="role-icon">👤</span>
+                    <span class="role-text">Login as User</span>
+                </button>
+                <button class="role-btn admin-role" id="loginAdmin">
+                    <span class="role-icon">👨‍💼</span>
+                    <span class="role-text">Login as Admin</span>
+                </button>
+            </div>
+            <div class="modal-footer">
+                <button class="close-modal" id="closeModal">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

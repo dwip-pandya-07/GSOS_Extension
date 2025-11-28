@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GSOS Icon Generator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            padding: 40px;
+            font-family: 'Inter', -apple-system, sans-serif;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 8px;
+            background: linear-gradient(90deg, #52A5FF, #00E6FF);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 40px;
+        }
+
+        .icons-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .icon-card {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .icon-preview {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 140px;
+            margin-bottom: 16px;
+        }
+
+        .icon-preview canvas {
+            image-rendering: pixelated;
+        }
+
+        .icon-size {
+            color: #fff;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .btn {
+            background: linear-gradient(90deg, #52A5FF, #00E6FF);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            color: #000;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(82, 165, 255, 0.3);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #52A5FF;
+            padding: 14px 32px;
+            border-radius: 12px;
+            color: #52A5FF;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .btn-outline:hover {
+            background: #52A5FF;
+            color: #000;
+        }
+
+        .instructions {
+            margin-top: 40px;
+            padding: 24px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            text-align: left;
+        }
+
+        .instructions strong {
+            color: #00E6FF;
+        }
+
+        .instructions p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+            margin-bottom: 12px;
+        }
+
+        .instructions ol {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.85rem;
+            padding-left: 20px;
+            line-height: 1.8;
+        }
+
+        .instructions code {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>GSOS Security Awareness</h1>
+        <p class="subtitle">Extension Icon Generator</p>
+
+        <div class="icons-grid" id="iconsGrid"></div>
+
+        <button class="btn-outline" onclick="downloadAll()">Download All Icons</button>
+
+        <div class="instructions">
+            <p><strong>Instructions:</strong></p>
+            <ol>
+                <li>Download all icons using the buttons above</li>
+                <li>Create an <code>icons</code> folder in your extension directory</li>
+                <li>Place the downloaded files in the icons folder</li>
+                <li>Make sure the manifest.json references these icon paths correctly</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        const sizes = [16, 32, 64, 128];
+        const canvases = {};
+
+        function drawIcon(canvas, size) {
+            const ctx = canvas.getContext('2d');
+            canvas.width = size;
+            canvas.height = size;
+
+            // Background gradient
+            const gradient = ctx.createLinearGradient(0, 0, size, size);
+            gradient.addColorStop(0, '#1a1a2e');
+            gradient.addColorStop(1, '#16213e');
+
+            // Draw rounded rectangle background
+            const r = size * 0.18;
+            ctx.beginPath();
+            ctx.moveTo(r, 0);
+            ctx.lineTo(size - r, 0);
+            ctx.quadraticCurveTo(size, 0, size, r);
+            ctx.lineTo(size, size - r);
+            ctx.quadraticCurveTo(size, size, size - r, size);
+            ctx.lineTo(r, size);
+            ctx.quadraticCurveTo(0, size, 0, size - r);
+            ctx.lineTo(0, r);
+            ctx.quadraticCurveTo(0, 0, r, 0);
+            ctx.closePath();
+            ctx.fillStyle = gradient;
+            ctx.fill();
+
+            // Draw shield
+            const cx = size / 2;
+            const cy = size / 2;
+            const sw = size * 0.55;
+            const sh = size * 0.65;
+            const sy = cy - sh * 0.35;
+
+            ctx.beginPath();
+            ctx.moveTo(cx, sy);
+            ctx.lineTo(cx + sw / 2, sy + sh * 0.15);
+            ctx.quadraticCurveTo(cx + sw / 2, sy + sh * 0.7, cx, sy + sh);
+            ctx.quadraticCurveTo(cx - sw / 2, sy + sh * 0.7, cx - sw / 2, sy + sh * 0.15);
+            ctx.closePath();
+
+            // Shield gradient stroke
+            const shieldGrad = ctx.createLinearGradient(cx - sw / 2, sy, cx + sw / 2, sy + sh);
+            shieldGrad.addColorStop(0, '#52A5FF');
+            shieldGrad.addColorStop(1, '#00E6FF');
+            ctx.strokeStyle = shieldGrad;
+            ctx.lineWidth = Math.max(size * 0.06, 1);
+            ctx.stroke();
+
+            // Fill shield
+            ctx.fillStyle = 'rgba(82, 165, 255, 0.15)';
+            ctx.fill();
+
+            // Draw checkmark
+            const checkSize = size * 0.22;
+            const checkX = cx - checkSize * 0.5;
+            const checkY = cy + size * 0.02;
+
+            ctx.beginPath();
+            ctx.moveTo(checkX - checkSize * 0.3, checkY);
+            ctx.lineTo(checkX, checkY + checkSize * 0.4);
+            ctx.lineTo(checkX + checkSize * 0.6, checkY - checkSize * 0.35);
+            ctx.strokeStyle = '#00E6FF';
+            ctx.lineWidth = Math.max(size * 0.08, 1.5);
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.stroke();
+
+            return canvas;
+        }
+
+        function createIconCard(size) {
+            const card = document.createElement('div');
+            card.className = 'icon-card';
+
+            const preview = document.createElement('div');
+            preview.className = 'icon-preview';
+
+            const canvas = document.createElement('canvas');
+            drawIcon(canvas, size);
+            canvases[size] = canvas;
+
+            // Scale up small icons for preview
+            if (size <= 32) {
+                canvas.style.width = size * 3 + 'px';
+                canvas.style.height = size * 3 + 'px';
+            }
+
+            preview.appendChild(canvas);
+
+            const sizeLabel = document.createElement('p');
+            sizeLabel.className = 'icon-size';
+            sizeLabel.textContent = `${size}x${size}`;
+
+            const btn = document.createElement('button');
+            btn.className = 'btn';
+            btn.textContent = 'Download';
+            btn.onclick = () => downloadIcon(size);
+
+            card.appendChild(preview);
+            card.appendChild(sizeLabel);
+            card.appendChild(btn);
+
+            return card;
+        }
+
+        function downloadIcon(size) {
+            const canvas = canvases[size];
+            const link = document.createElement('a');
+            link.download = `icon${size}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+
+        function downloadAll() {
+            sizes.forEach((size, i) => {
+                setTimeout(() => downloadIcon(size), i * 200);
+            });
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            const grid = document.getElementById('iconsGrid');
+            sizes.forEach(size => {
+                grid.appendChild(createIconCard(size));
+            });
+        });
+    </script>
+</body>
+
+</html>

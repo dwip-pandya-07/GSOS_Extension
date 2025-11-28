@@ -1,0 +1,365 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+
+/* ===== GLOBAL RESET ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Inter", sans-serif;
+}
+
+body {
+    height: 100vh;
+    overflow: hidden;
+    position: relative;
+    color: #fff;
+}
+
+/* ===== LOADER ===== */
+#loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #000000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.loader-content {
+    text-align: center;
+    color: white;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid rgba(255, 255, 255, 0.3);
+    border-top-color: #f444a5;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 20px;
+}
+
+.loader-text {
+    font-size: 18px;
+    font-weight: 500;
+    margin: 0;
+}
+
+/* ===== MAIN CONTAINER VISIBILITY ===== */
+#main-container {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+#main-container.loaded {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* ===== DYNAMIC BACKGROUND ===== */
+#bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    z-index: -1;
+    transition: opacity 1s ease-in-out;
+    opacity: 0;
+}
+
+/* Background overlay for better text visibility */
+#bg::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.3);
+    z-index: -1;
+}
+
+/* ===== LOGO ===== */
+.logo-container {
+    position: fixed;
+    bottom: 15px;
+    left: 20px;
+    z-index: 100;
+}
+
+.logo {
+    width: 180px;
+    height: auto;
+    opacity: 0.9;
+    transition: opacity 0.3s ease;
+}
+
+.logo:hover {
+    opacity: 1;
+}
+
+/* ===== MAIN LAYOUT ===== */
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    padding: 20px;
+}
+
+/* ===== CENTER CONTENT ===== */
+.center-content {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-width: 800px;
+    width: 100%;
+    animation: fadeInUp 0.8s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ===== TIME DISPLAY ===== */
+.time {
+    font-size: 100px;
+    font-weight: 300;
+    letter-spacing: -4px;
+    margin-bottom: 0;
+    font-family: 'Inter', sans-serif;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+/* ===== DATE DISPLAY ===== */
+.date {
+    font-size: 20px;
+    font-weight: 400;
+    opacity: 0.9;
+    margin-top: -10px;
+    margin-bottom: 20px;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+/* ===== GREETING ===== */
+.greeting {
+    font-size: 28px;
+    font-weight: 400;
+    opacity: 0.95;
+    margin-bottom: 8px;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+/* ===== WELCOME MESSAGE ===== */
+.welcome-msg {
+    font-size: 18px;
+    font-weight: 400;
+    opacity: 0.85;
+    line-height: 1.6;
+    max-width: 600px;
+    margin: 0 auto 40px;
+}
+
+/* ===== SECURITY TIP CARD ===== */
+.tip-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 16px;
+    padding: 24px 32px;
+    max-width: 600px;
+    margin: 0 auto;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.tip-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+.tip-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.tip-icon {
+    font-size: 28px;
+}
+
+.tip-label {
+    font-size: 14px;
+    font-weight: 600;
+    opacity: 0.9;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+}
+
+.tip-content {
+    font-size: 17px;
+    font-weight: 400;
+    opacity: 0.95;
+    line-height: 1.7;
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+
+/* Tablet and smaller desktops */
+@media (max-width: 1024px) {
+    .time {
+        font-size: 110px;
+    }
+
+    .date {
+        font-size: 18px;
+    }
+
+    .greeting {
+        font-size: 28px;
+    }
+
+    .welcome-msg {
+        font-size: 16px;
+    }
+
+    .tip-content {
+        font-size: 16px;
+    }
+
+    .logo {
+        width: 160px;
+    }
+
+    .logo-container {
+        bottom: 25px;
+        left: 25px;
+    }
+}
+
+/* Tablets */
+@media (max-width: 768px) {
+    .time {
+        font-size: 80px;
+        letter-spacing: -3px;
+    }
+
+    .date {
+        font-size: 16px;
+    }
+
+    .greeting {
+        font-size: 24px;
+    }
+
+    .welcome-msg {
+        font-size: 15px;
+        margin-bottom: 30px;
+    }
+
+    .tip-card {
+        padding: 20px 24px;
+    }
+
+    .tip-icon {
+        font-size: 24px;
+    }
+
+    .tip-label {
+        font-size: 12px;
+    }
+
+    .tip-content {
+        font-size: 15px;
+    }
+
+    .logo {
+        width: 140px;
+    }
+
+    .logo-container {
+        bottom: 20px;
+        left: 20px;
+    }
+}
+
+/* Mobile devices */
+@media (max-width: 480px) {
+    .container {
+        padding: 20px 16px;
+    }
+
+    .time {
+        font-size: 64px;
+        letter-spacing: -2px;
+    }
+
+    .date {
+        font-size: 14px;
+    }
+
+    .greeting {
+        font-size: 20px;
+    }
+
+    .welcome-msg {
+        font-size: 14px;
+    }
+
+    .tip-card {
+        padding: 18px 20px;
+    }
+
+    .tip-icon {
+        font-size: 22px;
+    }
+
+    .tip-label {
+        font-size: 11px;
+    }
+
+    .tip-content {
+        font-size: 14px;
+    }
+
+    .center-content {
+        gap: 20px;
+    }
+
+    .logo {
+        width: 120px;
+    }
+
+    .logo-container {
+        bottom: 15px;
+        left: 15px;
+    }
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
