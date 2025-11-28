@@ -1,11 +1,20 @@
-// Laravel API endpoint (LOCAL)
-const LARAVEL_WALLPAPER_API = "http://127.0.0.1:8000/api/wallpapers";
+// CONFIGURATION
+const UNSPLASH_KEY = "GjKAaKJOy1oBXxnoo4rHRuyM4KPWhT8iZIWcn2xuc9I";
+const USE_UNSPLASH = true; // Set to true to use Unsplash instead
+const LARAVEL_WALLPAPER_API = "http://127.0.0.1:8000/api/wallpapers"; // Change when live
 
+// Brand logos
+const brandLogos = [
+  "/assets/images/invinsense_GSOS_logo1.png",
+  "/assets/images/invinsense_GSOS_logo2.png",
+  "/assets/images/invinsense_GSOS_logo3.png",
+  "/assets/images/invinsense_GSOS_logo4.png",
+  "/assets/images/invinsense_GSOS_logo5.png",
+  "/assets/images/invinsense_GSOS_logo6.png",
+  "/assets/images/invinsense_GSOS_logo7.png",
+];
 
-// API CONFIGURATION 
-// const UNSPLASH_KEY = "GjKAaKJOy1oBXxnoo4rHRuyM4KPWhT8iZIWcn2xuc9I";
-
-// Security Tips Database
+// Security tips
 const securityTips = [
   "Never share your passwords with anyone.",
   "Use multi-factor authentication whenever possible.",
@@ -29,54 +38,60 @@ const securityTips = [
   "Use encrypted messaging apps for sensitive conversations.",
 ];
 
-// Backup images
-const backupImages = [
-  "backup/image1.png",
-  "backup/image2.png",
-  "backup/image3.png",
-  "backup/image4.png",
-  "backup/image5.png",
-  "backup/image6.png",
-  "backup/image7.png",
-  "backup/image8.png",
-  "backup/image9.png",
-  "backup/image10.png",
-  "backup/image11.png",
-  "backup/image12.png",
-  "backup/image13.png",
-  "backup/image14.png",
-  "backup/image15.png",
-];
+// Fallback local images
+const backupImages = Array.from(
+  { length: 15 },
+  (_, i) => `backup/image${i + 1}.png`
+);
 
-let apiWorking = true;
+// ========================================
+// State Variables
+// ========================================
+let currentWallpaperUrl = null;
+let currentWallpaperId = null;
+let likedWallpapers = []; // Array of { id: string, url: string }
+let isStaticWallpaper = false;
+let staticWallpaperUrl = null;
+let staticWallpaperId = null;
+let is12HourFormat = false;
+let onlyShowLiked = false;
 
-// LOADER MANAGEMENT
+// ========================================
+// Loader
+// ========================================
 function hideLoader() {
   const loader = document.getElementById("loader");
-  const mainContainer = document.getElementById("main-container");
-
-  if (loader && mainContainer) {
-    mainContainer.classList.add("loaded");
-
-    setTimeout(() => {
-      loader.style.opacity = "0";
-      loader.style.transition = "opacity 0.5s ease";
-      setTimeout(() => {
-        loader.style.display = "none";
-      }, 500);
-    }, 100);
-  }
+  const container = document.getElementById("main-container");
+  if (!loader || !container) return;
+  container.classList.add("loaded");
+  setTimeout(() => {
+    loader.style.opacity = "0";
+    loader.style.transition = "opacity 0.5s ease";
+    setTimeout(() => (loader.style.display = "none"), 500);
+  }, 100);
 }
 
-// 1. CLOCK
+// ========================================
+// Clock & Date
+// ========================================
 function updateClock() {
   const now = new Date();
+  let hours = now.getHours();
+  const minutes = String(now.getMinutes()).padStart(2, "0");
+  const seconds = String(now.getSeconds()).padStart(2, "0");
 
-  const hrs = String(now.getHours()).padStart(2, "0");
-  const mins = String(now.getMinutes()).padStart(2, "0");
-  const secs = String(now.getSeconds()).padStart(2, "0");
-
-  document.getElementById("time").innerHTML = `${hrs}:${mins}:${secs}`;
+  if (is12HourFormat) {
+    const ampm = hours >= 12 ? "PM" : "AM";
+    hours = hours % 12 || 12;
+    document.getElementById(
+      "time"
+    ).textContent = `${hours}:${minutes}:${seconds} ${ampm}`;
+  } else {
+    hours = String(hours).padStart(2, "0");
+    document.getElementById(
+      "time"
+    ).textContent = `${hours}:${minutes}:${seconds}`;
+  }
 }
 
 function updateDate() {
@@ -87,182 +102,420 @@ function updateDate() {
     month: "long",
     day: "numeric",
   };
-  document.getElementById("date").innerHTML = now.toLocaleDateString(
+  document.getElementById("date").textContent = now.toLocaleDateString(
     "en-US",
     options
   );
 }
 
-updateClock();
-updateDate();
-setInterval(updateClock, 1000);
-
-// 2. DYNAMIC WALLPAPER
-
+// ========================================
+// Wallpaper Loading
+// ========================================
 async function loadWallpaper() {
+  // 1. Pinned wallpaper
+  if (isStaticWallpaper && staticWallpaperUrl) {
+    setWallpaper(staticWallpaperUrl, staticWallpaperId);
+    return;
+  }
+
+  // 2. Only show liked wallpapers
+  if (onlyShowLiked && likedWallpapers.length > 0) {
+    const random =
+      likedWallpapers[Math.floor(Math.random() * likedWallpapers.length)];
+    setWallpaper(random.url, random.id);
+    return;
+  }
+
+  // 3. Use Laravel API or Unsplash
+  if (USE_UNSPLASH) {
+    await loadFromUnsplash();
+  } else {
+    await loadFromLaravel();
+  }
+}
+
+// Laravel API loader
+async function loadFromLaravel() {
   try {
     const res = await fetch(LARAVEL_WALLPAPER_API);
-
-    if (!res.ok) throw new Error("Laravel API failed");
+    if (!res.ok) throw new Error("Laravel API error");
 
     const json = await res.json();
+    if (!json.status || json.count === 0) throw new Error("No wallpapers");
 
-    if (!json.status || json.count === 0) {
-      console.log("No wallpapers found — using backup");
-      return loadBackupWallpaper();
-    }
-
-    // Pick a random wallpaper from Laravel API
     const wallpapers = json.data;
-    const randomWallpaper =
-      wallpapers[Math.floor(Math.random() * wallpapers.length)];
-
-    const bgElement = document.getElementById("bg");
-
-    const img = new Image();
-    img.onload = () => {
-      bgElement.style.backgroundImage = `url('${randomWallpaper.url}')`;
-      bgElement.style.opacity = "1";
-      apiWorking = true;
-      hideLoader();
-    };
-    img.onerror = () => {
-      console.log("Laravel image failed — using backup");
-      loadBackupWallpaper();
-    };
-    img.src = randomWallpaper.url;
-  } catch (e) {
-    console.error("Laravel API error:", e);
+    const selected = selectWeightedWallpaper(wallpapers);
+    preloadAndSet(selected.url, selected.id);
+  } catch (err) {
+    console.warn("Laravel failed → fallback", err);
     loadBackupWallpaper();
   }
 }
 
+// Unsplash fallback
+async function loadFromUnsplash() {
+  try {
+    const res = await fetch(
+      `https://api.unsplash.com/photos/random?query=nature,landscape,mountain,abstract,minimal&orientation=landscape&client_id=${UNSPLASH_KEY}`
+    );
+    if (!res.ok) throw new Error("Unsplash failed");
 
-
-// load from unsplash
-// async function loadWallpaper() {
-//     try {
-//         const res = await fetch(
-//             `https://api.unsplash.com/photos/random?query=nature,mountain,landscape&orientation=landscape&client_id=${UNSPLASH_KEY}`
-//         );
-
-//         if (!res.ok) throw new Error("API Error");
-
-//         const data = await res.json();
-//         const bgElement = document.getElementById("bg");
-
-//         const img = new Image();
-//         img.onload = () => {
-//             bgElement.style.backgroundImage = `url('${data.urls.full}')`;
-//             bgElement.style.opacity = "1";
-//             apiWorking = true;
-//             hideLoader();
-//         };
-//         img.onerror = () => {
-//             console.log("Image failed to load, using backup");
-//             apiWorking = false;
-//             loadBackupWallpaper();
-//         };
-//         img.src = data.urls.full;
-
-//     } catch (e) {
-//         console.log("Failed to load wallpaper from API:", e);
-//         apiWorking = false;
-//         loadBackupWallpaper();
-//     }
-// }
-
-
-function loadBackupWallpaper() {
-  const bgElement = document.getElementById("bg");
-
-  const randomIndex = Math.floor(Math.random() * backupImages.length);
-  const selectedImage = backupImages[randomIndex];
-
-  const img = new Image();
-  img.onload = () => {
-    bgElement.style.backgroundImage = `url('${selectedImage}')`;
-    bgElement.style.opacity = "1";
-    hideLoader();
-  };
-  img.onerror = () => {
-    console.log("Backup failed — using gradient");
-    setFallbackWallpaper();
-  };
-  img.src = selectedImage;
+    const data = await res.json();
+    preloadAndSet(data.urls.full, data.id);
+  } catch (err) {
+    console.warn("Unsplash failed → backup", err);
+    loadBackupWallpaper();
+  }
 }
 
-function setFallbackWallpaper() {
-  const bgElement = document.getElementById("bg");
-  bgElement.style.background =
-    "linear-gradient(135deg, #667eea 0%, #764ba2 100%)";
-  bgElement.style.opacity = "1";
+// Weighted selection (prefers liked ones)
+function selectWeightedWallpaper(wallpapers) {
+  if (!onlyShowLiked && likedWallpapers.length > 0 && Math.random() < 0.6) {
+    const liked = wallpapers.filter((w) =>
+      likedWallpapers.some((l) => l.id === w.id)
+    );
+    if (liked.length > 0) {
+      return liked[Math.floor(Math.random() * liked.length)];
+    }
+  }
+  return wallpapers[Math.floor(Math.random() * wallpapers.length)];
+}
+
+// Preload & set wallpaper
+function preloadAndSet(url, id) {
+  const img = new Image();
+  img.onload = () => {
+    setWallpaper(url, id);
+    hideLoader();
+  };
+  img.onerror = () => loadBackupWallpaper();
+  img.src = url;
+}
+
+// Local backup
+function loadBackupWallpaper() {
+  const path = backupImages[Math.floor(Math.random() * backupImages.length)];
+  const img = new Image();
+  img.onload = () => {
+    setWallpaper(path);
+    hideLoader();
+  };
+  img.onerror = setFallbackGradient;
+  img.src = path;
+}
+
+function setFallbackGradient() {
+  const bg = document.getElementById("bg");
+  bg.style.background = "linear-gradient(135deg, #667eea 0%, #764ba2 100%)";
+  bg.style.opacity = "1";
+  currentWallpaperUrl = null;
+  currentWallpaperId = null;
+  updateMainLikeButton();
   hideLoader();
 }
 
-loadWallpaper();
-
-// GREETING
-function loadGreeting() {
-  const hour = new Date().getHours();
-  let greet = "Welcome";
-
-  if (hour < 12) greet = "Good Morning";
-  else if (hour < 18) greet = "Good Afternoon";
-  else greet = "Good Evening";
-
-  document.getElementById("greeting").innerHTML = greet;
+function setWallpaper(url, id = null) {
+  const bg = document.getElementById("bg");
+  bg.style.backgroundImage = `url('${url}')`;
+  bg.style.opacity = "1";
+  currentWallpaperUrl = url;
+  currentWallpaperId = id;
+  updateMainLikeButton();
+  hideLoader();
 }
 
-loadGreeting();
+// ========================================
+// Like System (Heart Button)
+// ========================================
+function updateMainLikeButton() {
+  const btn = document.getElementById("main-like-button");
+  const outline = btn.querySelector(".heart-outline");
+  const fill = btn.querySelector(".heart-fill");
 
-const updateGreetingAtMidnight = () => {
-  const now = new Date();
-  const tomorrow = new Date(
-    now.getFullYear(),
-    now.getMonth(),
-    now.getDate() + 1
-  );
-  const timeUntilMidnight = tomorrow - now;
+  if (!currentWallpaperId) {
+    btn.classList.remove("liked");
+    outline.style.display = "block";
+    fill.style.display = "none";
+    return;
+  }
 
+  const isLiked = likedWallpapers.some((w) => w.id === currentWallpaperId);
+  if (isLiked) {
+    btn.classList.add("liked");
+    outline.style.display = "none";
+    fill.style.display = "block";
+  } else {
+    btn.classList.remove("liked");
+    outline.style.display = "block";
+    fill.style.display = "none";
+  }
+}
+
+function toggleLikeWallpaper() {
+  if (!currentWallpaperId || !currentWallpaperUrl) {
+    showNotification("Cannot like backup wallpapers", "warning");
+    return;
+  }
+
+  const exists = likedWallpapers.some((w) => w.id === currentWallpaperId);
+
+  if (exists) {
+    likedWallpapers = likedWallpapers.filter(
+      (w) => w.id !== currentWallpaperId
+    );
+    showNotification("Removed from favorites", "info");
+  } else {
+    likedWallpapers.push({ id: currentWallpaperId, url: currentWallpaperUrl });
+    showNotification("Added to favorites!", "success");
+  }
+
+  updateMainLikeButton();
+  updateOnlyLikedToggleState();
+  saveSettingsToStorage();
+
+  if (onlyShowLiked && likedWallpapers.length === 0) {
+    loadWallpaper();
+  }
+}
+
+// ========================================
+// "Show Only Liked" Toggle
+// ========================================
+function updateOnlyLikedToggleState() {
+  const toggle = document.getElementById("only-liked-toggle");
+  if (likedWallpapers.length === 0) {
+    onlyShowLiked = false;
+    toggle.checked = false;
+    toggle.disabled = true;
+  } else {
+    toggle.disabled = false;
+    toggle.checked = onlyShowLiked;
+  }
+}
+
+// ========================================
+// Download
+// ========================================
+async function downloadWallpaper() {
+  if (!currentWallpaperUrl) {
+    showNotification("No wallpaper to download", "warning");
+    return;
+  }
+  try {
+    showNotification("Downloading...", "info");
+    const res = await fetch(currentWallpaperUrl);
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `GSOS_${Date.now()}.jpg`;
+    a.click();
+    URL.revokeObjectURL(url);
+    showNotification("Downloaded!", "success");
+  } catch {
+    showNotification("Download failed", "error");
+  }
+}
+
+// ========================================
+// Notifications
+// ========================================
+function showNotification(message, type = "info") {
+  document.querySelectorAll(".notification").forEach((n) => n.remove());
+  const n = document.createElement("div");
+  n.className = `notification notification-${type}`;
+  n.textContent = message;
+  n.style.cssText = `
+    position:fixed;top:20px;right:20px;z-index:10000;
+    padding:16px 24px;border-radius:12px;color:white;
+    font-weight:500;box-shadow:0 4px 16px rgba(0,0,0,0.3);
+    background:rgba(50,50,50,0.95);animation:slideIn 0.4s ease-out;
+  `;
+  if (type === "success") n.style.background = "rgba(76, 175, 80, 0.95)";
+  if (type === "error") n.style.background = "rgba(244, 67, 54, 0.95)";
+  if (type === "warning") n.style.background = "rgba(255, 152, 0, 0.95)";
+  document.body.appendChild(n);
   setTimeout(() => {
-    loadGreeting();
-    setInterval(loadGreeting, 86400000);
-  }, timeUntilMidnight);
-};
+    n.style.animation = "slideOut 0.4s ease-in";
+    setTimeout(() => n.remove(), 400);
+  }, 3000);
+}
 
-updateGreetingAtMidnight();
+document.head.insertAdjacentHTML(
+  "beforeend",
+  `
+  <style>
+    @keyframes slideIn { from {transform:translateX(100px);opacity:0} to {transform:translateX(0);opacity:1} }
+    @keyframes slideOut { from {transform:translateX(0);opacity:1} to {transform:translateX(100px);opacity:0} }
+  </style>
+`
+);
 
-// SECURITY TIP
+// ========================================
+// UI Helpers
+// ========================================
+function loadRandomLogo() {
+  document.getElementById("brand-logo").src =
+    brandLogos[Math.floor(Math.random() * brandLogos.length)];
+}
+
+function loadGreeting() {
+  const hour = new Date().getHours();
+  const greet =
+    hour < 12 ? "Good Morning" : hour < 18 ? "Good Afternoon" : "Good Evening";
+  document.getElementById("greeting").textContent = greet;
+}
+
 function getDailyTip() {
-  const now = new Date();
   const dayOfYear = Math.floor(
-    (now - new Date(now.getFullYear(), 0, 0)) / 86400000
+    (Date.now() - new Date(new Date().getFullYear(), 0, 0)) / 86400000
   );
-  const tipIndex = dayOfYear % securityTips.length;
-  return securityTips[tipIndex];
+  return securityTips[dayOfYear % securityTips.length];
 }
 
 function loadTip() {
-  const tip = getDailyTip();
-  document.getElementById("tip").innerHTML = `"${tip}"`;
+  document.getElementById("tip").textContent = `"${getDailyTip()}"`;
 }
 
-loadTip();
+// ========================================
+// Drawer & Settings
+// ========================================
+function initDrawer() {
+  const drawer = document.getElementById("settings-drawer");
+  const toggle = document.getElementById("drawer-toggle");
+  const close = document.getElementById("drawer-close");
+  const overlay = document.getElementById("drawer-overlay");
 
-const updateTipAtMidnight = () => {
-  const now = new Date();
-  const tomorrow = new Date(
-    now.getFullYear(),
-    now.getMonth(),
-    now.getDate() + 1
-  );
-  const timeUntilMidnight = tomorrow - now;
+  toggle.onclick = () => {
+    drawer.classList.add("open");
+    overlay.classList.add("active");
+  };
+  close.onclick = overlay.onclick = () => {
+    drawer.classList.remove("open");
+    overlay.classList.remove("active");
+  };
 
-  setTimeout(() => {
-    loadTip();
-    setInterval(loadTip, 86400000);
-  }, timeUntilMidnight);
-};
+  // Static wallpaper
+  const staticToggle = document.getElementById("static-wallpaper-toggle");
+  staticToggle.checked = isStaticWallpaper;
+  staticToggle.onchange = (e) => {
+    if (e.target.checked && currentWallpaperUrl) {
+      isStaticWallpaper = true;
+      staticWallpaperUrl = currentWallpaperUrl;
+      staticWallpaperId = currentWallpaperId;
+      showNotification("Wallpaper pinned", "success");
+    } else {
+      isStaticWallpaper = false;
+      staticWallpaperUrl = staticWallpaperId = null;
+      showNotification("Static wallpaper disabled", "info");
+      loadWallpaper();
+    }
+    saveSettingsToStorage();
+  };
 
-updateTipAtMidnight();
+  // Like button
+  document.getElementById("main-like-button").onclick = toggleLikeWallpaper;
+
+  // Only liked toggle
+  const onlyToggle = document.getElementById("only-liked-toggle");
+  onlyToggle.onchange = (e) => {
+    if (likedWallpapers.length === 0) {
+      e.target.checked = false;
+      showNotification("Like some wallpapers first!", "warning");
+      return;
+    }
+    onlyShowLiked = e.target.checked;
+    showNotification(
+      onlyShowLiked ? "Showing only favorites" : "Showing all wallpapers",
+      "success"
+    );
+    loadWallpaper();
+    saveSettingsToStorage();
+  };
+
+  // Download
+  document.getElementById("download-wallpaper").onclick = downloadWallpaper;
+
+  // Time format
+  const timeToggle = document.getElementById("time-format-toggle");
+  const timeLabel = document.getElementById("time-format-label");
+  timeToggle.checked = is12HourFormat;
+  timeLabel.textContent = is12HourFormat ? "12-hour format" : "24-hour format";
+  timeToggle.onchange = (e) => {
+    is12HourFormat = e.target.checked;
+    timeLabel.textContent = is12HourFormat
+      ? "12-hour format"
+      : "24-hour format";
+    updateClock();
+    saveSettingsToStorage();
+  };
+}
+
+// ========================================
+// Storage
+// ========================================
+async function loadSettingsFromStorage() {
+  return new Promise((resolve) => {
+    chrome.storage.sync.get(
+      [
+        "isStaticWallpaper",
+        "staticWallpaperUrl",
+        "staticWallpaperId",
+        "likedWallpapers",
+        "is12HourFormat",
+        "onlyShowLiked",
+      ],
+      (data) => {
+        isStaticWallpaper = data.isStaticWallpaper || false;
+        staticWallpaperUrl = data.staticWallpaperUrl || null;
+        staticWallpaperId = data.staticWallpaperId || null;
+        is12HourFormat = data.is12HourFormat || false;
+        onlyShowLiked = data.onlyShowLiked || false;
+
+        // Keep only valid liked wallpapers with URLs
+        likedWallpapers = Array.isArray(data.likedWallpapers)
+          ? data.likedWallpapers.filter((w) => w && w.id && w.url)
+          : [];
+
+        resolve();
+      }
+    );
+  });
+}
+
+function saveSettingsToStorage() {
+  chrome.storage.sync.set({
+    isStaticWallpaper,
+    staticWallpaperUrl,
+    staticWallpaperId,
+    likedWallpapers,
+    is12HourFormat,
+    onlyShowLiked,
+  });
+}
+
+// ========================================
+// Init
+// ========================================
+async function init() {
+  await loadSettingsFromStorage();
+  updateClock();
+  updateDate();
+  setInterval(updateClock, 1000);
+
+  loadWallpaper();
+  loadGreeting();
+  loadTip();
+  loadRandomLogo();
+
+  initDrawer();
+  updateMainLikeButton();
+  updateOnlyLikedToggleState();
+}
+
+// Start
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", init);
+} else {
+  init();
+}
