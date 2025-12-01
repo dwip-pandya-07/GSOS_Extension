@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Image Gallery</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f0f1e 0%, #1a1a2e 50%, #16213e 100%);
+            color: #e0e0e0;
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h2 {
+            font-size: 32px;
+            margin-bottom: 30px;
+            background: linear-gradient(135deg, #00d4ff, #7c3aed);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .file-label {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 28px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            display: inline-block;
+            letter-spacing: 0.5px;
+        }
+
+        .file-label:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+        }
+
+        .file-label:active {
+            transform: translateY(0);
+        }
+
+        button {
+            background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 212, 255, 0.4);
+            letter-spacing: 0.5px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 212, 255, 0.6);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .counter {
+            background: rgba(0, 212, 255, 0.1);
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            backdrop-filter: blur(10px);
+            letter-spacing: 0.5px;
+        }
+
+        .counter span {
+            color: #00d4ff;
+            font-weight: 700;
+        }
+
+        #gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .img-box {
+            position: relative;
+            background: linear-gradient(135deg, #1f1f3d 0%, #2a2a4e 100%);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .img-box:hover {
+            transform: translateY(-8px);
+            border-color: rgba(0, 212, 255, 0.6);
+            box-shadow: 0 20px 60px rgba(0, 212, 255, 0.3);
+        }
+
+        .img-wrapper {
+            width: 100%;
+            aspect-ratio: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #0f0f1e;
+            overflow: hidden;
+            flex: 1;
+        }
+
+        .img-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+            transition: transform 0.3s ease;
+        }
+
+        .img-box:hover img {
+            transform: scale(1.05);
+        }
+
+        .img-info {
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border-top: 1px solid rgba(0, 212, 255, 0.1);
+            font-size: 12px;
+            color: #a0a0a0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .img-controls {
+            display: flex;
+            gap: 10px;
+            padding: 12px 15px;
+            background: rgba(0, 0, 0, 0.5);
+            border-top: 1px solid rgba(0, 212, 255, 0.1);
+        }
+
+        .download-btn,
+        .delete-btn {
+            flex: 1;
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            color: #00d4ff;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            letter-spacing: 0.5px;
+        }
+
+        .download-btn:hover {
+            background: rgba(0, 212, 255, 0.2);
+            border-color: rgba(0, 212, 255, 0.6);
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+        }
+
+        .delete-btn {
+            border-color: rgba(255, 68, 68, 0.3);
+            color: #ff4444;
+            background: rgba(255, 68, 68, 0.05);
+        }
+
+        .delete-btn:hover {
+            background: rgba(255, 68, 68, 0.15);
+            border-color: rgba(255, 68, 68, 0.6);
+            box-shadow: 0 0 15px rgba(255, 68, 68, 0.3);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 100px 40px;
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.05) 0%, rgba(124, 58, 237, 0.05) 100%);
+            border: 2px dashed rgba(0, 212, 255, 0.2);
+            border-radius: 12px;
+            color: #666;
+            font-size: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .empty-state::before {
+            content: "📁";
+            display: block;
+            font-size: 48px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>✨ Image Gallery</h2>
+
+        <div class="controls">
+            <input type="file" id="upload" accept="image/*" multiple>
+            <label for="upload" class="file-label">+ Add Images</label>
+            <button id="downloadAll">⬇ Download ZIP</button>
+            <div class="counter">
+                <span id="imageCount">0</span> Images Loaded
+            </div>
+        </div>
+
+        <div id="gallery"></div>
+        <div id="emptyState" class="empty-state">
+            <div>No images loaded yet</div>
+            <div style="font-size: 14px; margin-top: 10px; opacity: 0.7;">Upload images to get started</div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <script>
+        const upload = document.getElementById("upload");
+        const gallery = document.getElementById("gallery");
+        const downloadAll = document.getElementById("downloadAll");
+        const emptyState = document.getElementById("emptyState");
+        const imageCount = document.getElementById("imageCount");
+        const STORAGE_KEY = "gallery_images";
+
+        function loadFromStorage() {
+            const stored = localStorage.getItem(STORAGE_KEY);
+            return stored ? JSON.parse(stored) : [];
+        }
+
+        function saveToStorage(images) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(images));
+        }
+
+        function updateUI() {
+            const images = loadFromStorage();
+            imageCount.textContent = images.length;
+
+            if (images.length === 0) {
+                gallery.innerHTML = "";
+                emptyState.style.display = "block";
+            } else {
+                emptyState.style.display = "none";
+            }
+        }
+
+        function deleteImage(index) {
+            const images = loadFromStorage();
+            images.splice(index, 1);
+            saveToStorage(images);
+            renderGallery();
+            updateUI();
+        }
+
+        function renderGallery() {
+            gallery.innerHTML = "";
+            const images = loadFromStorage();
+
+            images.forEach((imageData, index) => {
+                const div = document.createElement("div");
+                div.classList.add("img-box");
+
+                const wrapper = document.createElement("div");
+                wrapper.classList.add("img-wrapper");
+
+                const img = document.createElement("img");
+                img.src = imageData.data;
+
+                wrapper.appendChild(img);
+
+                const info = document.createElement("div");
+                info.classList.add("img-info");
+                info.textContent = imageData.name;
+
+                const controls = document.createElement("div");
+                controls.classList.add("img-controls");
+
+                const downloadBtn = document.createElement("button");
+                downloadBtn.classList.add("download-btn");
+                downloadBtn.textContent = "⬇ Download";
+                downloadBtn.addEventListener("click", () => {
+                    const a = document.createElement("a");
+                    a.href = imageData.data;
+                    a.download = imageData.name;
+                    a.click();
+                });
+
+                const deleteBtn = document.createElement("button");
+                deleteBtn.classList.add("delete-btn");
+                deleteBtn.textContent = "✕ Delete";
+                deleteBtn.addEventListener("click", () => deleteImage(index));
+
+                controls.appendChild(downloadBtn);
+                controls.appendChild(deleteBtn);
+
+                div.appendChild(wrapper);
+                div.appendChild(info);
+                div.appendChild(controls);
+                gallery.appendChild(div);
+            });
+        }
+
+        upload.addEventListener("change", (event) => {
+            const files = [...event.target.files];
+            let processed = 0;
+            const currentImages = loadFromStorage();
+
+            files.forEach((file) => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    currentImages.push({
+                        name: file.name,
+                        data: e.target.result
+                    });
+                    processed++;
+
+                    if (processed === files.length) {
+                        saveToStorage(currentImages);
+                        renderGallery();
+                        updateUI();
+                        upload.value = "";
+                    }
+                };
+                reader.readAsDataURL(file);
+            });
+        });
+
+        downloadAll.addEventListener("click", () => {
+            const images = loadFromStorage();
+            if (images.length === 0) {
+                alert("Upload some images first!");
+                return;
+            }
+
+            const zip = new JSZip();
+            const imgFolder = zip.folder("images");
+            images.forEach((imageData) => {
+                const arr = imageData.data.split(',');
+                const bstr = atob(arr[1]);
+                const n = bstr.length;
+                const u8arr = new Uint8Array(n);
+                for (let i = 0; i < n; i++) {
+                    u8arr[i] = bstr.charCodeAt(i);
+                }
+                imgFolder.file(imageData.name, u8arr);
+            });
+
+            zip.generateAsync({ type: "blob" }).then(content => {
+                saveAs(content, "all-images.zip");
+            });
+        });
+
+        renderGallery();
+        updateUI();
+    </script>
+</body>
+
+</html>

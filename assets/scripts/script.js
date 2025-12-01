@@ -1,17 +1,11 @@
 // CONFIGURATION
 const UNSPLASH_KEY = "GjKAaKJOy1oBXxnoo4rHRuyM4KPWhT8iZIWcn2xuc9I";
-const USE_UNSPLASH = true; // Set to true to use Unsplash instead
-const LARAVEL_WALLPAPER_API = "http://127.0.0.1:8000/api/wallpapers"; // Change when live
+const USE_UNSPLASH = false; // Set to true to use Unsplash instead
+// const LARAVEL_WALLPAPER_API = "http://127.0.0.1:8000/api/wallpapers"; // Change when live
 
 // Brand logos
 const brandLogos = [
-  "/assets/images/invinsense_GSOS_logo1.png",
-  "/assets/images/invinsense_GSOS_logo2.png",
-  "/assets/images/invinsense_GSOS_logo3.png",
-  "/assets/images/invinsense_GSOS_logo4.png",
-  "/assets/images/invinsense_GSOS_logo5.png",
-  "/assets/images/invinsense_GSOS_logo6.png",
-  "/assets/images/invinsense_GSOS_logo7.png",
+  "/assets/images/invinsense_white.png",
 ];
 
 // Security tips
