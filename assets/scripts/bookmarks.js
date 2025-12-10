@@ -2,19 +2,10 @@
 
 const MOCK_BOOKMARKS = [
     { title: "Google", url: "https://google.com" },
-    { title: "YouTube", url: "https://youtube.com" },
-    { title: "GitHub", url: "https://github.com" },
-    { title: "Stack Overflow", url: "https://stackoverflow.com" },
-    { title: "Gmail", url: "https://mail.google.com" },
-    { title: "LinkedIn", url: "https://linkedin.com" },
-    { title: "Reddit", url: "https://reddit.com" },
-    { title: "Twitter", url: "https://twitter.com" }
 ];
 
 let allBookmarks = [];
 let selectedBookmarks = [];
-// Context menu state
-let contextMenu = null;
 
 export function initBookmarks() {
     const modal = document.getElementById("bookmarks-modal");
@@ -50,75 +41,17 @@ export function initBookmarks() {
 
     if (toggleBtn && dock) {
         toggleBtn.onclick = (e) => {
-            e.stopPropagation(); // Prevent closing immediately
+            e.stopPropagation();
+            // Toggle dock visibility only when clicking the bookmark icon
             dock.classList.toggle("active");
         };
     }
-
-    // Close dock when clicking outside
-    document.addEventListener("click", (e) => {
-        if (dock && dock.classList.contains("active")) {
-            if (!dock.contains(e.target) && e.target !== toggleBtn) {
-                dock.classList.remove("active");
-            }
-        }
-        hideContextMenu();
-    });
-
-    // Initialize custom context menu
-    createContextMenu();
-
-    // Close context menu on click elsewhere
-    document.addEventListener("click", () => hideContextMenu());
 
     // Load saved bookmarks on init
     loadSavedBookmarks();
 }
 
-function createContextMenu() {
-    // Remove existing if any
-    const existing = document.getElementById("bookmark-context-menu");
-    if (existing) existing.remove();
 
-    contextMenu = document.createElement("div");
-    contextMenu.id = "bookmark-context-menu";
-    contextMenu.className = "context-menu";
-    contextMenu.innerHTML = `
-        <div class="context-menu-item" id="ctx-remove">
-            <span>🗑️</span> Remove
-        </div>
-    `;
-    document.body.appendChild(contextMenu);
-}
-
-function showContextMenu(x, y, url) {
-    if (!contextMenu) return;
-
-    // Position
-    contextMenu.style.left = `${x}px`;
-    contextMenu.style.top = `${y}px`;
-    contextMenu.classList.add("active");
-
-    // Handle action
-    const removeBtn = contextMenu.querySelector("#ctx-remove");
-    removeBtn.onclick = (e) => {
-        e.stopPropagation(); // Prevent document click from immediately hiding
-        removeBookmark(url);
-        hideContextMenu();
-    };
-}
-
-function hideContextMenu() {
-    if (contextMenu) {
-        contextMenu.classList.remove("active");
-    }
-}
-
-function removeBookmark(url) {
-    selectedBookmarks = selectedBookmarks.filter(b => b.url !== url);
-    localStorage.setItem("gsos_bookmarks", JSON.stringify(selectedBookmarks));
-    renderDock();
-}
 
 async function loadBookmarksForModal() {
     const listContainer = document.getElementById("bookmarks-list");
@@ -266,11 +199,7 @@ function renderDock() {
         a.className = "dock-item";
         a.title = bm.title;
 
-        // Context menu listener
-        a.addEventListener("contextmenu", (e) => {
-            e.preventDefault();
-            showContextMenu(e.pageX, e.pageY, bm.url);
-        });
+
 
         // Use Google Favicon service for consistent icons
         const iconUrl = `https://www.google.com/s2/favicons?sz=64&domain_url=${encodeURIComponent(bm.url)}`;

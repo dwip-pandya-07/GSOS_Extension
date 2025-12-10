@@ -9,6 +9,7 @@ import { initBookmarks } from "./bookmarks.js";
 import { initDrawer } from "./drawer.js";
 import { initNewsDrawer } from "./news.js";
 import { updateMainLikeButton, updateOnlyLikedToggleState } from "./likes.js";
+import { initLogoActivation } from "./logo-activation.js";
 
 async function init() {
     // Load saved settings
@@ -28,6 +29,7 @@ async function init() {
     initNewsDrawer();
     initSearch();
     initBookmarks();
+    initLogoActivation();
     updateMainLikeButton();
     updateOnlyLikedToggleState();
 }

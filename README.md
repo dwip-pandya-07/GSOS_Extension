@@ -11,9 +11,29 @@ A Chrome extension that provides a **Security Awareness Dashboard** with dynamic
 - **Static Mode**: Pin your favorite wallpaper to keep it fixed
 - **Favorites Only**: Toggle to show only your liked wallpapers
 
+### 🖼️ Custom Logo Upload
+- **Secret Activation**: Press "U" three times to reveal logo upload feature
+- **Custom Branding**: Upload your own PNG, JPG, JPEG, or SVG logo (max 2MB)
+- **Real-time Preview**: See your logo instantly in both preview and main display
+- **Persistent Storage**: Custom logos save automatically and persist across sessions
+- **Easy Reset**: Remove custom logo to restore default branding
+
+### 📰 Cybersecurity News
+- **Live RSS Feed**: Real-time news from The Hacker News
+- **Auto-refresh**: News cached for 15 minutes, then automatically updates
+- **Click to Read**: Open articles in new tabs
+- **No API Required**: Direct RSS feed integration via rss2json service
+
+### 🔖 Smart Bookmarks
+- **Quick Access Dock**: Persistent bookmark bar with favicon display
+- **Toggle Visibility**: Click bookmark icon to show/hide dock
+- **Stays Open**: Dock remains visible until you close it (no accidental closing)
+- **Easy Management**: Add/remove bookmarks through modal interface
+- **Chrome Integration**: Syncs with your browser bookmarks
+
 ### 🔒 Security Awareness
 - **Daily Security Tips**: Rotating collection of 20+ security best practices
-- **Real-time Updates**: Tips update dynamically from the API Every day.
+- **Real-time Updates**: Tips update dynamically from the API every day
 - **Educational Content**: Tips cover password security, phishing, encryption, and more
 - **Consistent Learning**: New tip each day based on date algorithm (fallback mode)
 
@@ -26,6 +46,7 @@ A Chrome extension that provides a **Security Awareness Dashboard** with dynamic
 ### ⚙️ Customizable Settings
 - **Settings Drawer**: Slide-out panel with all configuration options
 - **Wallpaper Controls**: Static mode, favorites filter, download functionality
+- **Logo Upload**: Secret feature for custom branding (press "U" 3 times)
 - **Time Preferences**: Format switching with live preview
 - **Persistent Storage**: All settings saved using Chrome storage API
 
@@ -35,19 +56,32 @@ A Chrome extension that provides a **Security Awareness Dashboard** with dynamic
 - **Glass Morphism UI**: Modern frosted glass design elements
 - **Smooth Animations**: Fade transitions and hover effects
 - **Notification System**: Toast notifications for user feedback
+- **Modular Architecture**: Clean ES6 modules for maintainability
 
 ## 📁 Project Structure
 
 ```
-GSOS - Extension/
+GSOS_Extension/
 ├── assets/
 │   ├── images/           # Brand logos and assets
-│   │   ├── invinsense_GSOS_logo1-7.png
-│   │   ├── invinsense_white.png
-│   │   ├── invinsense.png
-│   │   └── Logo.png
-│   ├── scripts/
-│   │   └── script.js     # Main application logic
+│   │   ├── invinsense_white.png (default logo)
+│   │   └── other brand assets
+│   ├── scripts/          # Modular ES6 JavaScript
+│   │   ├── main.js              # Application entry point
+│   │   ├── config.js            # Configuration constants
+│   │   ├── state.js             # Application state management
+│   │   ├── storage.js           # Chrome storage API wrapper
+│   │   ├── wallpaper.js         # Wallpaper loading logic
+│   │   ├── clock.js             # Time and date display
+│   │   ├── tips.js              # Security tips rotation
+│   │   ├── ui.js                # UI helper functions
+│   │   ├── drawer.js            # Settings drawer management
+│   │   ├── news.js              # RSS news feed integration
+│   │   ├── likes.js             # Wallpaper like system
+│   │   ├── search.js            # Search functionality
+│   │   ├── bookmarks.js         # Bookmark management
+│   │   ├── logo-activation.js   # Secret logo upload feature
+│   │   └── utils.js             # Utility functions
 │   └── style/
 │       └── style.css     # Complete styling and responsive design
 ├── backup/               # Fallback wallpaper images (15 images)
@@ -79,17 +113,24 @@ GSOS - Extension/
 
 ## 🔧 Configuration
 
-### API Setup (Optional)
+### News Feed
+The extension uses **The Hacker News RSS feed** for cybersecurity news:
+- **Feed URL**: `https://feeds.feedburner.com/TheHackersNews`
+- **Conversion Service**: rss2json.com (handles CORS automatically)
+- **No API Key Required**: Direct RSS integration
+- **Auto-refresh**: News cached for 15 minutes
+
+### Wallpaper Sources
 The extension supports multiple wallpaper sources:
 
 1. **Unsplash API** (Default fallback):
    - Get API key from [Unsplash Developers](https://unsplash.com/developers)
-   - Update `UNSPLASH_KEY` in `script.js`
+   - Update `UNSPLASH_KEY` in `config.js`
 
 2. **Laravel Backend** (Optional):
    - Set up your Laravel wallpaper API endpoint
-   - Update `LARAVEL_WALLPAPER_API` in `script.js`
-   - Update `LARAVEL_TIP_API` in `script.js` for security tips
+   - Update `LARAVEL_WALLPAPER_API` in `config.js`
+   - Update `LARAVEL_TIP_API` in `config.js` for security tips
    - Set `USE_UNSPLASH = false` to use Laravel API
 
 3. **Local Images** (Always available):
@@ -103,6 +144,7 @@ Access the settings by clicking the gear icon in the bottom right:
 - **Show Only Liked**: Display only your favorited wallpapers
 - **Download Wallpaper**: Save current wallpaper to your device
 - **Time Format**: Switch between 12-hour and 24-hour display
+- **Custom Logo**: Press "U" 3 times to reveal upload option (secret feature)
 
 ## 🎨 Design Features
 
@@ -141,9 +183,16 @@ The extension includes 20+ rotating security tips covering:
 ### Technologies Used
 - **HTML5**: Semantic markup with accessibility features
 - **CSS3**: Modern styling with flexbox, grid, and animations
-- **Vanilla JavaScript**: No external dependencies for optimal performance
-- **Chrome Extension APIs**: Storage, tabs, and action APIs
-- **Web APIs**: Fetch for HTTP requests, File API for downloads
+- **ES6 Modules**: Modular JavaScript architecture for maintainability
+- **Chrome Extension APIs**: Storage, tabs, bookmarks, and action APIs
+- **Web APIs**: Fetch for HTTP requests, FileReader for image uploads
+- **RSS Integration**: rss2json.com service for feed conversion
+
+### Architecture
+- **Modular Design**: Separate modules for each feature (wallpaper, news, bookmarks, etc.)
+- **State Management**: Centralized state in `state.js`
+- **Storage Abstraction**: Chrome storage wrapper in `storage.js`
+- **Event-driven**: Clean separation of concerns with event handlers
 
 ### Browser Compatibility
 - **Chrome**: Full support (Manifest V3)
@@ -153,8 +202,9 @@ The extension includes 20+ rotating security tips covering:
 ### Performance Optimizations
 - **Image Preloading**: Ensures smooth wallpaper transitions
 - **Lazy Loading**: Efficient resource management
-- **Caching**: Chrome storage for settings persistence
+- **Caching**: Chrome storage for settings persistence, 15-min news cache
 - **Fallback System**: Multiple layers prevent loading failures
+- **Base64 Encoding**: Custom logos stored as data URIs
 
 ## 📱 Responsive Breakpoints
 
@@ -163,6 +213,14 @@ The extension includes 20+ rotating security tips covering:
 - **Mobile (480px)**: Compact design with full-width drawer
 
 ## 🔄 Update History
+
+### Version 2.0.0 (Latest)
+- **Dynamic Logo Upload**: Secret feature activated by pressing "U" 3 times
+- **RSS News Integration**: Live cybersecurity news from The Hacker News
+- **Bookmark Improvements**: Persistent dock that stays open until toggled
+- **Modular Architecture**: Refactored to ES6 modules for better maintainability
+- **Enhanced Storage**: Base64 logo storage, improved settings persistence
+- **Removed Dependencies**: No more newsdata.io API, direct RSS integration
 
 ### Version 1.0.0
 - Initial release with core dashboard functionality

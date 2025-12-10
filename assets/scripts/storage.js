@@ -12,6 +12,7 @@ export async function loadSettingsFromStorage() {
                 "is12HourFormat",
                 "onlyShowLiked",
                 "selectedBookmarks",
+                "customLogoUrl",
             ],
             (data) => {
                 State.isStaticWallpaper = data.isStaticWallpaper || false;
@@ -28,6 +29,8 @@ export async function loadSettingsFromStorage() {
                     ? data.selectedBookmarks.filter((b) => b && b.id && b.url)
                     : [];
 
+                State.customLogoUrl = data.customLogoUrl || null;
+
                 resolve();
             }
         );
@@ -43,5 +46,6 @@ export function saveSettingsToStorage() {
         is12HourFormat: State.is12HourFormat,
         onlyShowLiked: State.onlyShowLiked,
         selectedBookmarks: State.selectedBookmarks,
+        customLogoUrl: State.customLogoUrl,
     });
 }

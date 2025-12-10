@@ -8,7 +8,8 @@ const State = {
   staticWallpaperId: null,
   is12HourFormat: false,
   onlyShowLiked: false,
-  selectedBookmarks: [], 
+  selectedBookmarks: [],
+  customLogoUrl: null, // Custom logo uploaded by user
 };
 
 export default State;

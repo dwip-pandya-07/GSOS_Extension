@@ -1,14 +1,16 @@
-// news.js - News Drawer Management
+// news.js - News Drawer Management (RSS Feed)
 
-const API_KEY = "pub_9eba8c0188e5406292ff74e0edac2a8c";
-// Base URL without pagination
-const API_BASE_URL = `https://newsdata.io/api/1/latest?apikey=${API_KEY}&category=technology,business,world&&qInTitle=cybersecurity
-`;
+// The Hacker News RSS Feed
+const RSS_FEED_URL = "https://feeds.feedburner.com/TheHackersNews";
+// RSS to JSON conversion service (handles CORS)
+// Free tier returns 10 items max, so we show 5 at a time to enable pagination
+const RSS_TO_JSON_API = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(RSS_FEED_URL)}`;
 
 let newsData = [];
-let nextPageToken = null;
+let displayedCount = 0;
+const ITEMS_PER_PAGE = 5;
 let lastFetchTime = 0;
-const CACHE_DURATION = 15 * 60 * 1000; // 15 minutes
+const CACHE_DURATION = 15 * 60 * 1000;
 
 export function initNewsDrawer() {
     const drawer = document.getElementById("news-drawer");
@@ -31,11 +33,15 @@ export function initNewsDrawer() {
         toggle.classList.add("moved");
         overlay.classList.add("active");
 
-        // Initial load only if empty
+        const now = Date.now();
         if (newsData.length === 0) {
-            loadNews(); // initial fetch
+            loadNews();
+        } else if ((now - lastFetchTime) > CACHE_DURATION) {
+            console.log('📰 Cache expired, reloading news...');
+            loadNews();
         } else {
-            renderNewsItems(newsData);
+            console.log('📰 Showing cached news');
+            renderNewsItems();
         }
     };
 
@@ -51,96 +57,92 @@ export function initNewsDrawer() {
     });
 }
 
-async function loadNews(pageToken = null) {
+async function loadNews() {
     const container = document.getElementById("news-content");
     if (!container) return;
 
-    // Determine URL
-    let url = API_BASE_URL;
-    if (pageToken) {
-        url += `&page=${pageToken}`;
-    }
-
-    // Prepare container or button state
-    // If initial load and empty container, show big loader
-    // If loading more, show spinner on button
-
-    let loadMoreBtn = document.getElementById("load-more-btn");
-
-    if (!pageToken) {
-        // Initial load UI
-        if (newsData.length === 0) {
-            container.innerHTML = '<div style="text-align:center; padding:20px; color:#fff;">Loading news...</div>';
-        }
-    } else {
-        // Load more UI
-        if (loadMoreBtn) {
-            loadMoreBtn.textContent = "Loading...";
-            loadMoreBtn.disabled = true;
-        }
-    }
+    container.innerHTML = '<div style="text-align:center; padding:20px; color:#fff;">Loading news from The Hacker News...</div>';
 
     try {
-        const response = await fetch(url);
+        const response = await fetch(RSS_TO_JSON_API);
         const data = await response.json();
 
-        if (data.status === "success" && data.results) {
-            // Transform new items
-            const newItems = data.results.map(item => ({
-                id: item.article_id,
-                title: item.title,
-                summary: item.description ? item.description : (item.content ? item.content.slice(0, 100) + "..." : "No description available."),
-                date: item.pubDate ? item.pubDate.split(' ')[0] : 'Recent',
-                source: item.source_id,
-                icon: item.image_url ? item.image_url : null,
-                link: item.link
-            }));
+        if (data.status === "ok" && data.items && data.items.length > 0) {
+            newsData = data.items.map((item, index) => {
+                let date = 'Recent';
+                if (item.pubDate) {
+                    try {
+                        const pubDate = new Date(item.pubDate);
+                        date = pubDate.toLocaleDateString('en-US', {
+                            month: 'short',
+                            day: 'numeric',
+                            year: 'numeric'
+                        });
+                    } catch (e) {
+                        date = item.pubDate.split(' ')[0];
+                    }
+                }
 
-            // Filter duplicates if any (simple check by ID)
-            const existingIds = new Set(newsData.map(n => n.id));
-            const uniqueNewItems = newItems.filter(item => !existingIds.has(item.id));
+                let icon = null;
+                if (item.thumbnail) {
+                    icon = item.thumbnail;
+                } else if (item.enclosure && item.enclosure.link) {
+                    icon = item.enclosure.link;
+                }
 
-            if (!pageToken) {
-                // Initial load: replace data
-                newsData = uniqueNewItems;
-            } else {
-                // Append data
-                newsData = [...newsData, ...uniqueNewItems];
-            }
+                let summary = item.description || item.content || "No description available.";
+                summary = summary.replace(/<[^>]*>/g, '').trim();
+                if (summary.length > 150) {
+                    summary = summary.substring(0, 150) + '...';
+                }
 
-            // Update next page token
-            nextPageToken = data.nextPage || null;
+                return {
+                    id: item.guid || `news-${index}`,
+                    title: item.title,
+                    summary: summary,
+                    date: date,
+                    source: data.feed?.title || "The Hacker News",
+                    icon: icon,
+                    link: item.link
+                };
+            });
+
             lastFetchTime = Date.now();
-
-            // Re-render all list (simplest approach for now) or append.
-            // Re-rendering entire list ensures order and correct button placement.
-            renderNewsItems(newsData);
+            displayedCount = 0;
+            renderNewsItems();
 
         } else {
-            throw new Error("Failed to load news");
+            throw new Error("Failed to load RSS feed");
         }
     } catch (error) {
-        console.error("News fetch error:", error);
-        if (!pageToken && newsData.length === 0) {
-            container.innerHTML = `<div style="text-align:center; padding:20px; color:#ff6b6b;">Error loading news. Please try again later.</div>`;
-        } else if (loadMoreBtn) {
-            loadMoreBtn.textContent = "Error. Try again.";
-            loadMoreBtn.disabled = false;
-        }
+        console.error("RSS feed fetch error:", error);
+        container.innerHTML = `<div style="text-align:center; padding:20px; color:#ff6b6b;">Error loading news. Please try again later.</div>`;
     }
 }
 
-function renderNewsItems(items) {
+function renderNewsItems() {
     const container = document.getElementById("news-content");
     if (!container) return;
 
-    container.innerHTML = "";
+    if (newsData.length === 0) {
+        container.innerHTML = '<div style="text-align:center; padding:20px; color:#fff;">No news available.</div>';
+        return;
+    }
 
-    items.forEach(item => {
+    if (displayedCount === 0) {
+        container.innerHTML = "";
+    }
+    const startIndex = displayedCount;
+    const endIndex = Math.min(displayedCount + ITEMS_PER_PAGE, newsData.length);
+    const itemsToShow = newsData.slice(startIndex, endIndex);
+
+    // Render the new items
+    itemsToShow.forEach(item => {
         const card = document.createElement("a");
         card.className = "news-card drawer-item";
         card.href = item.link;
         card.target = "_blank";
+        card.rel = "noopener noreferrer";
         card.style.textDecoration = "none";
         card.style.display = "flex";
 
@@ -164,19 +166,33 @@ function renderNewsItems(items) {
         container.appendChild(card);
     });
 
-    // Append "Load More" button if there is a next page
-    if (nextPageToken) {
+    displayedCount = endIndex;
+
+    // Remove existing Load More button container if any
+    const existingBtnContainer = document.getElementById("load-more-container");
+    if (existingBtnContainer) {
+        existingBtnContainer.remove();
+        console.log('🗑️ Removed existing Load More button');
+    }
+
+    // Add Load More button if there are more items to show
+    if (displayedCount < newsData.length) {
         const btnContainer = document.createElement("div");
+        btnContainer.id = "load-more-container";
         btnContainer.style.textAlign = "center";
         btnContainer.style.padding = "20px";
 
         const btn = document.createElement("button");
-        btn.id = "load-more-btn";
+        btn.id = "load-more-news-btn";
         btn.className = "load-more-btn";
-        btn.textContent = "Load More";
-        btn.onclick = () => loadNews(nextPageToken);
+        btn.textContent = `Load More (${newsData.length - displayedCount} remaining)`;
+        btn.onclick = () => renderNewsItems();
 
         btnContainer.appendChild(btn);
         container.appendChild(btnContainer);
+
+        console.log('✅ Load More button created with', newsData.length - displayedCount, 'remaining items');
+    } else {
+        console.log('ℹ️ All items displayed, no Load More button needed');
     }
 }
