@@ -173,6 +173,7 @@
                         <p>Upload your own brand logo</p>
                     </div>
                 </div>
+
                 <div class="logo-upload-controls">
                     <input type="file" id="logo-file-input" accept="image/png,image/jpeg,image/jpg,image/svg+xml"
                         style="display: none;">
@@ -183,7 +184,7 @@
                             <polyline points="17 8 12 3 7 8"></polyline>
                             <line x1="12" y1="3" x2="12" y2="15"></line>
                         </svg>
-                        Upload
+                        Upload File
                     </button>
                     <button class="logo-remove-btn" id="logo-remove-btn" style="display: none;">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -195,6 +196,23 @@
                         Remove
                     </button>
                 </div>
+
+                <!-- URL Input Section -->
+                <div class="logo-url-controls">
+                    <div class="url-input-group">
+                        <input type="url" id="logo-url-input" class="logo-url-input"
+                            placeholder="Or paste image URL here...">
+                        <button class="logo-url-btn" id="load-url-btn">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                            </svg>
+                            Load URL
+                        </button>
+                    </div>
+                </div>
+
                 <div class="logo-preview" id="logo-preview" style="display: none;">
                     <img id="logo-preview-img" alt="Logo preview">
                 </div>

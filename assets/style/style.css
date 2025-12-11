@@ -760,17 +760,9 @@ input:checked+.toggle-slider:hover {
   color: #fff;
 }
 
-.news-meta {
-  display: flex;
-  gap: 10px;
-  font-size: 11px;
-  opacity: 0.5;
-  margin-bottom: 8px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
 .news-summary {
+  text-decoration: none;
+  color: #fff;
   font-size: 13px;
   line-height: 1.5;
   opacity: 0.8;
@@ -913,6 +905,7 @@ input:checked+.toggle-slider:hover {
   margin-bottom: 8px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  cursor: pointer;
 }
 
 .news-summary {
@@ -1462,10 +1455,159 @@ input:checked+.toggle-slider:hover {
 
 /* Make logo upload section flow properly */
 #logo-upload-section {
+  display: flex;
   flex-direction: column;
   align-items: stretch;
 }
 
 #logo-upload-section .drawer-item-header {
   width: 100%;
+}
+
+/* ===== LOGO UPLOAD CONTROLS ===== */
+.logo-upload-controls {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+  width: 100%;
+}
+
+.logo-upload-btn,
+.logo-remove-btn {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.08) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.logo-upload-btn:hover,
+.logo-remove-btn:hover {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.12) 100%);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.logo-upload-btn:active,
+.logo-remove-btn:active {
+  transform: translateY(0);
+}
+
+.logo-remove-btn {
+  background: linear-gradient(135deg, rgba(244, 67, 54, 0.2) 0%, rgba(211, 47, 47, 0.15) 100%);
+  border-color: rgba(244, 67, 54, 0.3);
+}
+
+.logo-remove-btn:hover {
+  background: linear-gradient(135deg, rgba(244, 67, 54, 0.3) 0%, rgba(211, 47, 47, 0.2) 100%);
+  border-color: rgba(244, 67, 54, 0.4);
+}
+
+.logo-preview {
+  margin-top: 16px;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  text-align: center;
+}
+
+.logo-preview img {
+  max-width: 100%;
+  max-height: 120px;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+
+
+/* ===== LOGO URL CONTROLS ===== */
+.logo-url-controls {
+  margin-top: 8px;
+  width: 100%;
+}
+
+.url-input-group {
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+}
+
+.logo-url-input {
+  flex: 1;
+  min-width: 0;
+  padding: 10px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  font-size: 14px;
+  font-family: inherit;
+  transition: all 0.2s ease;
+  background: rgba(255, 255, 255, 0.05);
+  color: white;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.logo-url-input:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
+}
+
+.logo-url-input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.logo-url-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 16px;
+  background: linear-gradient(135deg, rgba(74, 144, 226, 0.3) 0%, rgba(74, 144, 226, 0.2) 100%);
+  border: 1px solid rgba(74, 144, 226, 0.4);
+  color: white;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.logo-url-btn:hover {
+  background: linear-gradient(135deg, rgba(74, 144, 226, 0.4) 0%, rgba(74, 144, 226, 0.3) 100%);
+  border-color: rgba(74, 144, 226, 0.6);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
+}
+
+.logo-url-btn:active {
+  transform: translateY(0);
+}
+
+.logo-url-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.logo-url-btn svg {
+  flex-shrink: 0;
 }
