@@ -150,7 +150,7 @@ export async function downloadWallpaper() {
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
         a.href = url;
-        a.download = `GSOS_${Date.now()}.jpg`;
+        a.download = `Invinsense_${Date.now()}.jpg`;
         a.click();
         URL.revokeObjectURL(url);
         showNotification("Downloaded!", "success");

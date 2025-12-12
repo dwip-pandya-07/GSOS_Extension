@@ -1,6 +1,5 @@
-# GSOS Extension
+# Invinsense Extension
 
-A Chrome extension that provides a **Security Awareness Dashboard** with dynamic wallpapers, daily security tips, and customizable settings. GSOS (Governance, Security, Operations & Safety) transforms your new tab experience into an informative and visually appealing security-focused dashboard.
 
 ## 🌟 Features
 
@@ -61,7 +60,7 @@ A Chrome extension that provides a **Security Awareness Dashboard** with dynamic
 ## 📁 Project Structure
 
 ```
-GSOS_Extension/
+Invinsense_Extension/
 ├── assets/
 │   ├── images/           # Brand logos and assets
 │   │   ├── invinsense_white.png (default logo)
@@ -106,7 +105,7 @@ GSOS_Extension/
 2. Open Chrome and navigate to `chrome://extensions/`
 3. Enable "Developer mode" in the top right
 4. Click "Load unpacked" and select the extension folder
-5. The GSOS extension will appear in your extensions list
+5. The Invinsense extension will appear in your extensions list
 
 ### Method 2: Chrome Web Store
 *Coming soon - extension will be published to Chrome Web Store*
@@ -267,4 +266,4 @@ For support, feature requests, or bug reports:
 
 ---
 
-**GSOS Extension** - Transforming your browsing experience with security awareness and beautiful design.
+**Invinsense Extension** - Transforming your browsing experience with security awareness and beautiful design.

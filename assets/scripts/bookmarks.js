@@ -4,6 +4,16 @@ const MOCK_BOOKMARKS = [
     { title: "Google", url: "https://google.com" },
 ];
 
+// Custom icon mapping for specific URLs
+const CUSTOM_ICONS = {
+    "https://invinsense-launcher.netlify.app/dashboard": "assets/images/invinsense.svg",
+    "https://invinsense-launcher.netlify.app/xdr": "assets/images/icn-xdr.svg",
+    "https://invinsense-launcher.netlify.app/xdr-plus": "assets/images/icn-dxr-plus.svg",
+    "https://invinsense-launcher.netlify.app/oxdr": "assets/images/icn-oxdr.svg",
+    "https://invinsense-launcher.netlify.app/gsos": "assets/images/icn-gsos.svg",
+    "https://invinsense-launcher.netlify.app/pulse": "assets/images/icn-pulse.svg"
+};
+
 let allBookmarks = [];
 let selectedBookmarks = [];
 
@@ -199,15 +209,28 @@ function renderDock() {
         a.className = "dock-item";
         a.title = bm.title;
 
-
-
-        // Use Google Favicon service for consistent icons
-        const iconUrl = `https://www.google.com/s2/favicons?sz=64&domain_url=${encodeURIComponent(bm.url)}`;
-
         const img = document.createElement("img");
-        img.src = iconUrl;
         img.alt = bm.title;
-        img.onerror = () => { img.src = "assets/images/default-bookmark.png"; };
+
+        // Check if URL has a custom icon mapping
+        if (CUSTOM_ICONS[bm.url]) {
+            img.src = CUSTOM_ICONS[bm.url];
+            // Fallback to Google favicon if custom icon fails to load
+            img.onerror = () => {
+                const iconUrl = `https://www.google.com/s2/favicons?sz=64&domain_url=${encodeURIComponent(bm.url)}`;
+                img.src = iconUrl;
+                img.onerror = () => {
+                    img.src = "assets/images/default-bookmark.png";
+                };
+            };
+        } else {
+            // Use Google Favicon service for URLs without custom icons
+            const iconUrl = `https://www.google.com/s2/favicons?sz=64&domain_url=${encodeURIComponent(bm.url)}`;
+            img.src = iconUrl;
+            img.onerror = () => {
+                img.src = "assets/images/default-bookmark.png";
+            };
+        }
 
         a.appendChild(img);
         dock.appendChild(a);

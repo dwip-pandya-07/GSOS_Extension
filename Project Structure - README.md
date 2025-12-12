@@ -1,4 +1,4 @@
-# GSOS - Modular JavaScript Structure
+# Invinsense - Modular JavaScript Structure
 
 ## 📁 File Organization
 
