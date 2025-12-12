@@ -775,6 +775,13 @@ input:checked+.toggle-slider:hover {
   overflow: hidden;
 }
 
+.news-date {
+  color: #fff;
+  font-size: 11px;
+  opacity: 0.6;
+  margin-top: 4px;
+}
+
 .load-more-btn {
   background: rgba(255, 255, 255, 0.1);
   color: white;

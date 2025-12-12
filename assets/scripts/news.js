@@ -302,7 +302,7 @@ async function loadNews() {
 
     } catch (error) {
         console.error("RSS feed fetch error:", error);
-        container.innerHTML = `<div style="text-align:center; padding:20px; color:#ff6b6b;">Error loading news. Please check your RSS feeds.</div>`;
+        container.innerHTML = `<div style="text-align:center; padding:20px; color:#ff6b6b;">Yet to Configure the RSS Feeds </div>`;
     }
 }
 
@@ -422,8 +422,8 @@ function renderNewsItems() {
             <div class="news-info">
                 <h4 class="news-title">${item.title}</h4>
                 <p class="news-summary">${item.summary}</p>
-                <div style="font-size: 11px; opacity: 0.6; margin-top: 4px;">
-                    ${item.source} • ${item.date} ${feedBadge}
+                <div class="news-date">
+                    ${item.date}
                 </div>
             </div>
         `;
@@ -449,7 +449,7 @@ function renderNewsItems() {
         const btn = document.createElement("button");
         btn.id = "load-more-news-btn";
         btn.className = "load-more-btn";
-        btn.textContent = `Load More (${newsData.length - displayedCount} remaining)`;
+        btn.textContent = `Load More`;
         btn.onclick = () => renderNewsItems();
 
         btnContainer.appendChild(btn);

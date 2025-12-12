@@ -66,22 +66,6 @@ function preloadAndSet(url, id) {
     img.src = url;
 }
 
-function selectWeightedWallpaper(wallpapers) {
-    if (
-        !State.onlyShowLiked &&
-        State.likedWallpapers.length > 0 &&
-        Math.random() < 0.6
-    ) {
-        const liked = wallpapers.filter((w) =>
-            State.likedWallpapers.some((l) => l.id === w.id)
-        );
-        if (liked.length > 0) {
-            return liked[Math.floor(Math.random() * liked.length)];
-        }
-    }
-    return wallpapers[Math.floor(Math.random() * wallpapers.length)];
-}
-
 async function loadFromLaravel() {
     try {
         const res = await fetch(CONFIG.LARAVEL_WALLPAPER_API);
@@ -91,7 +75,7 @@ async function loadFromLaravel() {
         if (!json.status || json.count === 0) throw new Error("No wallpapers");
 
         const wallpapers = json.data;
-        const selected = selectWeightedWallpaper(wallpapers);
+        const selected = wallpapers[Math.floor(Math.random() * wallpapers.length)];
         preloadAndSet(selected.url, selected.id);
     } catch (err) {
         console.warn("Laravel failed → fallback", err);
