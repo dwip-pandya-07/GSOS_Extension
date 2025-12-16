@@ -102,6 +102,33 @@ export function initDrawer() {
     const logoRemoveBtn = document.getElementById("logo-remove-btn");
     const logoPreview = document.getElementById("logo-preview");
     const logoPreviewImg = document.getElementById("logo-preview-img");
+    const logoUrlInput = document.getElementById("logo-url-input");
+    const loadUrlBtn = document.getElementById("load-url-btn");
+
+    // Unified helper to set and save logo
+    const setCustomLogo = (url) => {
+        State.customLogoUrl = url;
+        saveSettingsToStorage();
+
+        // Update logo display
+        const brandLogo = document.getElementById("brand-logo");
+        if (brandLogo) {
+            brandLogo.src = url;
+        }
+
+        // Show preview and remove button
+        if (logoPreviewImg && logoPreview) {
+            logoPreviewImg.src = url;
+            logoPreview.style.display = "block";
+        }
+        if (logoRemoveBtn) {
+            logoRemoveBtn.style.display = "inline-flex";
+        }
+
+        // Reset inputs
+        if (logoFileInput) logoFileInput.value = "";
+        if (logoUrlInput) logoUrlInput.value = "";
+    };
 
     // Show file picker when upload button is clicked
     if (logoUploadBtn && logoFileInput) {
@@ -130,28 +157,51 @@ export function initDrawer() {
             // Convert to base64 and save
             const reader = new FileReader();
             reader.onload = (event) => {
-                const base64Image = event.target.result;
-                State.customLogoUrl = base64Image;
-                saveSettingsToStorage();
-
-                // Update logo display
-                const brandLogo = document.getElementById("brand-logo");
-                if (brandLogo) {
-                    brandLogo.src = base64Image;
-                }
-
-                // Show preview and remove button
-                if (logoPreviewImg && logoPreview) {
-                    logoPreviewImg.src = base64Image;
-                    logoPreview.style.display = "block";
-                }
-                if (logoRemoveBtn) {
-                    logoRemoveBtn.style.display = "inline-flex";
-                }
-
+                setCustomLogo(event.target.result);
                 showNotification("Custom logo uploaded successfully!", "success");
             };
             reader.readAsDataURL(file);
+        };
+    }
+
+    // Handle URL Upload
+    if (loadUrlBtn && logoUrlInput) {
+        const handleUrlLoad = () => {
+            const url = logoUrlInput.value.trim();
+            if (!url) return;
+
+            // Basic URL validation
+            try {
+                new URL(url);
+            } catch (e) {
+                showNotification("Please enter a valid URL", "warning");
+                return;
+            }
+
+            // Show loading state
+            const originalText = loadUrlBtn.innerHTML;
+            loadUrlBtn.innerHTML = "Loading...";
+            loadUrlBtn.disabled = true;
+
+            const img = new Image();
+            img.crossOrigin = "anonymous";
+            img.onload = () => {
+                setCustomLogo(url);
+                showNotification("Logo loaded from URL!", "success");
+                loadUrlBtn.innerHTML = originalText;
+                loadUrlBtn.disabled = false;
+            };
+            img.onerror = () => {
+                showNotification("Failed to load image. Check URL or CORS.", "error");
+                loadUrlBtn.innerHTML = originalText;
+                loadUrlBtn.disabled = false;
+            };
+            img.src = url;
+        };
+
+        loadUrlBtn.onclick = handleUrlLoad;
+        logoUrlInput.onkeydown = (e) => {
+            if (e.key === "Enter") handleUrlLoad();
         };
     }
 
@@ -173,16 +223,18 @@ export function initDrawer() {
             }
             logoRemoveBtn.style.display = "none";
 
-            // Clear file input
-            if (logoFileInput) {
-                logoFileInput.value = "";
-            }
+            // Clear inputs
+            if (logoFileInput) logoFileInput.value = "";
+            if (logoUrlInput) logoUrlInput.value = "";
 
-            // Hide the entire logo upload section
+            // Note: We keeping the section visible as user might want to upload another one immediately
+            // If the requirement is to hide the section completely on remove, uncomment below:
+            /*
             const logoUploadSection = document.getElementById("logo-upload-section");
             if (logoUploadSection) {
                 logoUploadSection.style.display = "none";
             }
+            */
 
             showNotification("Custom logo removed", "info");
         };

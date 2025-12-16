@@ -3,7 +3,7 @@ import State from "./state.js";
 
 export async function loadSettingsFromStorage() {
     return new Promise((resolve) => {
-        chrome.storage.sync.get(
+        chrome.storage.local.get(
             [
                 "isStaticWallpaper",
                 "staticWallpaperUrl",
@@ -38,7 +38,7 @@ export async function loadSettingsFromStorage() {
 }
 
 export function saveSettingsToStorage() {
-    chrome.storage.sync.set({
+    chrome.storage.local.set({
         isStaticWallpaper: State.isStaticWallpaper,
         staticWallpaperUrl: State.staticWallpaperUrl,
         staticWallpaperId: State.staticWallpaperId,
