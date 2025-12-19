@@ -78,7 +78,6 @@ async function loadFromLaravel() {
         const selected = wallpapers[Math.floor(Math.random() * wallpapers.length)];
         preloadAndSet(selected.url, selected.id);
     } catch (err) {
-        console.warn("Laravel failed → fallback", err);
         loadBackupWallpaper();
     }
 }
@@ -93,7 +92,6 @@ async function loadFromUnsplash() {
         const data = await res.json();
         preloadAndSet(data.urls.full, data.id);
     } catch (err) {
-        console.warn("Unsplash failed → backup", err);
         loadBackupWallpaper();
     }
 }

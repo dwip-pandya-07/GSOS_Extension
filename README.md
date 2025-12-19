@@ -1,233 +1,133 @@
-# Invinsense Extension
+# Invinsense Dashboard
 
+A premium, security-focused Chrome extension that transforms your "New Tab" page into a high-performance productivity dashboard. Featuring dynamic wallpapers, real-time cybersecurity news, smart bookmarks, and daily security awareness tips.
 
-## 🌟 Features
+## 🌟 Key Features
 
-### 🎨 Dynamic Wallpapers
-- **Multiple Sources**: Supports Unsplash API, Laravel backend, and local backup images
-- **Smart Loading**: Automatic fallback system ensures wallpapers always load
-- **Like System**: Heart button to favorite wallpapers you love
-- **Static Mode**: Pin your favorite wallpaper to keep it fixed
-- **Favorites Only**: Toggle to show only your liked wallpapers
+### 🎨 Dynamic Wallpaper System
+- **Intelligent Sources**: Integrates with Unsplash API, custom Laravel backends, and local high-quality backups.
+- **Smart Fallback**: Multi-tier loading system ensures you always have a beautiful background, even offline.
+- **Personalized Gallery**: Heart/Like system to favorite wallpapers.
+- **Glassmorphism UI**: Controls and widgets feature modern frosted glass effects with backdrop blur.
+- **Privacy First**: All wallpaper preferences and likes are stored locally via Chrome Storage API.
 
-### 🖼️ Custom Logo Upload
-- **Secret Activation**: Press "U" three times to reveal logo upload feature
-- **Custom Branding**: Upload your own PNG, JPG, JPEG, or SVG logo (max 2MB)
-- **Real-time Preview**: See your logo instantly in both preview and main display
-- **Persistent Storage**: Custom logos save automatically and persist across sessions
-- **Easy Reset**: Remove custom logo to restore default branding
+### 🖼️ Brand Customization
+- **Logo Control**: Support for local file uploads (PNG, JPG, SVG) and direct URL-based logo loading.
+- **Secret Activation**: Press **"U"** three times consecutively to reveal the secret Branding & Logo configuration panel.
+- **Live Preview**: See branding changes instantly before saving.
+- **Persistent States**: Your custom branding persists across browser restarts and syncs with your profile.
 
-### 📰 Cybersecurity News
-- **Live RSS Feed**: Real-time news from The Hacker News
-- **Auto-refresh**: News cached for 15 minutes, then automatically updates
-- **Click to Read**: Open articles in new tabs
-- **No API Required**: Direct RSS feed integration via rss2json service
+### 📰 Advanced Cybersecurity News
+- **Multi-Feed Support**: Configure up to **10 custom RSS feeds** to stay updated with your preferred sources.
+- **Priority Distribution**: Intelligent algorithm weights articles based on your feed order, ensuring top sources get more visibility.
+- **Secret Access**: Press **"R"** three times consecutively to reveal the RSS Configuration panel in the settings drawer.
+- **Optimized Performance**: News items are cached for 15 minutes to minimize network requests and improve load speed.
+- **Rich Content**: Article cards include thumbnails, source attribution, and simplified summaries.
 
-### 🔖 Smart Bookmarks
-- **Quick Access Dock**: Persistent bookmark bar with favicon display
-- **Toggle Visibility**: Click bookmark icon to show/hide dock
-- **Stays Open**: Dock remains visible until you close it (no accidental closing)
-- **Easy Management**: Add/remove bookmarks through modal interface
-- **Chrome Integration**: Syncs with your browser bookmarks
+### 🔖 Smart Bookmarks & Navigation
+- **Persistent Dock**: A sleek, auto-hiding dock for your most-used bookmarks.
+- **Quick Selection**: Modal interface to easily select which Chrome bookmarks appear in your dock.
+- **Favicon Integration**: Real-time fetching of high-resolution favicons for clear visual identification.
+- **Smart Tracking**: The "Recent Tabs" floating panel automatically tracks your most visited sites, filtering out transitional pages (login, auth, etc.) for a cleaner history.
+
+### 🔍 Search Integration
+- **Command Center**: Integrated Google Search bar with clean iconography.
+- **Keyboard Friendly**: Instant focus and search capability directly from the dashboard center.
 
 ### 🔒 Security Awareness
-- **Daily Security Tips**: Rotating collection of 20+ security best practices
-- **Real-time Updates**: Tips update dynamically from the API every day
-- **Educational Content**: Tips cover password security, phishing, encryption, and more
-- **Consistent Learning**: New tip each day based on date algorithm (fallback mode)
+- **Daily Tips**: Rotating collection of 20+ professional security best practices.
+- **Dynamic Learning**: Tips update based on daily algorithms or direct API fetches.
+- **Broad Coverage**: Spans password security, MFA, phishing, encryption, and physical security.
 
-### ⏰ Time & Date Display
-- **Real-time Clock**: Live updating with seconds precision
-- **Dual Format Support**: Toggle between 12-hour and 24-hour formats
-- **Smart Greetings**: Context-aware greetings based on time of day
-- **Full Date Display**: Complete date with weekday, month, and year
-
-### ⚙️ Customizable Settings
-- **Settings Drawer**: Slide-out panel with all configuration options
-- **Wallpaper Controls**: Static mode, favorites filter, download functionality
-- **Logo Upload**: Secret feature for custom branding (press "U" 3 times)
-- **Time Preferences**: Format switching with live preview
-- **Persistent Storage**: All settings saved using Chrome storage API
-
-### 🎯 User Experience
-- **Loading Animation**: Smooth loader with branded messaging
-- **Responsive Design**: Optimized for all screen sizes (desktop, tablet, mobile)
-- **Glass Morphism UI**: Modern frosted glass design elements
-- **Smooth Animations**: Fade transitions and hover effects
-- **Notification System**: Toast notifications for user feedback
-- **Modular Architecture**: Clean ES6 modules for maintainability
+### ⏰ Time & Precision
+- **Holographic Clock**: Large, high-visibility time and date display with seconds precision.
+- **Smart Greetings**: Personalized greetings based on your local time of day.
+- **Customizable Format**: Toggle between 12-hour and 24-hour formats with a single switch.
 
 ## 📁 Project Structure
 
 ```
 Invinsense_Extension/
 ├── assets/
-│   ├── images/           # Brand logos and assets
-│   │   ├── invinsense_white.png (default logo)
-│   │   └── other brand assets
-│   ├── scripts/          # Modular ES6 JavaScript
-│   │   ├── main.js              # Application entry point
-│   │   ├── config.js            # Configuration constants
-│   │   ├── state.js             # Application state management
-│   │   ├── storage.js           # Chrome storage API wrapper
-│   │   ├── wallpaper.js         # Wallpaper loading logic
-│   │   ├── clock.js             # Time and date display
-│   │   ├── tips.js              # Security tips rotation
-│   │   ├── ui.js                # UI helper functions
-│   │   ├── drawer.js            # Settings drawer management
-│   │   ├── news.js              # RSS news feed integration
-│   │   ├── likes.js             # Wallpaper like system
-│   │   ├── search.js            # Search functionality
-│   │   ├── bookmarks.js         # Bookmark management
-│   │   ├── logo-activation.js   # Secret logo upload feature
-│   │   └── utils.js             # Utility functions
+│   ├── images/               # Core brand assets and default icons
+│   ├── scripts/              # Modular ES6 JavaScript Architecture
+│   │   ├── main.js           # Application entry point & coordination
+│   │   ├── config.js         # Global constants and API endpoints
+│   │   ├── state.js          # Centralized reactive state management
+│   │   ├── storage.js        # Abstraction layer for Chrome Storage API
+│   │   ├── wallpaper.js      # Multi-source wallpaper logic
+│   │   ├── clock.js          # Reactive time and date engine
+│   │   ├── tips.js           # Security tip rotation & API handling
+│   │   ├── news.js           # RSS aggregation & priority distribution
+│   │   ├── bookmarks.js      # Chrome Bookmark API integration
+│   │   ├── recent-tabs.js    # Domain tracking & history UI
+│   │   ├── search.js         # Integrated search functionality
+│   │   ├── logo-activation.js# Secret feature handling (U-U-U)
+│   │   ├── ui.js             # UI components and interaction helpers
+│   │   ├── utils.js          # Shared utility functions
+│   │   └── likes.js          # Wallpaper favorite system
 │   └── style/
-│       └── style.css     # Complete styling and responsive design
-├── backup/               # Fallback wallpaper images (15 images)
-│   ├── image1.png
-│   ├── image2.png
-│   └── ...
-├── icons/               # Extension icons for different sizes
-│   ├── icon16.png
-│   ├── icon32.png
-│   ├── icon64.png
-│   └── icon128.png
-├── background.js        # Service worker for extension functionality
-├── index.html          # Main dashboard interface
-├── manifest.json       # Extension configuration
-└── README.md          # This file
+│       └── style.css         # Modern CSS with variables and animations
+├── backup/                   # High-resolution fallback wallpapers
+├── icons/                    # Multi-size extension icons
+├── background.js             # Service worker for background tasks & tab tracking
+├── index.html                # Main dashboard entry point
+├── manifest.json             # Extension manifest (v3)
+└── README.md                 # Documentation
 ```
 
-## 🚀 Installation
+## 🚀 Getting Started
 
-### Method 1: Developer Mode (Recommended)
-1. Clone or download this repository
-2. Open Chrome and navigate to `chrome://extensions/`
-3. Enable "Developer mode" in the top right
-4. Click "Load unpacked" and select the extension folder
-5. The Invinsense extension will appear in your extensions list
+### Installation (Developer Mode)
+1.  **Download/Clone** the repository to your local machine.
+2.  Open Chrome and navigate to `chrome://extensions/`.
+3.  Enable **"Developer mode"** in the top right corner.
+4.  Click **"Load unpacked"** and select the root folder of this project.
+5.  Open a new tab to see Invinsense in action!
 
-### Method 2: Chrome Web Store
-*Coming soon - extension will be published to Chrome Web Store*
+## 🔧 Configuration & Secrets
 
-## 🔧 Configuration
+### Secret Menus
+Invinsense hides advanced configuration to maintain a clean aesthetic:
+- **Logo/Branding Utility**: Tap the `U` key **3 times** quickly.
+- **RSS Feed Manager**: Tap the `R` key **3 times** quickly.
 
-### News Feed
-The extension uses **The Hacker News RSS feed** for cybersecurity news:
-- **Feed URL**: `https://feeds.feedburner.com/TheHackersNews`
-- **Conversion Service**: rss2json.com (handles CORS automatically)
-- **No API Key Required**: Direct RSS integration
-- **Auto-refresh**: News cached for 15 minutes
+### Wallpaper APIs
+To enable external wallpaper sources, update `assets/scripts/config.js`:
+- **Unsplash**: Set `UNSPLASH_KEY` with your developer API key.
+- **Laravel Backend**: Configure `LARAVEL_WALLPAPER_API` for custom backend integration.
 
-### Wallpaper Sources
-The extension supports multiple wallpaper sources:
+## 🎨 Design Philosophy
 
-1. **Unsplash API** (Default fallback):
-   - Get API key from [Unsplash Developers](https://unsplash.com/developers)
-   - Update `UNSPLASH_KEY` in `config.js`
+### Visual Excellence
+- **Glassmorphism**: Extensive use of `backdrop-filter: blur()` for a premium, airy feel.
+- **Micro-animations**: Subtle transitions on hover and state changes (Scale, Fade, Slide).
+- **Responsive Core**: Fluid layout adjusts from 4K monitors down to mobile viewport sizes.
+- **Inter Typography**: Uses the Inter font family for maximum readability and a modern tech aesthetic.
 
-2. **Laravel Backend** (Optional):
-   - Set up your Laravel wallpaper API endpoint
-   - Update `LARAVEL_WALLPAPER_API` in `config.js`
-   - Update `LARAVEL_TIP_API` in `config.js` for security tips
-   - Set `USE_UNSPLASH = false` to use Laravel API
+### Technical Excellence
+- **Manifest V3**: Fully compliant with the latest Chrome Extension standards.
+- **ES6 Modules**: Clean, tree-shakeable, and maintainable code structure.
+- **Lazy Loading**: Assets and widgets load progressively to ensure <1s initial dashboard render.
 
-3. **Local Images** (Always available):
-   - Backup images automatically used if APIs fail
-   - Located in `/backup/` directory
+## 🔄 Version History
 
-### Settings Panel
-Access the settings by clicking the gear icon in the bottom right:
+### Version 2.1.0 (Latest)
+- **New**: Integrated Google Search bar in the center console.
+- **New**: Recent Tabs panel with domain-based tracking and smart filtering.
+- **New**: Multi-RSS support with priority-based interleaving.
+- **Improved**: Logo configuration now supports both local files and URLs.
+- **Improved**: Enhanced storage logic for faster load times.
+- **Fixed**: Bookmark favicon resolution and transition issues.
 
-- **Static Wallpaper**: Pin current wallpaper to prevent changes
-- **Show Only Liked**: Display only your favorited wallpapers
-- **Download Wallpaper**: Save current wallpaper to your device
-- **Time Format**: Switch between 12-hour and 24-hour display
-- **Custom Logo**: Press "U" 3 times to reveal upload option (secret feature)
-
-## 🎨 Design Features
-
-### Visual Elements
-- **Modern Glass Morphism**: Frosted glass effects with backdrop blur
-- **Responsive Layout**: Adapts to desktop (1024px+), tablet (768px), and mobile (480px)
-- **Color Scheme**: Dark theme with white text and accent colors
-- **Typography**: Inter font family for clean, modern appearance
-
-### Interactive Components
-- **Heart Button**: Animated like/unlike functionality
-- **Settings Drawer**: Smooth slide-out panel with toggle switches
-- **Hover Effects**: Subtle animations on interactive elements
-- **Loading States**: Spinner animation during wallpaper loading
-
-### Accessibility
-- **ARIA Labels**: Screen reader support for all interactive elements
-- **Keyboard Navigation**: Full keyboard accessibility
-- **High Contrast**: Readable text with proper contrast ratios
-- **Responsive Text**: Scalable font sizes across devices
-
-## 🔒 Security Tips Collection
-
-The extension includes 20+ rotating security tips covering:
-- Password management and best practices
-- Multi-factor authentication
-- Phishing and social engineering awareness
-- Software updates and vulnerability management
-- Data encryption and secure transmission
-- Physical security measures
-- Network security (VPN usage, public Wi-Fi)
-- Account monitoring and access control
-
-## 🛠️ Technical Details
-
-### Technologies Used
-- **HTML5**: Semantic markup with accessibility features
-- **CSS3**: Modern styling with flexbox, grid, and animations
-- **ES6 Modules**: Modular JavaScript architecture for maintainability
-- **Chrome Extension APIs**: Storage, tabs, bookmarks, and action APIs
-- **Web APIs**: Fetch for HTTP requests, FileReader for image uploads
-- **RSS Integration**: rss2json.com service for feed conversion
-
-### Architecture
-- **Modular Design**: Separate modules for each feature (wallpaper, news, bookmarks, etc.)
-- **State Management**: Centralized state in `state.js`
-- **Storage Abstraction**: Chrome storage wrapper in `storage.js`
-- **Event-driven**: Clean separation of concerns with event handlers
-
-### Browser Compatibility
-- **Chrome**: Full support (Manifest V3)
-- **Edge**: Compatible with Chromium-based Edge
-- **Other Browsers**: May require manifest modifications
-
-### Performance Optimizations
-- **Image Preloading**: Ensures smooth wallpaper transitions
-- **Lazy Loading**: Efficient resource management
-- **Caching**: Chrome storage for settings persistence, 15-min news cache
-- **Fallback System**: Multiple layers prevent loading failures
-- **Base64 Encoding**: Custom logos stored as data URIs
-
-## 📱 Responsive Breakpoints
-
-- **Desktop (1024px+)**: Full feature set with large time display
-- **Tablet (768px)**: Optimized layout with adjusted font sizes
-- **Mobile (480px)**: Compact design with full-width drawer
-
-## 🔄 Update History
-
-### Version 2.0.0 (Latest)
-- **Dynamic Logo Upload**: Secret feature activated by pressing "U" 3 times
-- **RSS News Integration**: Live cybersecurity news from The Hacker News
-- **Bookmark Improvements**: Persistent dock that stays open until toggled
-- **Modular Architecture**: Refactored to ES6 modules for better maintainability
-- **Enhanced Storage**: Base64 logo storage, improved settings persistence
-- **Removed Dependencies**: No more newsdata.io API, direct RSS integration
+### Version 2.0.0
+- Refactored core to ES6 Modules.
+- Implemented Glassmorphism UI design system.
+- Added secret activation triggers for advanced features.
+- Migrated to Manifest V3.
 
 ### Version 1.0.0
-- Initial release with core dashboard functionality
-- Dynamic wallpaper system with multiple sources
-- Security tips rotation system
-- Settings panel with customization options
-- Responsive design for all devices
-- Like/favorite system for wallpapers
+- Initial release with core wallpaper and security tip functionality.
 
 ## 🤝 Contributing
 
@@ -266,4 +166,4 @@ For support, feature requests, or bug reports:
 
 ---
 
-**Invinsense Extension** - Transforming your browsing experience with security awareness and beautiful design.
+**Invinsense Dashboard** - Elevating your browsing experience with security and style.

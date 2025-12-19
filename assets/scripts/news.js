@@ -21,7 +21,6 @@ export function initNewsDrawer() {
     const overlay = document.getElementById("drawer-overlay");
 
     if (!drawer || !toggle || !close || !overlay) {
-        console.warn("News drawer elements not found");
         return;
     }
 
@@ -169,7 +168,7 @@ function loadSavedFeeds() {
             }
         }
     } catch (error) {
-        console.error("Error loading saved feeds:", error);
+        console.error(error);
     }
 }
 
@@ -225,7 +224,7 @@ function getConfiguredFeeds() {
             return feeds.filter(url => url && url.trim());
         }
     } catch (error) {
-        console.error("Error reading feeds:", error);
+        console.error(error);
     }
     return [DEFAULT_RSS_FEED];
 }
@@ -257,7 +256,7 @@ async function loadNews() {
             fetch(`${RSS_TO_JSON_BASE}${encodeURIComponent(feedUrl)}`)
                 .then(res => res.json())
                 .catch(err => {
-                    console.error(`Failed to fetch ${feedUrl}:`, err);
+                    console.error(`${feedUrl}:`, err);
                     return null;
                 })
         );
@@ -301,7 +300,7 @@ async function loadNews() {
         renderNewsItems();
 
     } catch (error) {
-        console.error("RSS feed fetch error:", error);
+        console.error(error);
         container.innerHTML = `<div style="text-align:center; padding:20px; color:#ff6b6b;">Yet to Configure the RSS Feeds </div>`;
     }
 }

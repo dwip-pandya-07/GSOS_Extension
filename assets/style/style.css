@@ -1618,3 +1618,123 @@ input:checked+.toggle-slider:hover {
 .logo-url-btn svg {
   flex-shrink: 0;
 }
+
+/* ===== RECENT TABS FLOATING PANEL ===== */
+.recent-tabs-panel {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1500;
+  display: flex;
+  justify-content: center;
+  width: auto;
+  max-width: 90vw;
+  pointer-events: none;
+}
+
+.recent-tabs-list {
+  display: flex;
+  gap: 12px;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+  pointer-events: auto;
+  overflow-x: auto;
+  max-width: 100%;
+  scrollbar-width: none;
+  animation: slideRecentTabs 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.recent-tabs-list::-webkit-scrollbar {
+  display: none;
+}
+
+.recent-tab-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 14px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
+  min-width: 140px;
+  max-width: 220px;
+}
+
+.recent-tab-item:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+.recent-tab-item:active {
+  transform: translateY(-1px);
+}
+
+.recent-tab-favicon-wrapper {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  padding: 4px;
+}
+
+.recent-tab-favicon {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.recent-tab-info {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.recent-tab-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2;
+}
+
+.recent-tab-domain {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.4);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 1px;
+}
+
+.recent-tab-empty {
+  padding: 8px 24px;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 13px;
+  font-style: italic;
+}
+
+@keyframes slideRecentTabs {
+  from {
+    transform: translateY(-60px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
