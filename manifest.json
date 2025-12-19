@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Invensense",
-  "version": "1.0.0",
+  "version": "2.1.0",
   "description": "Invensense Dashboard - Your personalized new tab with dynamic wallpapers, cybersecurity news, bookmarks, and security tips",
   "permissions": [
     "storage",
