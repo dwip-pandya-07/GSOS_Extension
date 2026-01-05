@@ -168,8 +168,9 @@ body {
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px);
   border-left: 1px solid rgba(255, 255, 255, 0.15);
-  z-index: 1001;
+  z-index: 2000;
   transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+
   overflow-y: auto;
   box-shadow: -5px 0 30px rgba(0, 0, 0, 0.5);
 }
@@ -401,8 +402,9 @@ input:checked+.toggle-slider:hover {
   background: rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
-  z-index: 1000;
+  z-index: 1999;
   opacity: 0;
+
   visibility: hidden;
   transition: opacity 0.3s ease, visibility 0.3s ease;
 }
@@ -1655,6 +1657,7 @@ input:checked+.toggle-slider:hover {
 }
 
 .recent-tab-item {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -1667,6 +1670,34 @@ input:checked+.toggle-slider:hover {
   white-space: nowrap;
   min-width: 140px;
   max-width: 220px;
+}
+
+.recent-tab-close {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 20px;
+  height: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 50%;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  transition: all 0.2s ease;
+  z-index: 2;
+}
+
+.recent-tab-item:hover .recent-tab-close {
+  opacity: 1;
+}
+
+.recent-tab-close:hover {
+  background: rgba(244, 67, 54, 0.6);
+  transform: scale(1.1);
 }
 
 .recent-tab-item:hover {
@@ -1733,6 +1764,7 @@ input:checked+.toggle-slider:hover {
     transform: translateY(-60px);
     opacity: 0;
   }
+
   to {
     transform: translateY(0);
     opacity: 1;

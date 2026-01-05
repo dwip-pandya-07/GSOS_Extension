@@ -11,6 +11,8 @@ import { initNewsDrawer } from "./news.js";
 import { updateMainLikeButton, updateOnlyLikedToggleState } from "./likes.js";
 import { initLogoActivation } from "./logo-activation.js";
 import { initRecentTabs } from "./recent-tabs.js";
+import { initShortcuts } from "./shortcuts.js";
+
 
 async function init() {
     // Load saved settings
@@ -32,7 +34,9 @@ async function init() {
     initBookmarks();
     initLogoActivation();
     initRecentTabs();
+    initShortcuts();
     updateMainLikeButton();
+
     updateOnlyLikedToggleState();
 }
 
