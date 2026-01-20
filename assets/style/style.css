@@ -925,6 +925,7 @@ input:checked+.toggle-slider:hover {
   font-weight: 300;
   display: -webkit-box;
   -webkit-line-clamp: 3;
+  line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -1659,45 +1660,101 @@ input:checked+.toggle-slider:hover {
 .recent-tab-item {
   position: relative;
   display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 8px 16px;
+  flex-direction: column;
+  padding: 0;
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.05);
   border-radius: 14px;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  white-space: nowrap;
-  min-width: 140px;
-  max-width: 220px;
+  min-width: 160px;
+  max-width: 280px;
+  overflow: hidden;
 }
 
+.recent-tab-main {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  width: 100%;
+}
+
+.recent-tab-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.recent-tab-item:hover .recent-tab-actions {
+  opacity: 1;
+}
+
+.recent-tab-history-toggle,
 .recent-tab-close {
-  position: absolute;
-  top: 5px;
-  right: 5px;
-  width: 20px;
-  height: 20px;
+  width: 24px;
+  height: 24px;
   background: rgba(255, 255, 255, 0.1);
   border: none;
-  border-radius: 50%;
+  border-radius: 6px;
   color: white;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  opacity: 0;
   transition: all 0.2s ease;
-  z-index: 2;
 }
 
-.recent-tab-item:hover .recent-tab-close {
-  opacity: 1;
+.recent-tab-history-toggle:hover {
+  background: rgba(255, 255, 255, 0.2);
 }
 
 .recent-tab-close:hover {
   background: rgba(244, 67, 54, 0.6);
-  transform: scale(1.1);
+}
+
+.recent-tab-history-panel {
+  background: rgba(0, 0, 0, 0.2);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  max-height: 150px;
+  overflow-y: auto;
+  width: 100%;
+}
+
+.history-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.history-item {
+  padding: 8px 16px 8px 36px;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.7);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  position: relative;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.history-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.history-item::before {
+  content: "";
+  position: absolute;
+  left: 20px;
+  top: 50%;
+  width: 4px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  transform: translateY(-50%);
 }
 
 .recent-tab-item:hover {
@@ -1733,6 +1790,7 @@ input:checked+.toggle-slider:hover {
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  max-width: 140px;
 }
 
 .recent-tab-title {

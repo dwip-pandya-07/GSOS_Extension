@@ -19,7 +19,7 @@ export async function loadTip() {
 
         const data = await res.json();
 
-        if (data.tip) {
+        if (data && typeof data.tip === 'string') {
             document.getElementById("tip").textContent = `"${data.tip}"`;
         } else {
             loadFallbackTip();

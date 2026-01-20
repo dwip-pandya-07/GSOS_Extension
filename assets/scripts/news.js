@@ -74,42 +74,92 @@ function initRSSFeedsUI() {
     rssFeedsSection.style.flexDirection = "column";
     rssFeedsSection.style.alignItems = "stretch";
 
-    rssFeedsSection.innerHTML = `
-        <div class="drawer-item-header" style="width: 100%;">
-            <div class="drawer-item-icon">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M4 11a9 9 0 0 1 9 9"></path>
-                    <path d="M4 4a16 16 0 0 1 16 16"></path>
-                    <circle cx="5" cy="19" r="1"></circle>
-                </svg>
-            </div>
-            <div class="drawer-item-info">
-                <h4>RSS Feeds Configuration</h4>
-                <p>Add up to 10 feeds (priority order)</p>
-            </div>
-        </div>
-        <div class="rss-feeds-list" style="margin-top: 16px;">
-            ${Array.from({ length: 10 }, (_, i) => `
-                <div class="rss-feed-input-wrapper" style="margin-bottom: 8px;">
-                    <input 
-                        type="url" 
-                        id="rss-feed-${i + 1}" 
-                        class="rss-feed-input"
-                        placeholder="Feed ${i + 1} URL (Priority: ${10 - i})"
-                        style="width: 100%; padding: 10px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: white; font-size: 13px;"
-                    />
-                </div>
-            `).join('')}
-        </div>
-        <div style="margin-top: 12px; display: flex; gap: 8px;">
-            <button id="save-rss-feeds" style="flex: 1; padding: 10px; background: linear-gradient(135deg, #4caf50 0%, #45a049 100%); border: none; border-radius: 8px; color: white; font-weight: 600; cursor: pointer; font-size: 13px;">
-                Save Feeds
-            </button>
-            <button id="reset-rss-feeds" style="flex: 1; padding: 10px; background: rgba(244, 67, 54, 0.2); border: 1px solid rgba(244, 67, 54, 0.3); border-radius: 8px; color: white; font-weight: 600; cursor: pointer; font-size: 13px;">
-                Reset
-            </button>
+    // Create header
+    const header = document.createElement("div");
+    header.className = "drawer-item-header";
+    header.style.width = "100%";
+    header.innerHTML = `
+        <div class="drawer-item-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 11a9 9 0 0 1 9 9"></path>
+                <path d="M4 4a16 16 0 0 1 16 16"></path>
+                <circle cx="5" cy="19" r="1"></circle>
+            </svg>
         </div>
     `;
+    const headerInfo = document.createElement("div");
+    headerInfo.className = "drawer-item-info";
+    const headerTitle = document.createElement("h4");
+    headerTitle.textContent = "RSS Feeds Configuration";
+    const headerDesc = document.createElement("p");
+    headerDesc.textContent = "Add up to 10 feeds (priority order)";
+    headerInfo.appendChild(headerTitle);
+    headerInfo.appendChild(headerDesc);
+    header.appendChild(headerInfo);
+
+    // Create inputs list
+    const feedsList = document.createElement("div");
+    feedsList.className = "rss-feeds-list";
+    feedsList.style.marginTop = "16px";
+
+    for (let i = 0; i < 10; i++) {
+        const wrapper = document.createElement("div");
+        wrapper.className = "rss-feed-input-wrapper";
+        wrapper.style.marginBottom = "8px";
+        const input = document.createElement("input");
+        input.type = "url";
+        input.id = `rss-feed-${i + 1}`;
+        input.className = "rss-feed-input";
+        input.placeholder = `Feed ${i + 1} URL (Priority: ${10 - i})`;
+        input.style.width = "100%";
+        input.style.padding = "10px";
+        input.style.background = "rgba(255,255,255,0.05)";
+        input.style.border = "1px solid rgba(255,255,255,0.1)";
+        input.style.borderRadius = "8px";
+        input.style.color = "white";
+        input.style.fontSize = "13px";
+        wrapper.appendChild(input);
+        feedsList.appendChild(wrapper);
+    }
+
+    // Create buttons
+    const btnContainer = document.createElement("div");
+    btnContainer.style.marginTop = "12px";
+    btnContainer.style.display = "flex";
+    btnContainer.style.gap = "8px";
+
+    const saveBtn = document.createElement("button");
+    saveBtn.id = "save-rss-feeds";
+    saveBtn.style.flex = "1";
+    saveBtn.style.padding = "10px";
+    saveBtn.style.background = "linear-gradient(135deg, #4caf50 0%, #45a049 100%)";
+    saveBtn.style.border = "none";
+    saveBtn.style.borderRadius = "8px";
+    saveBtn.style.color = "white";
+    saveBtn.style.fontWeight = "600";
+    saveBtn.style.cursor = "pointer";
+    saveBtn.style.fontSize = "13px";
+    saveBtn.textContent = "Save Feeds";
+
+    const resetBtn = document.createElement("button");
+    resetBtn.id = "reset-rss-feeds";
+    resetBtn.style.flex = "1";
+    resetBtn.style.padding = "10px";
+    resetBtn.style.background = "rgba(244, 67, 54, 0.2)";
+    resetBtn.style.border = "1px solid rgba(244, 67, 54, 0.3)";
+    resetBtn.style.borderRadius = "8px";
+    resetBtn.style.color = "white";
+    resetBtn.style.fontWeight = "600";
+    resetBtn.style.cursor = "pointer";
+    resetBtn.style.fontSize = "13px";
+    resetBtn.textContent = "Reset";
+
+    btnContainer.appendChild(saveBtn);
+    btnContainer.appendChild(resetBtn);
+
+    rssFeedsSection.appendChild(header);
+    rssFeedsSection.appendChild(feedsList);
+    rssFeedsSection.appendChild(btnContainer);
 
     // Insert before the last item (or at the end)
     drawerContent.appendChild(rssFeedsSection);
@@ -150,10 +200,23 @@ function setupRSSFeedsReveal() {
 }
 
 function loadSavedFeeds() {
-    try {
-        const savedFeeds = localStorage.getItem("rss-feeds");
-        if (savedFeeds) {
-            const feeds = JSON.parse(savedFeeds);
+    const legacySaved = localStorage.getItem("rss-feeds");
+
+    chrome.storage.local.get(['rss_feeds'], (result) => {
+        let feeds = [];
+        if (result.rss_feeds) {
+            feeds = result.rss_feeds;
+        } else if (legacySaved) {
+            try {
+                feeds = JSON.parse(legacySaved);
+                chrome.storage.local.set({ rss_feeds: feeds });
+                localStorage.removeItem("rss-feeds");
+            } catch (e) {
+                console.error("Migration error", e);
+            }
+        }
+
+        if (feeds.length > 0) {
             feeds.forEach((url, index) => {
                 const input = document.getElementById(`rss-feed-${index + 1}`);
                 if (input && url) {
@@ -161,15 +224,12 @@ function loadSavedFeeds() {
                 }
             });
         } else {
-            // Set default feed in first position
             const firstInput = document.getElementById("rss-feed-1");
             if (firstInput) {
                 firstInput.value = DEFAULT_RSS_FEED;
             }
         }
-    } catch (error) {
-        console.error(error);
-    }
+    });
 }
 
 function saveRSSFeeds() {
@@ -183,50 +243,53 @@ function saveRSSFeeds() {
         }
     }
 
-    localStorage.setItem("rss-feeds", JSON.stringify(feeds));
-
-    // Clear cache to force reload with new feeds
-    newsData = [];
-    lastFetchTime = 0;
-
-    alert("RSS Feeds saved successfully! News will reload on next open.");
-
-    // Close the settings drawer
-    closeSettingsDrawer();
+    chrome.storage.local.set({ rss_feeds: feeds }, () => {
+        // Clear cache to force reload with new feeds
+        newsData = [];
+        lastFetchTime = 0;
+        alert("RSS Feeds saved successfully! News will reload on next open.");
+        closeSettingsDrawer();
+    });
 }
 
 function resetRSSFeeds() {
     if (confirm("Reset all RSS feeds to default?")) {
-        localStorage.removeItem("rss-feeds");
-
-        // Reset inputs
-        for (let i = 1; i <= 10; i++) {
-            const input = document.getElementById(`rss-feed-${i}`);
-            if (input) {
-                input.value = i === 1 ? DEFAULT_RSS_FEED : "";
+        chrome.storage.local.remove("rss_feeds", () => {
+            // Reset inputs
+            for (let i = 1; i <= 10; i++) {
+                const input = document.getElementById(`rss-feed-${i}`);
+                if (input) {
+                    input.value = i === 1 ? DEFAULT_RSS_FEED : "";
+                }
             }
-        }
 
-        // Clear cache
-        newsData = [];
-        lastFetchTime = 0;
-
-        // Close the settings drawer
-        closeSettingsDrawer();
+            // Clear cache
+            newsData = [];
+            lastFetchTime = 0;
+            closeSettingsDrawer();
+        });
     }
 }
 
-function getConfiguredFeeds() {
-    try {
-        const savedFeeds = localStorage.getItem("rss-feeds");
-        if (savedFeeds) {
-            const feeds = JSON.parse(savedFeeds);
-            return feeds.filter(url => url && url.trim());
-        }
-    } catch (error) {
-        console.error(error);
-    }
-    return [DEFAULT_RSS_FEED];
+async function getConfiguredFeeds() {
+    return new Promise((resolve) => {
+        chrome.storage.local.get(['rss_feeds'], (result) => {
+            if (result.rss_feeds) {
+                resolve(result.rss_feeds.filter(url => url && url.trim()));
+            } else {
+                // Check legacy as fallback for immediate use before loadSavedFeeds runs
+                const legacySaved = localStorage.getItem("rss-feeds");
+                if (legacySaved) {
+                    try {
+                        const feeds = JSON.parse(legacySaved);
+                        resolve(feeds.filter(url => url && url.trim()));
+                        return;
+                    } catch (e) { }
+                }
+                resolve([DEFAULT_RSS_FEED]);
+            }
+        });
+    });
 }
 
 function closeSettingsDrawer() {
@@ -246,9 +309,15 @@ async function loadNews() {
     const container = document.getElementById("news-content");
     if (!container) return;
 
-    container.innerHTML = '<div style="text-align:center; padding:20px; color:#fff;">Loading news...</div>';
+    container.textContent = "";
+    const loadingDiv = document.createElement("div");
+    loadingDiv.style.textAlign = "center";
+    loadingDiv.style.padding = "20px";
+    loadingDiv.style.color = "#fff";
+    loadingDiv.textContent = "Loading news...";
+    container.appendChild(loadingDiv);
 
-    const feeds = getConfiguredFeeds();
+    const feeds = await getConfiguredFeeds();
 
     try {
         // Fetch all feeds in parallel
@@ -301,7 +370,13 @@ async function loadNews() {
 
     } catch (error) {
         console.error(error);
-        container.innerHTML = `<div style="text-align:center; padding:20px; color:#ff6b6b;">Yet to Configure the RSS Feeds </div>`;
+        container.textContent = "";
+        const errorDiv = document.createElement("div");
+        errorDiv.style.textAlign = "center";
+        errorDiv.style.padding = "20px";
+        errorDiv.style.color = "#ff6b6b";
+        errorDiv.textContent = "Yet to Configure the RSS Feeds ";
+        container.appendChild(errorDiv);
     }
 }
 
@@ -387,12 +462,18 @@ function renderNewsItems() {
     if (!container) return;
 
     if (newsData.length === 0) {
-        container.innerHTML = '<div style="text-align:center; padding:20px; color:#fff;">No news available.</div>';
+        container.textContent = "";
+        const emptyDiv = document.createElement("div");
+        emptyDiv.style.textAlign = "center";
+        emptyDiv.style.padding = "20px";
+        emptyDiv.style.color = "#fff";
+        emptyDiv.textContent = "No news available.";
+        container.appendChild(emptyDiv);
         return;
     }
 
     if (displayedCount === 0) {
-        container.innerHTML = "";
+        container.textContent = "";
     }
 
     const startIndex = displayedCount;
@@ -408,24 +489,37 @@ function renderNewsItems() {
         card.style.textDecoration = "none";
         card.style.display = "flex";
 
-        let iconHtml = '<div class="news-icon">📰</div>';
+        const iconDiv = document.createElement("div");
+        iconDiv.className = "news-icon";
         if (item.icon) {
-            iconHtml = `<div class="news-icon" style="background-image: url('${item.icon}'); background-size: cover; background-position: center;"></div>`;
+            iconDiv.style.backgroundImage = `url('${item.icon}')`;
+            iconDiv.style.backgroundSize = "cover";
+            iconDiv.style.backgroundPosition = "center";
+        } else {
+            iconDiv.textContent = "📰";
         }
 
-        // Add feed indicator badge
-        const feedBadge = `<span style="font-size: 10px; background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px; margin-left: 8px;">Feed ${item.feedIndex + 1}</span>`;
+        const infoDiv = document.createElement("div");
+        infoDiv.className = "news-info";
 
-        card.innerHTML = `
-            ${iconHtml}
-            <div class="news-info">
-                <h4 class="news-title">${item.title}</h4>
-                <p class="news-summary">${item.summary}</p>
-                <div class="news-date">
-                    ${item.date}
-                </div>
-            </div>
-        `;
+        const titleH4 = document.createElement("h4");
+        titleH4.className = "news-title";
+        titleH4.textContent = item.title;
+
+        const summaryP = document.createElement("p");
+        summaryP.className = "news-summary";
+        summaryP.textContent = item.summary;
+
+        const dateDiv = document.createElement("div");
+        dateDiv.className = "news-date";
+        dateDiv.textContent = item.date;
+
+        infoDiv.appendChild(titleH4);
+        infoDiv.appendChild(summaryP);
+        infoDiv.appendChild(dateDiv);
+
+        card.appendChild(iconDiv);
+        card.appendChild(infoDiv);
 
         container.appendChild(card);
     });

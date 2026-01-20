@@ -44,7 +44,7 @@ const SECURITY_TIPS = [
 
 const BACKUP_IMAGES = Array.from(
     { length: 15 },
-    (_, i) => `backup/image${i + 1}.png`
+    (_, i) => `backup/${i + 1}.png`
 );
 
 export { CONFIG, BRAND_LOGOS, SECURITY_TIPS, BACKUP_IMAGES };

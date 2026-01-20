@@ -72,11 +72,18 @@ async function loadFromLaravel() {
         if (!res.ok) throw new Error("Laravel API error");
 
         const json = await res.json();
-        if (!json.status || json.count === 0) throw new Error("No wallpapers");
+        if (!json || json.status !== "ok" || !Array.isArray(json.data) || json.count === 0) {
+            throw new Error("Invalid wallpaper data");
+        }
 
         const wallpapers = json.data;
         const selected = wallpapers[Math.floor(Math.random() * wallpapers.length)];
-        preloadAndSet(selected.url, selected.id);
+
+        if (selected && typeof selected.url === 'string' && selected.url.startsWith('http')) {
+            preloadAndSet(selected.url, selected.id);
+        } else {
+            throw new Error("Invalid wallpaper URL");
+        }
     } catch (err) {
         loadBackupWallpaper();
     }

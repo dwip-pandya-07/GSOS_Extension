@@ -179,8 +179,8 @@ export function initDrawer() {
             }
 
             // Show loading state
-            const originalText = loadUrlBtn.innerHTML;
-            loadUrlBtn.innerHTML = "Loading...";
+            const originalContent = Array.from(loadUrlBtn.childNodes);
+            loadUrlBtn.textContent = "Loading...";
             loadUrlBtn.disabled = true;
 
             const img = new Image();
@@ -188,12 +188,14 @@ export function initDrawer() {
             img.onload = () => {
                 setCustomLogo(url);
                 showNotification("Logo loaded from URL!", "success");
-                loadUrlBtn.innerHTML = originalText;
+                loadUrlBtn.textContent = "";
+                originalContent.forEach(node => loadUrlBtn.appendChild(node));
                 loadUrlBtn.disabled = false;
             };
             img.onerror = () => {
                 showNotification("Failed to load image. Check URL or CORS.", "error");
-                loadUrlBtn.innerHTML = originalText;
+                loadUrlBtn.textContent = "";
+                originalContent.forEach(node => loadUrlBtn.appendChild(node));
                 loadUrlBtn.disabled = false;
             };
             img.src = url;

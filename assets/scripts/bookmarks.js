@@ -67,7 +67,11 @@ async function loadBookmarksForModal() {
     const listContainer = document.getElementById("bookmarks-list");
     if (!listContainer) return;
 
-    listContainer.innerHTML = '<div class="loading-text">Loading bookmarks...</div>';
+    listContainer.textContent = "";
+    const loadingDiv = document.createElement("div");
+    loadingDiv.className = "loading-text";
+    loadingDiv.textContent = "Loading bookmarks...";
+    listContainer.appendChild(loadingDiv);
 
     // Fetch bookmarks
     if (chrome && chrome.bookmarks && chrome.bookmarks.getTree) {
@@ -99,10 +103,13 @@ function parseBookmarks(nodes) {
 }
 
 function renderModalList(container) {
-    container.innerHTML = "";
+    container.textContent = "";
 
     if (allBookmarks.length === 0) {
-        container.innerHTML = '<div class="empty-text">No bookmarks found.</div>';
+        const emptyDiv = document.createElement("div");
+        emptyDiv.className = "empty-text";
+        emptyDiv.textContent = "No bookmarks found.";
+        container.appendChild(emptyDiv);
         return;
     }
 
@@ -168,20 +175,35 @@ function saveSelection() {
     });
 
     selectedBookmarks = newSelection;
-    localStorage.setItem("gsos_bookmarks", JSON.stringify(selectedBookmarks));
-    renderDock();
+    chrome.storage.local.set({ gsos_bookmarks: selectedBookmarks }, () => {
+        renderDock();
+    });
 }
 
 function loadSavedBookmarks() {
-    const saved = localStorage.getItem("gsos_bookmarks");
-    if (saved) {
-        try {
-            selectedBookmarks = JSON.parse(saved);
-        } catch (e) {
+    // Check localStorage first for migration
+    const legacySaved = localStorage.getItem("gsos_bookmarks");
+
+    chrome.storage.local.get(['gsos_bookmarks'], (result) => {
+        if (result.gsos_bookmarks) {
+            selectedBookmarks = result.gsos_bookmarks;
+            renderDock();
+        } else if (legacySaved) {
+            // Migrate
+            try {
+                selectedBookmarks = JSON.parse(legacySaved);
+                chrome.storage.local.set({ gsos_bookmarks: selectedBookmarks });
+                localStorage.removeItem("gsos_bookmarks");
+                renderDock();
+            } catch (e) {
+                selectedBookmarks = [];
+                renderDock();
+            }
+        } else {
             selectedBookmarks = [];
+            renderDock();
         }
-    }
-    renderDock();
+    });
 }
 
 function renderDock() {
@@ -215,18 +237,16 @@ function renderDock() {
         // Check if URL has a custom icon mapping
         if (CUSTOM_ICONS[bm.url]) {
             img.src = CUSTOM_ICONS[bm.url];
-            // Fallback to Google favicon if custom icon fails to load
+            // Fallback to Chrome favicon if custom icon fails to load
             img.onerror = () => {
-                const iconUrl = `https://www.google.com/s2/favicons?sz=64&domain_url=${encodeURIComponent(bm.url)}`;
-                img.src = iconUrl;
+                img.src = `chrome-extension://_favicon/?pageUrl=${encodeURIComponent(bm.url)}&size=64`;
                 img.onerror = () => {
                     img.src = "assets/images/default-bookmark.png";
                 };
             };
         } else {
-            // Use Google Favicon service for URLs without custom icons
-            const iconUrl = `https://www.google.com/s2/favicons?sz=64&domain_url=${encodeURIComponent(bm.url)}`;
-            img.src = iconUrl;
+            // Use Chrome's native favicon service
+            img.src = `chrome-extension://_favicon/?pageUrl=${encodeURIComponent(bm.url)}&size=64`;
             img.onerror = () => {
                 img.src = "assets/images/default-bookmark.png";
             };
@@ -239,7 +259,9 @@ function renderDock() {
     // Add "Manage/Add" button at the end
     const addBtn = document.createElement("div");
     addBtn.className = "dock-item dock-add-btn";
-    addBtn.innerHTML = "<span>+</span>";
+    const span = document.createElement("span");
+    span.textContent = "+";
+    addBtn.appendChild(span);
     addBtn.title = "Manage Bookmarks";
     addBtn.onclick = openModal;
 

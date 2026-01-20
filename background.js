@@ -1,4 +1,5 @@
-const MAX_RECENT_TABS = 10;
+const MAX_RECENT_DOMAINS = 10;
+const MAX_PAGES_PER_DOMAIN = 15;
 
 // --------------------
 // Extension Icon Click
@@ -12,8 +13,20 @@ chrome.action.onClicked.addListener(async (tab) => {
 });
 
 // --------------------
-// Helper: Transitional URL Detection
+// Helper: Normalization & Transitional
 // --------------------
+function normalizeUrl(url) {
+    try {
+        const u = new URL(url);
+        // Normalize: protocol + host + pathname (exclude hash/search for grouping pages)
+        // Note: keeping search params for now as meaningful unique pages (e.g. search queries)
+        // But removing hash/fragment.
+        return u.origin + u.pathname + u.search;
+    } catch {
+        return url;
+    }
+}
+
 function isTransitionalUrl(url) {
     try {
         const u = new URL(url);
@@ -43,7 +56,7 @@ function isTransitionalUrl(url) {
 }
 
 // --------------------
-// Recent Tabs Tracking (Domain-based)
+// Recent Tabs Tracking (Domain-based with Page History)
 // --------------------
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     if (
@@ -55,6 +68,8 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     const dashboardUrl = chrome.runtime.getURL("index.html");
     if (tab.url === dashboardUrl) return;
 
+    if (isTransitionalUrl(tab.url)) return;
+
     let urlObj;
     try {
         urlObj = new URL(tab.url);
@@ -63,36 +78,64 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     }
 
     const hostname = urlObj.hostname;
-
-    const pageData = {
-        url: tab.url,
-        title: tab.title || hostname,
-        favicon: tab.favIconUrl || '',
-        timestamp: Date.now(),
-        hostname,
-        isTransitional: isTransitionalUrl(tab.url)
-    };
+    const normalizedUrl = normalizeUrl(tab.url);
 
     chrome.storage.local.get(['recentTabs'], (result) => {
         let recentTabs = result.recentTabs || [];
 
-        const existingIndex = recentTabs.findIndex(
+        // Find domain grouping
+        const domainIndex = recentTabs.findIndex(
             item => item.hostname === hostname
         );
 
-        if (existingIndex !== -1) {
-            const existing = recentTabs[existingIndex];
+        const pageData = {
+            url: tab.url,
+            normalizedUrl: normalizedUrl,
+            title: tab.title || hostname,
+            timestamp: Date.now()
+        };
 
-            // Replace transitional OR always update for same domain
-            recentTabs.splice(existingIndex, 1);
+        if (domainIndex !== -1) {
+            const domainEntry = recentTabs[domainIndex];
+
+            // Update domain metadata
+            domainEntry.favicon = tab.favIconUrl || domainEntry.favicon || '';
+            domainEntry.lastVisited = Date.now();
+
+            // Update page history within domain
+            const existingPageIndex = domainEntry.pages.findIndex(
+                p => p.normalizedUrl === normalizedUrl
+            );
+
+            if (existingPageIndex !== -1) {
+                // Update existing page
+                domainEntry.pages.splice(existingPageIndex, 1);
+            }
+
+            domainEntry.pages.unshift(pageData);
+
+            // Limit pages per domain
+            if (domainEntry.pages.length > MAX_PAGES_PER_DOMAIN) {
+                domainEntry.pages = domainEntry.pages.slice(0, MAX_PAGES_PER_DOMAIN);
+            }
+
+            // Move domain to top (most recent domain)
+            recentTabs.splice(domainIndex, 1);
+            recentTabs.unshift(domainEntry);
+        } else {
+            // New domain
+            const newDomain = {
+                hostname: hostname,
+                favicon: tab.favIconUrl || '',
+                lastVisited: Date.now(),
+                pages: [pageData]
+            };
+            recentTabs.unshift(newDomain);
         }
 
-        // Add updated entry to top
-        recentTabs.unshift(pageData);
-
-        // Limit size
-        if (recentTabs.length > MAX_RECENT_TABS) {
-            recentTabs = recentTabs.slice(0, MAX_RECENT_TABS);
+        // Limit total domains
+        if (recentTabs.length > MAX_RECENT_DOMAINS) {
+            recentTabs = recentTabs.slice(0, MAX_RECENT_DOMAINS);
         }
 
         chrome.storage.local.set({ recentTabs });
