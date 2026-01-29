@@ -8,7 +8,6 @@ import { initSearch } from "./search.js";
 import { initBookmarks } from "./bookmarks.js";
 import { initDrawer } from "./drawer.js";
 import { initNewsDrawer } from "./news.js";
-import { updateMainLikeButton, updateOnlyLikedToggleState } from "./likes.js";
 import { initLogoActivation } from "./logo-activation.js";
 import { initRecentTabs } from "./recent-tabs.js";
 import { initShortcuts } from "./shortcuts.js";
@@ -37,9 +36,6 @@ async function init() {
     initRecentTabs();
     initShortcuts();
     initHelp();
-    updateMainLikeButton();
-
-    updateOnlyLikedToggleState();
 }
 
 // Start the application

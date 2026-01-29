@@ -3,7 +3,6 @@ import State from "./state.js";
 import { showNotification } from "./utils.js";
 import { saveSettingsToStorage } from "./storage.js";
 import { loadWallpaper, downloadWallpaper } from "./wallpaper.js";
-import { toggleLikeWallpaper } from "./likes.js";
 import { updateClock } from "./clock.js";
 import { BRAND_LOGOS } from "./config.js";
 
@@ -33,41 +32,13 @@ export function initDrawer() {
             if (e.target.checked && State.currentWallpaperUrl) {
                 State.isStaticWallpaper = true;
                 State.staticWallpaperUrl = State.currentWallpaperUrl;
-                State.staticWallpaperId = State.currentWallpaperId;
                 showNotification("Wallpaper pinned", "success");
             } else {
                 State.isStaticWallpaper = false;
-                State.staticWallpaperUrl = State.staticWallpaperId = null;
+                State.staticWallpaperUrl = null;
                 showNotification("Static wallpaper disabled", "info");
                 loadWallpaper();
             }
-            saveSettingsToStorage();
-        };
-    }
-
-    // Like button
-    const likeBtn = document.getElementById("main-like-button");
-    if (likeBtn) {
-        likeBtn.onclick = toggleLikeWallpaper;
-    }
-
-    // Only liked toggle
-    const onlyToggle = document.getElementById("only-liked-toggle");
-    if (onlyToggle) {
-        onlyToggle.onchange = (e) => {
-            if (State.likedWallpapers.length === 0) {
-                e.target.checked = false;
-                showNotification("Like some wallpapers first!", "warning");
-                return;
-            }
-            State.onlyShowLiked = e.target.checked;
-            showNotification(
-                State.onlyShowLiked
-                    ? "Showing only favorites"
-                    : "Showing all wallpapers",
-                "success"
-            );
-            loadWallpaper();
             saveSettingsToStorage();
         };
     }
@@ -228,15 +199,6 @@ export function initDrawer() {
             // Clear inputs
             if (logoFileInput) logoFileInput.value = "";
             if (logoUrlInput) logoUrlInput.value = "";
-
-            // Note: We keeping the section visible as user might want to upload another one immediately
-            // If the requirement is to hide the section completely on remove, uncomment below:
-            /*
-            const logoUploadSection = document.getElementById("logo-upload-section");
-            if (logoUploadSection) {
-                logoUploadSection.style.display = "none";
-            }
-            */
 
             showNotification("Custom logo removed", "info");
         };
