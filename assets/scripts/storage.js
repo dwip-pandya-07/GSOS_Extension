@@ -1,4 +1,3 @@
-// storage.js - Chrome Storage Management
 import State from "./state.js";
 
 export async function loadSettingsFromStorage() {

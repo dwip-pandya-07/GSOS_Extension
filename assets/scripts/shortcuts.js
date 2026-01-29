@@ -1,8 +1,5 @@
-// shortcuts.js - Global Keyboard Shortcuts
-
 export function initShortcuts() {
     document.addEventListener('keydown', (e) => {
-        // Only trigger if not in an input field
         const activeElement = document.activeElement;
         const isInput = activeElement.tagName === 'INPUT' ||
             activeElement.tagName === 'TEXTAREA' ||
@@ -10,24 +7,23 @@ export function initShortcuts() {
 
         if (isInput) return;
 
-        // We use Shift + Key as requested
         if (e.shiftKey) {
             const key = e.key.toLowerCase();
 
             switch (key) {
-                case 's': // Shift + S: Settings
+                case 's':
                     e.preventDefault();
                     toggleSettings();
                     break;
-                case 'n': // Shift + N: News
+                case 'n':
                     e.preventDefault();
                     toggleNews();
                     break;
-                case 'b': // Shift + B: Bookmarks
+                case 'b':
                     e.preventDefault();
                     toggleBookmarks();
                     break;
-                case 'h': // Shift + H: Help
+                case 'h':
                     e.preventDefault();
                     toggleHelpGuidance();
                     break;

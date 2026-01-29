@@ -1,4 +1,3 @@
-// drawer.js - Settings Drawer Management
 import State from "./state.js";
 import { showNotification } from "./utils.js";
 import { saveSettingsToStorage } from "./storage.js";
@@ -24,7 +23,6 @@ export function initDrawer() {
         overlay.classList.remove("active");
     };
 
-    // Static wallpaper toggle
     const staticToggle = document.getElementById("static-wallpaper-toggle");
     if (staticToggle) {
         staticToggle.checked = State.isStaticWallpaper;
@@ -43,13 +41,11 @@ export function initDrawer() {
         };
     }
 
-    // Download button
     const downloadBtn = document.getElementById("download-wallpaper");
     if (downloadBtn) {
         downloadBtn.onclick = downloadWallpaper;
     }
 
-    // Time format toggle
     const timeToggle = document.getElementById("time-format-toggle");
     const timeLabel = document.getElementById("time-format-label");
     if (timeToggle && timeLabel) {
@@ -67,7 +63,6 @@ export function initDrawer() {
         };
     }
 
-    // Logo upload functionality
     const logoFileInput = document.getElementById("logo-file-input");
     const logoUploadBtn = document.getElementById("logo-upload-btn");
     const logoRemoveBtn = document.getElementById("logo-remove-btn");
@@ -76,18 +71,15 @@ export function initDrawer() {
     const logoUrlInput = document.getElementById("logo-url-input");
     const loadUrlBtn = document.getElementById("load-url-btn");
 
-    // Unified helper to set and save logo
     const setCustomLogo = (url) => {
         State.customLogoUrl = url;
         saveSettingsToStorage();
 
-        // Update logo display
         const brandLogo = document.getElementById("brand-logo");
         if (brandLogo) {
             brandLogo.src = url;
         }
 
-        // Show preview and remove button
         if (logoPreviewImg && logoPreview) {
             logoPreviewImg.src = url;
             logoPreview.style.display = "block";
@@ -96,36 +88,30 @@ export function initDrawer() {
             logoRemoveBtn.style.display = "inline-flex";
         }
 
-        // Reset inputs
         if (logoFileInput) logoFileInput.value = "";
         if (logoUrlInput) logoUrlInput.value = "";
     };
 
-    // Show file picker when upload button is clicked
     if (logoUploadBtn && logoFileInput) {
         logoUploadBtn.onclick = () => {
             logoFileInput.click();
         };
 
-        // Handle file selection
         logoFileInput.onchange = (e) => {
             const file = e.target.files[0];
             if (!file) return;
 
-            // Validate file type
             const validTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/svg+xml'];
             if (!validTypes.includes(file.type)) {
                 showNotification("Please upload a valid image (PNG, JPG, or SVG)", "warning");
                 return;
             }
 
-            // Validate file size (max 2MB)
             if (file.size > 2 * 1024 * 1024) {
                 showNotification("Image size should be less than 2MB", "warning");
                 return;
             }
 
-            // Convert to base64 and save
             const reader = new FileReader();
             reader.onload = (event) => {
                 setCustomLogo(event.target.result);
@@ -135,13 +121,11 @@ export function initDrawer() {
         };
     }
 
-    // Handle URL Upload
     if (loadUrlBtn && logoUrlInput) {
         const handleUrlLoad = () => {
             const url = logoUrlInput.value.trim();
             if (!url) return;
 
-            // Basic URL validation
             try {
                 new URL(url);
             } catch (e) {
@@ -149,7 +133,6 @@ export function initDrawer() {
                 return;
             }
 
-            // Show loading state
             const originalContent = Array.from(loadUrlBtn.childNodes);
             loadUrlBtn.textContent = "Loading...";
             loadUrlBtn.disabled = true;
@@ -178,25 +161,21 @@ export function initDrawer() {
         };
     }
 
-    // Handle logo removal
     if (logoRemoveBtn) {
         logoRemoveBtn.onclick = () => {
             State.customLogoUrl = null;
             saveSettingsToStorage();
 
-            // Reset to default logo
             const brandLogo = document.getElementById("brand-logo");
             if (brandLogo) {
                 brandLogo.src = BRAND_LOGOS[0];
             }
 
-            // Hide preview and remove button
             if (logoPreview) {
                 logoPreview.style.display = "none";
             }
             logoRemoveBtn.style.display = "none";
 
-            // Clear inputs
             if (logoFileInput) logoFileInput.value = "";
             if (logoUrlInput) logoUrlInput.value = "";
 
@@ -204,7 +183,6 @@ export function initDrawer() {
         };
     }
 
-    // Initialize preview if custom logo exists
     if (State.customLogoUrl && logoPreviewImg && logoPreview && logoRemoveBtn) {
         logoPreviewImg.src = State.customLogoUrl;
         logoPreview.style.display = "block";

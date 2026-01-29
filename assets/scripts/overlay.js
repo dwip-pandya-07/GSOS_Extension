@@ -10,7 +10,6 @@
     function createOverlay() {
         if (overlayContainer) return;
 
-        // Create Container
         overlayContainer = document.createElement('div');
         overlayContainer.id = CONTAINER_ID;
 
@@ -18,11 +17,9 @@
         listContainer.id = LIST_ID;
         overlayContainer.appendChild(listContainer);
 
-        // Create Blur Overlay
         blurOverlay = document.createElement('div');
         blurOverlay.id = BLUR_ID;
 
-        // Add click listener to close
         blurOverlay.addEventListener('click', () => {
             if (isVisible) toggleOverlay();
         });
@@ -32,7 +29,6 @@
     }
 
     async function toggleOverlay() {
-        // Don't trigger if focus is in input
         const activeElement = document.activeElement;
         if (activeElement && (
             activeElement.tagName === 'INPUT' ||
@@ -56,7 +52,6 @@
         } else {
             overlayContainer.classList.remove('visible');
             blurOverlay.classList.remove('visible');
-            // Remove pointer events after transition to allow underlying page clicks
             setTimeout(() => {
                 if (!isVisible) blurOverlay.classList.remove('active-pointer');
             }, 400);
@@ -67,12 +62,10 @@
         const list = document.getElementById(LIST_ID);
         if (!list) return;
 
-        // Securely clear list
         while (list.firstChild) {
             list.removeChild(list.firstChild);
         }
 
-        // Check if extension context is still valid
         if (typeof chrome === 'undefined' || !chrome.storage || !chrome.storage.local) {
             const emptyMsg = document.createElement('div');
             emptyMsg.className = 'invinsense-empty-msg';

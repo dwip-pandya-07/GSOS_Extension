@@ -1,4 +1,3 @@
-// wallpaper.js - Wallpaper Loading and Management
 import State from "./state.js";
 import { BACKUP_IMAGES } from "./config.js";
 import { hideLoader } from "./utils.js";

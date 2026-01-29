@@ -1,11 +1,9 @@
-// ui.js - UI Helper Functions
 import { BRAND_LOGOS } from "./config.js";
 import State from "./state.js";
 
 export function loadRandomLogo() {
     const logoEl = document.getElementById("brand-logo");
     if (logoEl) {
-        // Use custom logo if available, otherwise use default
         if (State.customLogoUrl) {
             logoEl.src = State.customLogoUrl;
         } else {

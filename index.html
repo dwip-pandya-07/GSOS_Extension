@@ -9,7 +9,6 @@
 </head>
 
 <body>
-    <!-- Loader -->
     <div id="loader">
         <div class="loader-content">
             <div class="spinner"></div>
@@ -19,19 +18,15 @@
 
     <div id="bg"></div>
 
-    <!-- Recent Tabs Floating Panel -->
     <div id="recent-tabs-panel" class="recent-tabs-panel">
         <div id="recent-tabs-list" class="recent-tabs-list">
-            <!-- Items injected here via recent-tabs.js -->
         </div>
     </div>
 
-    <!-- Logo -->
     <div class="logo-container">
         <img alt="Invinsense Logo" class="logo" id="brand-logo">
     </div>
 
-    <!-- News Toggle Button -->
     <button class="news-toggle" id="news-toggle" aria-label="Open news">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
             stroke-linecap="round" stroke-linejoin="round">
@@ -42,7 +37,6 @@
     </button>
 
 
-    <!-- Help Guide Toggle Button -->
     <button class="help-toggle" id="help-toggle" aria-label="Open help guide">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
             stroke-linecap="round" stroke-linejoin="round">
@@ -52,7 +46,6 @@
         </svg>
     </button>
 
-    <!-- Drawer Toggle Button -->
     <button class="drawer-toggle" id="drawer-toggle" aria-label="Open settings drawer">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
             stroke-linecap="round" stroke-linejoin="round">
@@ -63,7 +56,6 @@
         </svg>
     </button>
 
-    <!-- Settings Drawer -->
     <div class="drawer" id="settings-drawer">
         <div class="drawer-header">
             <h3>Settings</h3>
@@ -77,7 +69,6 @@
         </div>
 
         <div class="drawer-content">
-            <!-- Static Wallpaper Toggle -->
             <div class="drawer-item">
                 <div class="drawer-item-header">
                     <div class="drawer-item-icon">
@@ -100,7 +91,6 @@
             </div>
 
 
-            <!-- Download Wallpaper -->
             <div class="drawer-item drawer-item-button" id="download-wallpaper">
                 <div class="drawer-item-header">
                     <div class="drawer-item-icon">
@@ -118,7 +108,6 @@
                 </div>
             </div>
 
-            <!-- Time Format Toggle -->
             <div class="drawer-item">
                 <div class="drawer-item-header">
                     <div class="drawer-item-icon">
@@ -139,7 +128,6 @@
                 </label>
             </div>
 
-            <!-- Dynamic Logo Upload (Hidden by default, revealed by pressing 'U' 3 times) -->
             <div class="drawer-item" id="logo-upload-section" style="display: none;">
                 <div class="drawer-item-header">
                     <div class="drawer-item-icon">
@@ -179,7 +167,6 @@
                     </button>
                 </div>
 
-                <!-- URL Input Section -->
                 <div class="logo-url-controls">
                     <div class="url-input-group">
                         <input type="url" id="logo-url-input" class="logo-url-input"
@@ -202,7 +189,6 @@
         </div>
     </div>
 
-    <!-- Help Drawer -->
     <div class="drawer" id="help-drawer">
         <div class="drawer-header">
             <h3>Help & Shortcuts</h3>
@@ -264,7 +250,6 @@
         </div>
     </div>
 
-    <!-- News Drawer -->
     <div class="drawer" id="news-drawer">
         <div class="drawer-header">
             <h3>News & Updates</h3>
@@ -277,16 +262,12 @@
             </button>
         </div>
         <div class="drawer-content" id="news-content">
-            <!-- News items will be injected here -->
         </div>
     </div>
 
-    <!-- Drawer Overlay -->
     <div class="drawer-overlay" id="drawer-overlay"></div>
 
-    <!-- Main Container -->
     <div class="container" id="main-container">
-        <!-- Center Content -->
         <div class="center-content">
             <div class="time" id="time">00:00</div>
             <div class="date" id="date">Loading...</div>
@@ -301,7 +282,6 @@
         </div>
     </div>
 
-    <!-- Bookmarks Feature -->
     <button id="bookmarks-toggle" class="bookmarks-toggle" title="Show Bookmarks">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
@@ -309,7 +289,6 @@
     </button>
 
     <div id="bookmarks-dock" class="bookmarks-dock">
-        <!-- Dock items will be injected here -->
     </div>
 
     <div id="bookmarks-modal" class="modal-overlay">
@@ -324,7 +303,6 @@
             </div>
             <div class="modal-body">
                 <div id="bookmarks-list" class="bookmarks-list">
-                    <!-- Checkboxes will be injected here -->
                 </div>
             </div>
             <div class="modal-footer">
@@ -333,7 +311,6 @@
         </div>
     </div>
 
-    <!-- Search Bar -->
     <div class="search-container" id="search-container">
         <form id="search-form">
             <div class="search-icon-wrapper">
@@ -347,7 +324,6 @@
         </form>
     </div>
 
-    <!-- Load all JavaScript modules -->
     <script type="module" src="./assets/scripts/config.js"></script>
     <script type="module" src="./assets/scripts/state.js"></script>
     <script type="module" src="./assets/scripts/utils.js"></script>
@@ -364,10 +340,7 @@
     <script type="module" src="./assets/scripts/shortcuts.js"></script>
     <script type="module" src="./assets/scripts/help.js"></script>
 
-
-    <!-- Main entry point - must be loaded last -->
     <script type="module" src="./assets/scripts/main.js"></script>
-    <!-- <script src="/assets/scripts/script.js"></script> -->
 </body>
 
 </html>

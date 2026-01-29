@@ -1,5 +1,3 @@
-// help.js - Help Guide Interaction Logic
-
 export function initHelp() {
     const helpToggle = document.getElementById('help-toggle');
     const helpDrawer = document.getElementById('help-drawer');
@@ -11,14 +9,12 @@ export function initHelp() {
     function openHelp() {
         helpDrawer.classList.add('open');
         overlay.classList.add('active');
-        // Close other drawers if open
         document.getElementById('settings-drawer')?.classList.remove('open');
         document.getElementById('news-drawer')?.classList.remove('open');
     }
 
     function closeHelp() {
         helpDrawer.classList.remove('open');
-        // Only hide overlay if no other drawer is open
         const newsDrawer = document.getElementById('news-drawer');
         const settingsDrawer = document.getElementById('settings-drawer');
         if (!newsDrawer?.classList.contains('open') && !settingsDrawer?.classList.contains('open')) {
@@ -29,14 +25,12 @@ export function initHelp() {
     helpToggle.addEventListener('click', toggleHelp);
     helpClose.addEventListener('click', closeHelp);
 
-    // Close on overlay click
     overlay.addEventListener('click', () => {
         if (helpDrawer.classList.contains('open')) {
             closeHelp();
         }
     });
 
-    // Handle ESC key
     window.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && helpDrawer.classList.contains('open')) {
             closeHelp();
@@ -50,7 +44,6 @@ export function toggleHelp() {
 
     if (helpDrawer.classList.contains('open')) {
         helpDrawer.classList.remove('open');
-        // Only hide overlay if no other drawer is open
         const newsDrawer = document.getElementById('news-drawer');
         const settingsDrawer = document.getElementById('settings-drawer');
         if (!newsDrawer?.classList.contains('open') && !settingsDrawer?.classList.contains('open')) {
@@ -59,11 +52,9 @@ export function toggleHelp() {
     } else {
         helpDrawer.classList.add('open');
         overlay.classList.add('active');
-        // Close other drawers
         document.getElementById('settings-drawer')?.classList.remove('open');
         document.getElementById('news-drawer')?.classList.remove('open');
     }
 }
 
-// Auto-init if loaded as module
 initHelp();

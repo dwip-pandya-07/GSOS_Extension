@@ -1,6 +1,6 @@
-﻿@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap");
 
-/* ===== GLOBAL RESET ===== */
+
 * {
   margin: 0;
   padding: 0;
@@ -15,7 +15,7 @@ body {
   color: #fff;
 }
 
-/* ===== LOADER ===== */
+
 #loader {
   position: fixed;
   top: 0;
@@ -50,7 +50,7 @@ body {
   margin: 0;
 }
 
-/* ===== MAIN CONTAINER VISIBILITY ===== */
+
 #main-container {
   opacity: 0;
   visibility: hidden;
@@ -62,7 +62,7 @@ body {
   visibility: visible;
 }
 
-/* ===== DYNAMIC BACKGROUND ===== */
+
 #bg {
   position: fixed;
   top: 0;
@@ -76,7 +76,7 @@ body {
   opacity: 0;
 }
 
-/* Background overlay for better text visibility */
+
 #bg::after {
   content: "";
   position: absolute;
@@ -88,7 +88,7 @@ body {
   z-index: -1;
 }
 
-/* ===== LOGO ===== */
+
 .logo-container {
   position: fixed;
   bottom: 15px;
@@ -107,7 +107,7 @@ body {
   opacity: 1;
 }
 
-/* ===== DRAWER TOGGLE BUTTON ===== */
+
 .drawer-toggle {
   position: fixed;
   bottom: 20px;
@@ -157,7 +157,7 @@ body {
   box-shadow: -4px 4px 25px rgba(0, 0, 0, 0.2);
 }
 
-/* ===== DRAWER ===== */
+
 .drawer {
   position: fixed;
   top: 0;
@@ -179,7 +179,7 @@ body {
   right: 0;
 }
 
-/* Custom scrollbar for drawer */
+
 .drawer::-webkit-scrollbar {
   width: 6px;
 }
@@ -197,7 +197,7 @@ body {
   background: rgba(255, 255, 255, 0.3);
 }
 
-/* ===== DRAWER HEADER ===== */
+
 .drawer-header {
   display: flex;
   justify-content: space-between;
@@ -239,12 +239,12 @@ body {
   transform: scale(0.95);
 }
 
-/* ===== DRAWER CONTENT ===== */
+
 .drawer-content {
   padding: 20px 16px;
 }
 
-/* ===== DRAWER ITEM ===== */
+
 .drawer-item {
   background: linear-gradient(135deg,
       rgba(255, 255, 255, 0.08) 0%,
@@ -329,7 +329,7 @@ body {
   font-weight: 400;
 }
 
-/* ===== TOGGLE SWITCH ===== */
+
 .toggle-switch {
   position: relative;
   width: 52px;
@@ -392,7 +392,7 @@ input:checked+.toggle-slider:hover {
   background: linear-gradient(135deg, #5bc05f 0%, #4caf50 100%);
 }
 
-/* ===== DRAWER OVERLAY ===== */
+
 .drawer-overlay {
   position: fixed;
   top: 0;
@@ -414,7 +414,7 @@ input:checked+.toggle-slider:hover {
   visibility: visible;
 }
 
-/* ===== MAIN LAYOUT ===== */
+
 .container {
   display: flex;
   justify-content: center;
@@ -423,7 +423,7 @@ input:checked+.toggle-slider:hover {
   padding: 20px;
 }
 
-/* ===== CENTER CONTENT ===== */
+
 .center-content {
   text-align: center;
   display: flex;
@@ -446,7 +446,7 @@ input:checked+.toggle-slider:hover {
   }
 }
 
-/* ===== TIME DISPLAY ===== */
+
 .time {
   font-size: 80px;
   font-weight: 300;
@@ -457,7 +457,7 @@ input:checked+.toggle-slider:hover {
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
 }
 
-/* ===== DATE DISPLAY ===== */
+
 .date {
   font-size: 20px;
   font-weight: 400;
@@ -467,7 +467,7 @@ input:checked+.toggle-slider:hover {
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
 }
 
-/* ===== GREETING ===== */
+
 .greeting {
   font-size: 28px;
   font-weight: 400;
@@ -476,7 +476,7 @@ input:checked+.toggle-slider:hover {
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
 }
 
-/* ===== WELCOME MESSAGE ===== */
+
 .welcome-msg {
   font-size: 18px;
   font-weight: 400;
@@ -486,7 +486,7 @@ input:checked+.toggle-slider:hover {
   margin: 0 auto 40px;
 }
 
-/* ===== SECURITY TIP CARD ===== */
+
 .tip-card {
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
@@ -532,9 +532,9 @@ input:checked+.toggle-slider:hover {
   line-height: 1.7;
 }
 
-/* ===== RESPONSIVE DESIGN ===== */
 
-/* Tablet and smaller desktops */
+
+
 @media (max-width: 1024px) {
   .time {
     font-size: 110px;
@@ -566,7 +566,7 @@ input:checked+.toggle-slider:hover {
   }
 }
 
-/* Tablets */
+
 @media (max-width: 768px) {
   .drawer {
     width: 320px;
@@ -617,7 +617,7 @@ input:checked+.toggle-slider:hover {
   }
 }
 
-/* Mobile devices */
+
 @media (max-width: 480px) {
   .drawer {
     width: 100%;
@@ -680,14 +680,14 @@ input:checked+.toggle-slider:hover {
   }
 }
 
-/* ===== ANIMATIONS ===== */
+
 @keyframes spin {
   to {
     transform: rotate(360deg);
   }
 }
 
-/* ===== NEWS TOGGLE BUTTON ===== */
+
 .news-toggle {
   position: fixed;
   top: 20px;
@@ -719,7 +719,7 @@ input:checked+.toggle-slider:hover {
   box-shadow: 4px 4px 25px rgba(0, 0, 0, 0.2);
 }
 
-/* ===== NEWS DRAWER OVERRIDES ===== */
+
 #news-drawer {
   left: -400px;
   right: auto;
@@ -733,7 +733,7 @@ input:checked+.toggle-slider:hover {
   right: auto;
 }
 
-/* ===== NEWS ITEM STYLES ===== */
+
 .news-card {
   align-items: flex-start;
 }
@@ -807,7 +807,7 @@ input:checked+.toggle-slider:hover {
   transform: none;
 }
 
-/* ===== SEARCH BAR ===== */
+
 .search-container {
   position: fixed;
   bottom: 30px;
@@ -867,21 +867,21 @@ input:checked+.toggle-slider:hover {
   justify-content: center;
 }
 
-/* Responsive adjustments for search */
+
 @media (max-width: 768px) {
   .search-container {
     bottom: 80px;
   }
 }
 
-/* ===== BOOKMARKS FEATURE ===== */
 
-/* Toggle Button - Attached style */
+
+
 .bookmarks-toggle {
   position: fixed;
   top: 80px;
   right: 0;
-  /* Attached to right edge */
+  
   width: 50px;
   height: 50px;
   background: rgba(255, 255, 255, 0.1);
@@ -953,7 +953,7 @@ input:checked+.toggle-slider:hover {
   transform: none;
 }
 
-/* ===== SEARCH BAR ===== */
+
 .search-container {
   position: fixed;
   bottom: 30px;
@@ -1013,22 +1013,22 @@ input:checked+.toggle-slider:hover {
   justify-content: center;
 }
 
-/* Responsive adjustments for search */
+
 @media (max-width: 768px) {
   .search-container {
     bottom: 80px;
   }
 }
 
-/* ===== BOOKMARKS FEATURE ===== */
 
-/* Toggle Button - Attached style */
+
+
 .bookmarks-toggle {
   position: fixed;
   top: 20px;
   right: 0;
   width: 50px;
-  /* Matched to dock width */
+  
   height: 50px;
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
@@ -1042,25 +1042,25 @@ input:checked+.toggle-slider:hover {
   align-items: center;
   justify-content: center;
   transition: background 0.2s ease;
-  /* Removed transform transition */
+  
   z-index: 999;
-  /* Higher than dock */
+  
   box-shadow: -4px 4px 20px rgba(0, 0, 0, 0.15);
 }
 
 .bookmarks-toggle:hover {
   background: rgba(255, 255, 255, 0.15);
-  /* Removed transform */
+  
 }
 
 
-/* Dock Container - Floating Window */
+
 .bookmarks-dock {
   position: fixed;
   top: 80px;
   right: 0;
   width: 50px;
-  /* Matched to toggle width */
+  
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(15px);
   -webkit-backdrop-filter: blur(15px);
@@ -1082,7 +1082,7 @@ input:checked+.toggle-slider:hover {
   scrollbar-width: none;
   -ms-overflow-style: none;
 
-  /* Generic hidden state */
+  
   opacity: 0;
   visibility: hidden;
   transform: translateX(100%);
@@ -1101,7 +1101,7 @@ input:checked+.toggle-slider:hover {
   display: none;
 }
 
-/* Apple Dock Effect - Smaller Icons */
+
 .dock-item {
   width: 40px;
   height: 40px;
@@ -1122,7 +1122,7 @@ input:checked+.toggle-slider:hover {
   border-radius: 10px;
 }
 
-/* Context Menu */
+
 .context-menu {
   position: fixed;
   background: rgba(30, 30, 30, 0.95);
@@ -1156,7 +1156,7 @@ input:checked+.toggle-slider:hover {
   background: rgba(255, 255, 255, 0.1);
 }
 
-/* Bookmarks Modal - Enhanced */
+
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -1181,7 +1181,7 @@ input:checked+.toggle-slider:hover {
 
 .modal-content {
   background: rgba(30, 30, 30, 0.5);
-  /* Slightly more transparent */
+  
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.15);
@@ -1269,7 +1269,7 @@ input:checked+.toggle-slider:hover {
   flex: 1;
 }
 
-/* Custom Scrollbar for Modal */
+
 .modal-body::-webkit-scrollbar {
   width: 8px;
 }
@@ -1311,7 +1311,7 @@ input:checked+.toggle-slider:hover {
   transform: translateY(-1px);
 }
 
-/* Custom Checkbox */
+
 .bookmark-item-select input[type="checkbox"] {
   appearance: none;
   -webkit-appearance: none;
@@ -1332,7 +1332,7 @@ input:checked+.toggle-slider:hover {
 }
 
 .bookmark-item-select input[type="checkbox"]:checked::after {
-  content: '✓';
+  content: '?';
   position: absolute;
   color: white;
   font-size: 14px;
@@ -1396,7 +1396,7 @@ input:checked+.toggle-slider:hover {
   transform: translateY(0);
 }
 
-/* ===== LOGO UPLOAD CONTROLS ===== */
+
 .logo-upload-controls {
   display: flex;
   gap: 8px;
@@ -1463,7 +1463,7 @@ input:checked+.toggle-slider:hover {
   border-radius: 8px;
 }
 
-/* Make logo upload section flow properly */
+
 #logo-upload-section {
   display: flex;
   flex-direction: column;
@@ -1474,7 +1474,7 @@ input:checked+.toggle-slider:hover {
   width: 100%;
 }
 
-/* ===== LOGO UPLOAD CONTROLS ===== */
+
 .logo-upload-controls {
   display: flex;
   gap: 8px;
@@ -1543,7 +1543,7 @@ input:checked+.toggle-slider:hover {
 
 
 
-/* ===== LOGO URL CONTROLS ===== */
+
 .logo-url-controls {
   margin-top: 8px;
   width: 100%;
@@ -1622,7 +1622,7 @@ input:checked+.toggle-slider:hover {
   flex-shrink: 0;
 }
 
-/* ===== RECENT TABS FLOATING PANEL ===== */
+
 .recent-tabs-panel {
   position: fixed;
   top: 20px;
@@ -1829,11 +1829,11 @@ input:checked+.toggle-slider:hover {
   }
 }
 
-/* ===== HELP GUIDE STYLES ===== */
+
 .help-toggle {
   position: fixed;
   bottom: 140px;
-  /* Positioned above settings and like buttons */
+  
   right: 0;
   width: 50px;
   height: 50px;
@@ -1956,7 +1956,7 @@ input:checked+.toggle-slider:hover {
   color: rgba(255, 255, 255, 0.6);
 }
 
-/* Animations for Help content */
+
 .help-section {
   animation: slideInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) both;
 }

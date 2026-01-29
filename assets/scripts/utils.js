@@ -1,4 +1,3 @@
-// utils.js - Utility Functions
 export function showNotification(message, type = "info") {
     document.querySelectorAll(".notification").forEach((n) => n.remove());
     const n = document.createElement("div");
@@ -32,7 +31,6 @@ export function hideLoader() {
     }, 100);
 }
 
-// Initialize notification animations
 if (!document.querySelector('style[data-notification-styles]')) {
     const style = document.createElement('style');
     style.setAttribute('data-notification-styles', 'true');

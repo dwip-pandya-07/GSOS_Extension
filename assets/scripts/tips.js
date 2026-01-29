@@ -1,4 +1,3 @@
-// tips.js - Security Tips Management
 import { SECURITY_TIPS } from "./config.js";
 
 export async function loadTip() {

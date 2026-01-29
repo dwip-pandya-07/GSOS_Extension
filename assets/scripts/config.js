@@ -1,4 +1,3 @@
-// config.js - Configuration and Constants
 const CONFIG = {
 };
 

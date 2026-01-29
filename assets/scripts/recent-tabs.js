@@ -1,12 +1,9 @@
-// recent-tabs.js - Recent Tabs UI Logic
-
 const CLEAR_RECENT_TABS_ON_DASHBOARD_REFRESH = false;
 
 export function initRecentTabs() {
     const container = document.getElementById('recent-tabs-list');
     if (!container) return;
 
-    // Clear history on dashboard refresh if enabled
     if (CLEAR_RECENT_TABS_ON_DASHBOARD_REFRESH) {
         chrome.storage.local.set({ recentTabs: [] });
     }
@@ -46,7 +43,6 @@ export function renderRecentTabs() {
             const faviconUrl = `/_favicon/?pageUrl=${encodeURIComponent(latestPage.url)}&size=32`;
             const simpleName = getSimpleDomainName(domain.hostname);
 
-            // Structure: main -> favicon-wrapper (img), info (title, domain), actions (toggle?, close)
             const main = document.createElement('div');
             main.className = 'recent-tab-main';
 
@@ -158,7 +154,6 @@ export function renderRecentTabs() {
 
 function handlePageNavigation(url, hostname) {
     chrome.tabs.query({}, (tabs) => {
-        // First try to find exact URL match
         const exactMatch = tabs.find(t => t.url === url);
         if (exactMatch) {
             chrome.tabs.update(exactMatch.id, { active: true });
@@ -166,7 +161,6 @@ function handlePageNavigation(url, hostname) {
             return;
         }
 
-        // If no exact match, try to find hostname match
         const domainMatch = tabs.find(t => {
             try {
                 return new URL(t.url).hostname === hostname;
@@ -187,12 +181,9 @@ function handlePageNavigation(url, hostname) {
 function getSimpleDomainName(hostname) {
     if (!hostname) return 'Unknown';
 
-    // Remove www.
     let name = hostname.replace(/^www\./, '');
 
-    // Get the first part before the first dot
     name = name.split('.')[0];
 
-    // Capitalize
     return name.charAt(0).toUpperCase() + name.slice(1);
 }

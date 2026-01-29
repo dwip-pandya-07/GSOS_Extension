@@ -1,10 +1,7 @@
-// bookmarks.js - Bookmarks Management
-
 const MOCK_BOOKMARKS = [
     { title: "Google", url: "https://google.com" },
 ];
 
-// Custom icon mapping for specific URLs
 const CUSTOM_ICONS = {
     "https://invinsense-launcher.netlify.app/dashboard": "assets/images/invinsense.svg",
     "https://invinsense-launcher.netlify.app/xdr": "assets/images/icn-xdr.svg",
@@ -45,19 +42,16 @@ export function initBookmarks() {
         deselectAllBtn.onclick = () => selectAll(false);
     }
 
-    // Top-right toggle button action
     const toggleBtn = document.getElementById("bookmarks-toggle");
     const dock = document.getElementById("bookmarks-dock");
 
     if (toggleBtn && dock) {
         toggleBtn.onclick = (e) => {
             e.stopPropagation();
-            // Toggle dock visibility only when clicking the bookmark icon
             dock.classList.toggle("active");
         };
     }
 
-    // Load saved bookmarks on init
     loadSavedBookmarks();
 }
 
@@ -73,7 +67,6 @@ async function loadBookmarksForModal() {
     loadingDiv.textContent = "Loading bookmarks...";
     listContainer.appendChild(loadingDiv);
 
-    // Fetch bookmarks
     if (chrome && chrome.bookmarks && chrome.bookmarks.getTree) {
         try {
             const tree = await chrome.bookmarks.getTree();
@@ -113,7 +106,6 @@ function renderModalList(container) {
         return;
     }
 
-    // Load checked state
     const savedUrls = new Set(selectedBookmarks.map(b => b.url));
 
     allBookmarks.forEach(b => {
@@ -142,7 +134,6 @@ function renderModalList(container) {
         item.appendChild(checkbox);
         item.appendChild(info);
 
-        // Click on row toggles checkbox
         item.onclick = (e) => {
             if (e.target !== checkbox) {
                 checkbox.checked = !checkbox.checked;
@@ -181,7 +172,6 @@ function saveSelection() {
 }
 
 function loadSavedBookmarks() {
-    // Check localStorage first for migration
     const legacySaved = localStorage.getItem("gsos_bookmarks");
 
     chrome.storage.local.get(['gsos_bookmarks'], (result) => {
@@ -189,7 +179,6 @@ function loadSavedBookmarks() {
             selectedBookmarks = result.gsos_bookmarks;
             renderDock();
         } else if (legacySaved) {
-            // Migrate
             try {
                 selectedBookmarks = JSON.parse(legacySaved);
                 chrome.storage.local.set({ gsos_bookmarks: selectedBookmarks });
@@ -213,10 +202,8 @@ function renderDock() {
 
     dock.innerHTML = "";
 
-    // Always show dock now since it contains the Add button
     dock.style.display = "flex";
 
-    // Method to toggle modal
     const openModal = () => {
         if (modal) {
             modal.classList.add("active");
@@ -234,10 +221,8 @@ function renderDock() {
         const img = document.createElement("img");
         img.alt = bm.title;
 
-        // Check if URL has a custom icon mapping
         if (CUSTOM_ICONS[bm.url]) {
             img.src = CUSTOM_ICONS[bm.url];
-            // Fallback to Chrome favicon if custom icon fails to load
             img.onerror = () => {
                 img.src = `/_favicon/?pageUrl=${encodeURIComponent(bm.url)}&size=64`;
                 img.onerror = () => {
@@ -245,7 +230,6 @@ function renderDock() {
                 };
             };
         } else {
-            // Use Chrome's native favicon service
             const nativeFavicon = `/_favicon/?pageUrl=${encodeURIComponent(bm.url)}&size=64`;
             img.src = nativeFavicon;
             img.onerror = () => {
@@ -257,7 +241,6 @@ function renderDock() {
         dock.appendChild(a);
     });
 
-    // Add "Manage/Add" button at the end
     const addBtn = document.createElement("div");
     addBtn.className = "dock-item dock-add-btn";
     const span = document.createElement("span");

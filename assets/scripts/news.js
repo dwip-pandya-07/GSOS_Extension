@@ -1,6 +1,3 @@
-// news.js - Enhanced News Drawer with Priority RSS Feeds
-
-// Default RSS Feed (fallback)
 const DEFAULT_RSS_FEED = "https://feeds.feedburner.com/TheHackersNews";
 const RSS_TO_JSON_BASE = "https://api.rss2json.com/v1/api.json?rss_url=";
 
@@ -10,8 +7,6 @@ const ITEMS_PER_PAGE = 10;
 let lastFetchTime = 0;
 const CACHE_DURATION = 15 * 60 * 1000;
 
-// Priority weights for distribution (feeds 1-10)
-// Feed 1 gets most articles, Feed 10 gets least
 const PRIORITY_WEIGHTS = [10, 9, 8, 7, 6, 5, 4, 3, 2, 1];
 
 export function initNewsDrawer() {
@@ -59,14 +54,12 @@ export function initNewsDrawer() {
 }
 
 function initRSSFeedsUI() {
-    // Create RSS Feeds section in settings drawer
     const settingsDrawer = document.getElementById("settings-drawer");
     if (!settingsDrawer) return;
 
     const drawerContent = settingsDrawer.querySelector(".drawer-content");
     if (!drawerContent) return;
 
-    // Create RSS Feeds section (hidden by default)
     const rssFeedsSection = document.createElement("div");
     rssFeedsSection.id = "rss-feeds-section";
     rssFeedsSection.className = "drawer-item";
@@ -74,7 +67,6 @@ function initRSSFeedsUI() {
     rssFeedsSection.style.flexDirection = "column";
     rssFeedsSection.style.alignItems = "stretch";
 
-    // Create header
     const header = document.createElement("div");
     header.className = "drawer-item-header";
     header.style.width = "100%";
@@ -97,7 +89,6 @@ function initRSSFeedsUI() {
     headerInfo.appendChild(headerDesc);
     header.appendChild(headerInfo);
 
-    // Create inputs list
     const feedsList = document.createElement("div");
     feedsList.className = "rss-feeds-list";
     feedsList.style.marginTop = "16px";
@@ -122,7 +113,6 @@ function initRSSFeedsUI() {
         feedsList.appendChild(wrapper);
     }
 
-    // Create buttons
     const btnContainer = document.createElement("div");
     btnContainer.style.marginTop = "12px";
     btnContainer.style.display = "flex";
@@ -161,17 +151,13 @@ function initRSSFeedsUI() {
     rssFeedsSection.appendChild(feedsList);
     rssFeedsSection.appendChild(btnContainer);
 
-    // Insert before the last item (or at the end)
     drawerContent.appendChild(rssFeedsSection);
 
-    // Load saved feeds
     loadSavedFeeds();
 
-    // Setup event listeners
     document.getElementById("save-rss-feeds")?.addEventListener("click", saveRSSFeeds);
     document.getElementById("reset-rss-feeds")?.addEventListener("click", resetRSSFeeds);
 
-    // Setup 'R' key listener for revealing the section
     setupRSSFeedsReveal();
 }
 
@@ -244,7 +230,6 @@ function saveRSSFeeds() {
     }
 
     chrome.storage.local.set({ rss_feeds: feeds }, () => {
-        // Clear cache to force reload with new feeds
         newsData = [];
         lastFetchTime = 0;
         alert("RSS Feeds saved successfully! News will reload on next open.");
@@ -255,7 +240,6 @@ function saveRSSFeeds() {
 function resetRSSFeeds() {
     if (confirm("Reset all RSS feeds to default?")) {
         chrome.storage.local.remove("rss_feeds", () => {
-            // Reset inputs
             for (let i = 1; i <= 10; i++) {
                 const input = document.getElementById(`rss-feed-${i}`);
                 if (input) {
@@ -263,7 +247,6 @@ function resetRSSFeeds() {
                 }
             }
 
-            // Clear cache
             newsData = [];
             lastFetchTime = 0;
             closeSettingsDrawer();
@@ -277,7 +260,6 @@ async function getConfiguredFeeds() {
             if (result.rss_feeds) {
                 resolve(result.rss_feeds.filter(url => url && url.trim()));
             } else {
-                // Check legacy as fallback for immediate use before loadSavedFeeds runs
                 const legacySaved = localStorage.getItem("rss-feeds");
                 if (legacySaved) {
                     try {
@@ -320,7 +302,6 @@ async function loadNews() {
     const feeds = await getConfiguredFeeds();
 
     try {
-        // Fetch all feeds in parallel
         const feedPromises = feeds.map(feedUrl =>
             fetch(`${RSS_TO_JSON_BASE}${encodeURIComponent(feedUrl)}`)
                 .then(res => res.json())
@@ -332,13 +313,12 @@ async function loadNews() {
 
         const feedResults = await Promise.all(feedPromises);
 
-        // Process and weight articles by feed priority
         const allArticles = [];
 
         feedResults.forEach((data, feedIndex) => {
             if (data && data.status === "ok" && data.items) {
                 const weight = PRIORITY_WEIGHTS[feedIndex] || 1;
-                const items = data.items.slice(0, 10); // Max 10 items per feed
+                const items = data.items.slice(0, 10);
 
                 items.forEach((item, itemIndex) => {
                     const article = processArticle(item, feedIndex, data.feed);
@@ -353,7 +333,6 @@ async function loadNews() {
             throw new Error("No articles loaded from any feed");
         }
 
-        // Sort by priority (higher weight = higher priority) and date
         newsData = allArticles.sort((a, b) => {
             if (b.priority !== a.priority) {
                 return b.priority - a.priority;
@@ -361,7 +340,6 @@ async function loadNews() {
             return new Date(b.rawDate) - new Date(a.rawDate);
         });
 
-        // Apply weighted distribution to ensure variety
         newsData = distributeByPriority(newsData);
 
         lastFetchTime = Date.now();
@@ -425,7 +403,6 @@ function processArticle(item, feedIndex, feedInfo) {
 }
 
 function distributeByPriority(articles) {
-    // Group articles by feed
     const feedGroups = {};
     articles.forEach(article => {
         if (!feedGroups[article.feedIndex]) {
@@ -434,12 +411,10 @@ function distributeByPriority(articles) {
         feedGroups[article.feedIndex].push(article);
     });
 
-    // Interleave articles based on priority
     const distributed = [];
     const maxRounds = Math.max(...Object.values(feedGroups).map(g => g.length));
 
     for (let round = 0; round < maxRounds; round++) {
-        // Sort feed indices by priority (highest first)
         const sortedFeeds = Object.keys(feedGroups).sort((a, b) => {
             const priorityA = PRIORITY_WEIGHTS[parseInt(a)] || 0;
             const priorityB = PRIORITY_WEIGHTS[parseInt(b)] || 0;
@@ -526,13 +501,11 @@ function renderNewsItems() {
 
     displayedCount = endIndex;
 
-    // Remove existing Load More button
     const existingBtnContainer = document.getElementById("load-more-container");
     if (existingBtnContainer) {
         existingBtnContainer.remove();
     }
 
-    // Add Load More button if there are more items
     if (displayedCount < newsData.length) {
         const btnContainer = document.createElement("div");
         btnContainer.id = "load-more-container";

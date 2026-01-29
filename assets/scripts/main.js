@@ -1,4 +1,3 @@
-// main.js - Main Application Entry Point
 import { loadSettingsFromStorage } from "./storage.js";
 import { startClock } from "./clock.js";
 import { loadTip } from "./tips.js";
@@ -15,19 +14,13 @@ import { initHelp } from "./help.js";
 
 
 async function init() {
-    // Load saved settings
     await loadSettingsFromStorage();
-
-    // Start clock and date
     startClock();
-
-    // Load initial content
     loadWallpaper();
     loadGreeting();
     loadTip();
     loadRandomLogo();
 
-    // Initialize UI components
     initDrawer();
     initNewsDrawer();
     initSearch();
@@ -38,7 +31,6 @@ async function init() {
     initHelp();
 }
 
-// Start the application
 if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", init);
 } else {

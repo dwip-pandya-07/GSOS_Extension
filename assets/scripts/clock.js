@@ -1,4 +1,3 @@
-// clock.js - Clock and Date Functions
 import State from "./state.js";
 
 export function updateClock() {
