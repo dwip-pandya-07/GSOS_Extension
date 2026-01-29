@@ -141,3 +141,26 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
         chrome.storage.local.set({ recentTabs });
     });
 });
+
+// --------------------
+// Content Script Message Handling
+// --------------------
+chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
+    if (message.action === "openTab" && message.url) {
+        // Normalize search URL to check for existing tabs
+        const targetUrl = message.url;
+
+        // Query all tabs to see if this URL is already open
+        const tabs = await chrome.tabs.query({});
+        const existingTab = tabs.find(t => t.url === targetUrl);
+
+        if (existingTab) {
+            // Switch to existing tab
+            await chrome.tabs.update(existingTab.id, { active: true });
+            await chrome.windows.update(existingTab.windowId, { focused: true });
+        } else {
+            // Use current behavior: update the tab that sent the message
+            chrome.tabs.update(sender.tab.id, { url: targetUrl });
+        }
+    }
+});

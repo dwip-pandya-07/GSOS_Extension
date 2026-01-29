@@ -31,6 +31,10 @@ export function initShortcuts() {
                     e.preventDefault();
                     toggleLike();
                     break;
+                case 'h': // Shift + H: Help
+                    e.preventDefault();
+                    toggleHelpGuidance();
+                    break;
             }
         }
     });
@@ -64,4 +68,15 @@ function toggleBookmarks() {
 
 function toggleLike() {
     document.getElementById('main-like-button')?.click();
+}
+
+function toggleHelpGuidance() {
+    const helpDrawer = document.getElementById('help-drawer');
+    if (helpDrawer) {
+        if (helpDrawer.classList.contains('open')) {
+            document.getElementById('help-close')?.click();
+        } else {
+            document.getElementById('help-toggle')?.click();
+        }
+    }
 }

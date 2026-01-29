@@ -23,7 +23,7 @@ project/
 
 ### **config.js**
 Contains all configuration constants:
-- API endpoints (Laravel, Unsplash)
+- API endpoints (Laravel)
 - Brand logos
 - Security tips
 - Backup images
@@ -60,7 +60,7 @@ Security tips management:
 Wallpaper operations:
 - `loadWallpaper()` - Load wallpapers from various sources
 - `downloadWallpaper()` - Download current wallpaper
-- Support for Laravel API, Unsplash, and local backups
+- Support for Laravel API, and local backups
 
 ### **likes.js**
 Favorite/like system:

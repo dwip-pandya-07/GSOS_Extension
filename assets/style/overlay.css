@@ -1,0 +1,175 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+
+#invinsense-recent-tabs-overlay-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.95);
+    width: 90%;
+    max-width: 850px;
+    height: auto;
+    background: rgba(10, 10, 10, 0.85);
+    backdrop-filter: blur(25px) saturate(190%);
+    -webkit-backdrop-filter: blur(25px) saturate(190%);
+    z-index: 2147483647;
+    display: flex;
+    align-items: center;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
+
+    /* Animation Properties */
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+
+    overflow: hidden;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: white;
+    padding: 24px 0;
+}
+
+#invinsense-recent-tabs-overlay-container.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+#invinsense-recent-tabs-list {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* Center items within the list */
+    gap: 12px;
+    padding: 0 32px;
+    width: 100%;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    mask-image: linear-gradient(to right, transparent, black 32px, black calc(100% - 32px), transparent);
+}
+
+#invinsense-recent-tabs-list::-webkit-scrollbar {
+    height: 3px;
+}
+
+#invinsense-recent-tabs-list::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+#invinsense-recent-tabs-list::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 2px;
+}
+
+.invinsense-tab-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    min-width: 100px;
+    max-width: 100px;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 14px;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    text-decoration: none;
+    color: white;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.invinsense-tab-item:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.15);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+.invinsense-tab-item:active {
+    transform: translateY(-2px) scale(0.96);
+}
+
+.invinsense-tab-favicon-wrapper {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    transition: background 0.3s ease;
+}
+
+.invinsense-tab-item:hover .invinsense-tab-favicon-wrapper {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.invinsense-tab-favicon {
+    width: 16px;
+    height: 16px;
+    object-fit: contain;
+}
+
+.invinsense-tab-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1px;
+    width: 100%;
+}
+
+.invinsense-tab-title {
+    font-size: 10px;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+    text-align: center;
+    letter-spacing: 0.2px;
+}
+
+.invinsense-tab-domain {
+    font-size: 8px;
+    font-weight: 400;
+    opacity: 0.45;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+    text-align: center;
+}
+
+/* Background Blur Logic */
+#invinsense-blur-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    z-index: 2147483646;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.5s ease;
+}
+
+#invinsense-blur-overlay.active-pointer {
+    pointer-events: auto;
+}
+
+#invinsense-blur-overlay.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Empty State Styling */
+.invinsense-empty-msg {
+    width: 100%;
+    text-align: center;
+    font-size: 12px;
+    opacity: 0.5;
+    letter-spacing: 0.4px;
+}

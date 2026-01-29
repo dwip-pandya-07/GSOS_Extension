@@ -1,12 +1,10 @@
 // config.js - Configuration and Constants
 const CONFIG = {
-    UNSPLASH_KEY: "GjKAaKJOy1oBXxnoo4rHRuyM4KPWhT8iZIWcn2xuc9I",
-    USE_UNSPLASH: false,
     LARAVEL_WALLPAPER_API: "http://127.0.0.1:8000/api/wallpapers",
     LARAVEL_TIP_API: "http://127.0.0.1:8000/api/tip",
 };
 
-const BRAND_LOGOS = ["/assets/images/invinsense_white.png"];
+const BRAND_LOGOS = ["assets/images/invinsense_white.png"];
 
 const SECURITY_TIPS = [
     "Disable unused accounts and services to reduce attack surface.",

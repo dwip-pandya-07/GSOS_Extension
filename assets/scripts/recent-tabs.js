@@ -43,7 +43,7 @@ export function renderRecentTabs() {
             item.className = 'recent-tab-item';
             item.title = latestPage.title;
 
-            const faviconUrl = `chrome-extension://_favicon/?pageUrl=${encodeURIComponent(latestPage.url)}&size=32`;
+            const faviconUrl = `/_favicon/?pageUrl=${encodeURIComponent(latestPage.url)}&size=32`;
             const simpleName = getSimpleDomainName(domain.hostname);
 
             // Structure: main -> favicon-wrapper (img), info (title, domain), actions (toggle?, close)
@@ -53,9 +53,15 @@ export function renderRecentTabs() {
             const favWrapper = document.createElement('div');
             favWrapper.className = 'recent-tab-favicon-wrapper';
             const img = document.createElement('img');
-            img.src = faviconUrl;
+            img.src = domain.favicon || faviconUrl;
             img.className = 'recent-tab-favicon';
-            img.onerror = () => { img.src = '/icons/icon16.png'; };
+            img.onerror = () => {
+                if (img.src !== faviconUrl) {
+                    img.src = faviconUrl;
+                } else {
+                    img.src = '/icons/icon16.png';
+                }
+            };
             favWrapper.appendChild(img);
 
             const info = document.createElement('div');

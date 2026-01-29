@@ -5,7 +5,7 @@ A premium, security-focused Chrome extension that transforms your "New Tab" page
 ## 🌟 Key Features
 
 ### 🎨 Dynamic Wallpaper System
-- **Intelligent Sources**: Integrates with Unsplash API, custom Laravel backends, and local high-quality backups.
+- **Intelligent Sources**: Integrates with custom Laravel backends, and local high-quality backups.
 - **Smart Fallback**: Multi-tier loading system ensures you always have a beautiful background, even offline.
 - **Personalized Gallery**: Heart/Like system to favorite wallpapers.
 - **Glassmorphism UI**: Controls and widgets feature modern frosted glass effects with backdrop blur.
@@ -15,7 +15,7 @@ A premium, security-focused Chrome extension that transforms your "New Tab" page
 - **Logo Control**: Support for local file uploads (PNG, JPG, SVG) and direct URL-based logo loading.
 - **Secret Activation**: Press **"U"** three times consecutively to reveal the secret Branding & Logo configuration panel.
 - **Live Preview**: See branding changes instantly before saving.
-- **Persistent States**: Your custom branding persists across browser restarts and syncs with your profile.
+- **Persistent States**: Your custom branding persists across browser restarts and syncs with    your profile.
 
 ### 📰 Advanced Cybersecurity News
 - **Multi-Feed Support**: Configure up to **10 custom RSS feeds** to stay updated with your preferred sources.
@@ -29,6 +29,7 @@ A premium, security-focused Chrome extension that transforms your "New Tab" page
 - **Quick Selection**: Modal interface to easily select which Chrome bookmarks appear in your dock.
 - **Favicon Integration**: Real-time fetching of high-resolution favicons for clear visual identification.
 - **Smart Tracking**: The "Recent Tabs" floating panel automatically tracks your most visited sites, filtering out transitional pages (login, auth, etc.) for a cleaner history.
+- **Global Recent Tabs Overlay**: A keyboard-triggered, centered modal available on **every website** to jump between your recently visited domains instantly.
 
 ### 🔍 Search Integration
 - **Command Center**: Integrated Google Search bar with clean iconography.
@@ -65,9 +66,12 @@ Invinsense_Extension/
 │   │   ├── logo-activation.js# Secret feature handling (U-U-U)
 │   │   ├── ui.js             # UI components and interaction helpers
 │   │   ├── utils.js          # Shared utility functions
-│   │   └── likes.js          # Wallpaper favorite system
+│   │   ├── likes.js          # Wallpaper favorite system
+│   │   ├── overlay.js        # Global Recent Tabs Overlay logic
+│   │   └── shortcuts.js      # Global keyboard shortcut handler
 │   └── style/
-│       └── style.css         # Modern CSS with variables and animations
+│       ├── style.css         # Modern CSS with variables and animations
+│       └── overlay.css       # Premium styles for the Global Overlay
 ├── backup/                   # High-resolution fallback wallpapers
 ├── icons/                    # Multi-size extension icons
 ├── background.js             # Service worker for background tasks & tab tracking
@@ -92,9 +96,21 @@ Invinsense hides advanced configuration to maintain a clean aesthetic:
 - **Logo/Branding Utility**: Tap the `U` key **3 times** quickly.
 - **RSS Feed Manager**: Tap the `R` key **3 times** quickly.
 
+## ⌨️ Essential Keyboard Shortcuts
+Streamline your workflow with these global and dashboard-specific shortcuts (Works when not in an input field):
+
+### 🌐 Global (Any Website)
+- **`Ctrl + Shift + H`**: Toggle the **Global Recent Tabs Overlay**. Use it to jump between sites without touching your address bar.
+
+### 🏠 Dashboard Specific
+- **`Shift + S`**: Toggle Settings Drawer
+- **`Shift + N`**: Toggle RSS News Panel
+- **`Shift + B`**: Toggle Bookmarks Extension
+- **`Shift + L`**: Like/Heart the current wallpaper
+- **`Escape`**: Close any open overlay or modal
+
 ### Wallpaper APIs
 To enable external wallpaper sources, update `assets/scripts/config.js`:
-- **Unsplash**: Set `UNSPLASH_KEY` with your developer API key.
 - **Laravel Backend**: Configure `LARAVEL_WALLPAPER_API` for custom backend integration.
 
 ## 🎨 Design Philosophy
@@ -112,7 +128,14 @@ To enable external wallpaper sources, update `assets/scripts/config.js`:
 
 ## 🔄 Version History
 
-### Version 2.1.0 (Latest)
+### Version 2.2.0 (Latest)
+- **New**: Global "Recent Tabs" Overlay triggered via `Ctrl + Shift + H` on any website.
+- **New**: Intelligent Navigation (switches to existing tabs instead of opening duplicates).
+- **New**: Premium Glassmorphism UI for centered modals with smooth scale animations.
+- **Refined**: Comprehensive Keyboard Shortcut mapping for ultimate power-user efficiency.
+- **Improved**: Favicon fallback mechanism for better visual recognition across all sites.
+
+### Version 2.1.0
 - **New**: Integrated Google Search bar in the center console.
 - **New**: Recent Tabs panel with domain-based tracking and smart filtering.
 - **New**: Multi-RSS support with priority-based interleaving.
@@ -125,9 +148,10 @@ To enable external wallpaper sources, update `assets/scripts/config.js`:
 - Implemented Glassmorphism UI design system.
 - Added secret activation triggers for advanced features.
 - Migrated to Manifest V3.
+- Added dynamic wallpaper & Security Tip system.
 
 ### Version 1.0.0
-- Initial release with core wallpaper and security tip functionality.
+- Initial release with core backup wallpaper and static security tip functionality.
 
 ## 🤝 Contributing
 

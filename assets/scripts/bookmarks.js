@@ -239,14 +239,15 @@ function renderDock() {
             img.src = CUSTOM_ICONS[bm.url];
             // Fallback to Chrome favicon if custom icon fails to load
             img.onerror = () => {
-                img.src = `chrome-extension://_favicon/?pageUrl=${encodeURIComponent(bm.url)}&size=64`;
+                img.src = `/_favicon/?pageUrl=${encodeURIComponent(bm.url)}&size=64`;
                 img.onerror = () => {
                     img.src = "assets/images/default-bookmark.png";
                 };
             };
         } else {
             // Use Chrome's native favicon service
-            img.src = `chrome-extension://_favicon/?pageUrl=${encodeURIComponent(bm.url)}&size=64`;
+            const nativeFavicon = `/_favicon/?pageUrl=${encodeURIComponent(bm.url)}&size=64`;
+            img.src = nativeFavicon;
             img.onerror = () => {
                 img.src = "assets/images/default-bookmark.png";
             };

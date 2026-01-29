@@ -56,6 +56,16 @@
         </svg>
     </button>
 
+    <!-- Help Guide Toggle Button -->
+    <button class="help-toggle" id="help-toggle" aria-label="Open help guide">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+        </svg>
+    </button>
+
     <!-- Drawer Toggle Button -->
     <button class="drawer-toggle" id="drawer-toggle" aria-label="Open settings drawer">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -227,6 +237,69 @@
         </div>
     </div>
 
+    <!-- Help Drawer -->
+    <div class="drawer" id="help-drawer">
+        <div class="drawer-header">
+            <h3>Help & Shortcuts</h3>
+            <button class="drawer-close" id="help-close" aria-label="Close drawer">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+        <div class="drawer-content help-guide-content">
+            <section class="help-section">
+                <h4>✨ Features</h4>
+                <div class="help-item">
+                    <h5>Dynamic Wallpapers</h5>
+                    <p>High-quality backgrounds from secure local APIs. Like wallpapers to add them to your rotation.
+                    </p>
+                </div>
+                <div class="help-item">
+                    <h5>Recent Tabs Overlay</h5>
+                    <p>Instant access to your recent browsing history across all devices with intelligent domain
+                        grouping. (Ctrl + Space)</p>
+                </div>
+                <div class="help-item">
+                    <h5>Security Tips</h5>
+                    <p>Daily curated security best practices to keep you safe and informed.</p>
+                </div>
+                <div class="help-item">
+                    <h5>Integrated News</h5>
+                    <p>Stay updated with the latest in tech and security directly from our integrated RSS feeds.</p>
+                </div>
+            </section>
+
+            <section class="help-section">
+                <h4>⌨️ Keyboard Shortcuts</h4>
+                <div class="shortcut-list">
+                    <div class="shortcut-item"><kbd>Shift</kbd> + <kbd>S</kbd> <span>Settings Panel</span></div>
+                    <div class="shortcut-item"><kbd>Shift</kbd> + <kbd>N</kbd> <span>News Feed</span></div>
+                    <div class="shortcut-item"><kbd>Shift</kbd> + <kbd>B</kbd> <span>Bookmarks Dock</span></div>
+                    <div class="shortcut-item"><kbd>Shift</kbd> + <kbd>L</kbd> <span>Like Wallpaper</span></div>
+                    <div class="shortcut-item"><kbd>Ctrl</kbd> + <kbd>Space</kbd> <span>Recent Tabs Overlay</span>
+                    </div>
+                    <div class="shortcut-item"><kbd>Shift</kbd> + <kbd>H</kbd> <span>Help Guide</span></div>
+                    <div class="shortcut-item"><kbd>Esc</kbd> <span>Close Panels & Overlays</span></div>
+                </div>
+            </section>
+
+            <section class="help-section">
+                <h4>🕵️ Secret Features</h4>
+                <div class="help-item">
+                    <h5>Custom Branding</h5>
+                    <p>Press <kbd>U</kbd> three times in settings to reveal the custom logo upload section.</p>
+                </div>
+                <div class="help-item">
+                    <h5>RSS Configuration</h5>
+                    <p>Press <kbd>R</kbd> three times in news to configure your own custom RSS feed sources.</p>
+                </div>
+            </section>
+        </div>
+    </div>
+
     <!-- News Drawer -->
     <div class="drawer" id="news-drawer">
         <div class="drawer-header">
@@ -326,6 +399,7 @@
     <script type="module" src="./assets/scripts/bookmarks.js"></script>
     <script type="module" src="./assets/scripts/recent-tabs.js"></script>
     <script type="module" src="./assets/scripts/shortcuts.js"></script>
+    <script type="module" src="./assets/scripts/help.js"></script>
 
 
     <!-- Main entry point - must be loaded last -->

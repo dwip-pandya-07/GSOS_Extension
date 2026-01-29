@@ -72,7 +72,9 @@ async function loadFromLaravel() {
         if (!res.ok) throw new Error("Laravel API error");
 
         const json = await res.json();
-        if (!json || json.status !== "ok" || !Array.isArray(json.data) || json.count === 0) {
+        const success = json && (json.status === "ok" || json.status === true);
+
+        if (!success || !Array.isArray(json.data) || json.count === 0) {
             throw new Error("Invalid wallpaper data");
         }
 
@@ -84,20 +86,6 @@ async function loadFromLaravel() {
         } else {
             throw new Error("Invalid wallpaper URL");
         }
-    } catch (err) {
-        loadBackupWallpaper();
-    }
-}
-
-async function loadFromUnsplash() {
-    try {
-        const res = await fetch(
-            `https://api.unsplash.com/photos/random?query=nature,landscape,mountain,abstract,minimal&orientation=landscape&client_id=${CONFIG.UNSPLASH_KEY}`
-        );
-        if (!res.ok) throw new Error("Unsplash failed");
-
-        const data = await res.json();
-        preloadAndSet(data.urls.full, data.id);
     } catch (err) {
         loadBackupWallpaper();
     }
@@ -118,11 +106,7 @@ export async function loadWallpaper() {
         return;
     }
 
-    if (CONFIG.USE_UNSPLASH) {
-        await loadFromUnsplash();
-    } else {
-        await loadFromLaravel();
-    }
+    await loadFromLaravel();
 }
 
 export async function downloadWallpaper() {

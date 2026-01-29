@@ -12,6 +12,7 @@ import { updateMainLikeButton, updateOnlyLikedToggleState } from "./likes.js";
 import { initLogoActivation } from "./logo-activation.js";
 import { initRecentTabs } from "./recent-tabs.js";
 import { initShortcuts } from "./shortcuts.js";
+import { initHelp } from "./help.js";
 
 
 async function init() {
@@ -35,6 +36,7 @@ async function init() {
     initLogoActivation();
     initRecentTabs();
     initShortcuts();
+    initHelp();
     updateMainLikeButton();
 
     updateOnlyLikedToggleState();
