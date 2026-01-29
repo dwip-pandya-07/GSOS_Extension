@@ -1,7 +1,5 @@
 // config.js - Configuration and Constants
 const CONFIG = {
-    LARAVEL_WALLPAPER_API: "http://127.0.0.1:8000/api/wallpapers",
-    LARAVEL_TIP_API: "http://127.0.0.1:8000/api/tip",
 };
 
 const BRAND_LOGOS = ["assets/images/invinsense_white.png"];
@@ -40,9 +38,16 @@ const SECURITY_TIPS = [
 ];
 
 
-const BACKUP_IMAGES = Array.from(
-    { length: 15 },
-    (_, i) => `backup/${i + 1}.png`
-);
+const BACKUP_IMAGES = [
+    "backup/1.png", "backup/2.png", "backup/3.png", "backup/3 (1).png", "backup/4.png",
+    "backup/5.png", "backup/6.png", "backup/7.png", "backup/8.png", "backup/9.png",
+    "backup/10.png", "backup/11.png", "backup/12.png", "backup/13.png", "backup/14.png",
+    "backup/15.png", "backup/16.png", "backup/17.png", "backup/18.png", "backup/19.png",
+    "backup/20.png", "backup/21.png", "backup/22.png", "backup/23.png", "backup/24.png",
+    "backup/25.png", "backup/26.png", "backup/27.png", "backup/28.png", "backup/29.png",
+    "backup/30.png", "backup/31.png", "backup/32.png", "backup/33.png", "backup/34.png",
+    "backup/35.png", "backup/36.png", "backup/image2.png", "backup/image5.png",
+    "backup/image7.png", "backup/image9.png", "backup/image12.png"
+];
 
 export { CONFIG, BRAND_LOGOS, SECURITY_TIPS, BACKUP_IMAGES };

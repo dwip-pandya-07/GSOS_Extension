@@ -41,20 +41,6 @@
         </svg>
     </button>
 
-    <!-- Like Button-->
-    <button class="like-button-main" id="main-like-button" aria-label="Like this wallpaper">
-        <svg width="28" height="28" viewBox="0 0 24 24" class="heart-icon">
-            <!-- Hollow heart (default) -->
-            <path class="heart-outline"
-                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
-                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-
-            <!-- Filled heart (shown when liked) -->
-            <path class="heart-fill"
-                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
-                fill="#ffffff" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-        </svg>
-    </button>
 
     <!-- Help Guide Toggle Button -->
     <button class="help-toggle" id="help-toggle" aria-label="Open help guide">
@@ -113,27 +99,6 @@
                 </label>
             </div>
 
-            <!-- NEW: Show Only Liked Wallpapers Toggle -->
-            <div class="drawer-item">
-                <div class="drawer-item-header">
-                    <div class="drawer-item-icon">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path
-                                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
-                            </path>
-                        </svg>
-                    </div>
-                    <div class="drawer-item-info">
-                        <h4>Show Only Liked</h4>
-                        <p>Display only your favorite wallpapers</p>
-                    </div>
-                </div>
-                <label class="toggle-switch">
-                    <input type="checkbox" id="only-liked-toggle">
-                    <span class="toggle-slider"></span>
-                </label>
-            </div>
 
             <!-- Download Wallpaper -->
             <div class="drawer-item drawer-item-button" id="download-wallpaper">
@@ -253,8 +218,8 @@
             <section class="help-section">
                 <h4>✨ Features</h4>
                 <div class="help-item">
-                    <h5>Dynamic Wallpapers</h5>
-                    <p>High-quality backgrounds from secure local APIs. Like wallpapers to add them to your rotation.
+                    <h5>Local Wallpapers</h5>
+                    <p>High-quality backgrounds from our secure local library.
                     </p>
                 </div>
                 <div class="help-item">
@@ -278,7 +243,6 @@
                     <div class="shortcut-item"><kbd>Shift</kbd> + <kbd>S</kbd> <span>Settings Panel</span></div>
                     <div class="shortcut-item"><kbd>Shift</kbd> + <kbd>N</kbd> <span>News Feed</span></div>
                     <div class="shortcut-item"><kbd>Shift</kbd> + <kbd>B</kbd> <span>Bookmarks Dock</span></div>
-                    <div class="shortcut-item"><kbd>Shift</kbd> + <kbd>L</kbd> <span>Like Wallpaper</span></div>
                     <div class="shortcut-item"><kbd>Ctrl</kbd> + <kbd>Space</kbd> <span>Recent Tabs Overlay</span>
                     </div>
                     <div class="shortcut-item"><kbd>Shift</kbd> + <kbd>H</kbd> <span>Help Guide</span></div>
@@ -391,7 +355,6 @@
     <script type="module" src="./assets/scripts/clock.js"></script>
     <script type="module" src="./assets/scripts/tips.js"></script>
     <script type="module" src="./assets/scripts/wallpaper.js"></script>
-    <script type="module" src="./assets/scripts/likes.js"></script>
     <script type="module" src="./assets/scripts/ui.js"></script>
     <script type="module" src="./assets/scripts/drawer.js"></script>
     <script type="module" src="./assets/scripts/news.js"></script>

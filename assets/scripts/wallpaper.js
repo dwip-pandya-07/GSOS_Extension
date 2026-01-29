@@ -1,16 +1,13 @@
 // wallpaper.js - Wallpaper Loading and Management
 import State from "./state.js";
-import { CONFIG, BACKUP_IMAGES } from "./config.js";
+import { BACKUP_IMAGES } from "./config.js";
 import { hideLoader } from "./utils.js";
-import { updateMainLikeButton } from "./likes.js";
 
-function setWallpaper(url, id = null) {
+function setWallpaper(url) {
     const bg = document.getElementById("bg");
     bg.style.backgroundImage = `url('${url}')`;
     bg.style.opacity = "1";
     State.currentWallpaperUrl = url;
-    State.currentWallpaperId = id;
-    updateMainLikeButton();
     hideLoader();
 }
 
@@ -19,8 +16,6 @@ function setFallbackGradient() {
     bg.style.background = "linear-gradient(135deg, #667eea 0%, #764ba2 100%)";
     bg.style.opacity = "1";
     State.currentWallpaperUrl = null;
-    State.currentWallpaperId = null;
-    updateMainLikeButton();
     hideLoader();
 }
 
@@ -35,78 +30,13 @@ function loadBackupWallpaper() {
     img.src = path;
 }
 
-function preloadLikedWallpaper(url, id, triedIds = []) {
-    const img = new Image();
-    img.onload = () => {
-        setWallpaper(url, id);
-        hideLoader();
-    };
-    img.onerror = () => {
-        triedIds.push(id);
-        const remaining = State.likedWallpapers.filter(
-            (w) => !triedIds.includes(w.id)
-        );
-        if (remaining.length > 0) {
-            const next = remaining[Math.floor(Math.random() * remaining.length)];
-            preloadLikedWallpaper(next.url, next.id, triedIds);
-        } else {
-            setFallbackGradient();
-        }
-    };
-    img.src = url;
-}
-
-function preloadAndSet(url, id) {
-    const img = new Image();
-    img.onload = () => {
-        setWallpaper(url, id);
-        hideLoader();
-    };
-    img.onerror = () => loadBackupWallpaper();
-    img.src = url;
-}
-
-async function loadFromLaravel() {
-    try {
-        const res = await fetch(CONFIG.LARAVEL_WALLPAPER_API);
-        if (!res.ok) throw new Error("Laravel API error");
-
-        const json = await res.json();
-        const success = json && (json.status === "ok" || json.status === true);
-
-        if (!success || !Array.isArray(json.data) || json.count === 0) {
-            throw new Error("Invalid wallpaper data");
-        }
-
-        const wallpapers = json.data;
-        const selected = wallpapers[Math.floor(Math.random() * wallpapers.length)];
-
-        if (selected && typeof selected.url === 'string' && selected.url.startsWith('http')) {
-            preloadAndSet(selected.url, selected.id);
-        } else {
-            throw new Error("Invalid wallpaper URL");
-        }
-    } catch (err) {
-        loadBackupWallpaper();
-    }
-}
-
-export async function loadWallpaper() {
+export function loadWallpaper() {
     if (State.isStaticWallpaper && State.staticWallpaperUrl) {
-        setWallpaper(State.staticWallpaperUrl, State.staticWallpaperId);
+        setWallpaper(State.staticWallpaperUrl);
         return;
     }
 
-    if (State.onlyShowLiked && State.likedWallpapers.length > 0) {
-        const random =
-            State.likedWallpapers[
-            Math.floor(Math.random() * State.likedWallpapers.length)
-            ];
-        preloadLikedWallpaper(random.url, random.id);
-        return;
-    }
-
-    await loadFromLaravel();
+    loadBackupWallpaper();
 }
 
 export async function downloadWallpaper() {
@@ -123,7 +53,7 @@ export async function downloadWallpaper() {
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
         a.href = url;
-        a.download = `Invinsense_${Date.now()}.jpg`;
+        a.download = `Invinsense_${Date.now()}.png`;
         a.click();
         URL.revokeObjectURL(url);
         showNotification("Downloaded!", "success");

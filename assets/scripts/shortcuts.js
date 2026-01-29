@@ -27,10 +27,6 @@ export function initShortcuts() {
                     e.preventDefault();
                     toggleBookmarks();
                     break;
-                case 'l': // Shift + L: Like Wallpaper
-                    e.preventDefault();
-                    toggleLike();
-                    break;
                 case 'h': // Shift + H: Help
                     e.preventDefault();
                     toggleHelpGuidance();
@@ -64,10 +60,6 @@ function toggleNews() {
 
 function toggleBookmarks() {
     document.getElementById('bookmarks-toggle')?.click();
-}
-
-function toggleLike() {
-    document.getElementById('main-like-button')?.click();
 }
 
 function toggleHelpGuidance() {
