@@ -1,14 +1,35 @@
 (function () {
+    const HOST_ID = 'invinsense-overlay-host';
     const CONTAINER_ID = 'invinsense-recent-tabs-overlay-container';
     const LIST_ID = 'invinsense-recent-tabs-list';
     const BLUR_ID = 'invinsense-blur-overlay';
 
+    let shadowRoot = null;
     let overlayContainer = null;
     let blurOverlay = null;
     let isVisible = false;
 
-    function createOverlay() {
-        if (overlayContainer) return;
+    async function createOverlay() {
+        if (shadowRoot) return;
+
+        const host = document.createElement('div');
+        host.id = HOST_ID;
+        document.documentElement.appendChild(host);
+
+        shadowRoot = host.attachShadow({ mode: 'closed' });
+
+        // Add Styles
+        const styleLink = document.createElement('link');
+        styleLink.rel = 'stylesheet';
+        styleLink.href = chrome.runtime.getURL('assets/style/overlay.css');
+        shadowRoot.appendChild(styleLink);
+
+        blurOverlay = document.createElement('div');
+        blurOverlay.id = BLUR_ID;
+        blurOverlay.addEventListener('click', () => {
+            if (isVisible) toggleOverlay();
+        });
+        shadowRoot.appendChild(blurOverlay);
 
         overlayContainer = document.createElement('div');
         overlayContainer.id = CONTAINER_ID;
@@ -17,15 +38,7 @@
         listContainer.id = LIST_ID;
         overlayContainer.appendChild(listContainer);
 
-        blurOverlay = document.createElement('div');
-        blurOverlay.id = BLUR_ID;
-
-        blurOverlay.addEventListener('click', () => {
-            if (isVisible) toggleOverlay();
-        });
-
-        document.documentElement.appendChild(blurOverlay);
-        document.documentElement.appendChild(overlayContainer);
+        shadowRoot.appendChild(overlayContainer);
     }
 
     async function toggleOverlay() {
@@ -38,8 +51,8 @@
             return;
         }
 
-        if (!overlayContainer) {
-            createOverlay();
+        if (!shadowRoot) {
+            await createOverlay();
         }
 
         isVisible = !isVisible;
@@ -59,7 +72,8 @@
     }
 
     async function updateRecentTabs() {
-        const list = document.getElementById(LIST_ID);
+        if (!shadowRoot) return;
+        const list = shadowRoot.getElementById(LIST_ID);
         if (!list) return;
 
         while (list.firstChild) {

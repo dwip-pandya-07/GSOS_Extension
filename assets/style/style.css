@@ -881,7 +881,7 @@ input:checked+.toggle-slider:hover {
   position: fixed;
   top: 80px;
   right: 0;
-  
+
   width: 50px;
   height: 50px;
   background: rgba(255, 255, 255, 0.1);
@@ -1028,7 +1028,7 @@ input:checked+.toggle-slider:hover {
   top: 20px;
   right: 0;
   width: 50px;
-  
+
   height: 50px;
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
@@ -1042,15 +1042,15 @@ input:checked+.toggle-slider:hover {
   align-items: center;
   justify-content: center;
   transition: background 0.2s ease;
-  
+
   z-index: 999;
-  
+
   box-shadow: -4px 4px 20px rgba(0, 0, 0, 0.15);
 }
 
 .bookmarks-toggle:hover {
   background: rgba(255, 255, 255, 0.15);
-  
+
 }
 
 
@@ -1060,7 +1060,7 @@ input:checked+.toggle-slider:hover {
   top: 80px;
   right: 0;
   width: 50px;
-  
+
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(15px);
   -webkit-backdrop-filter: blur(15px);
@@ -1082,7 +1082,7 @@ input:checked+.toggle-slider:hover {
   scrollbar-width: none;
   -ms-overflow-style: none;
 
-  
+
   opacity: 0;
   visibility: hidden;
   transform: translateX(100%);
@@ -1181,7 +1181,7 @@ input:checked+.toggle-slider:hover {
 
 .modal-content {
   background: rgba(30, 30, 30, 0.5);
-  
+
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.15);
@@ -1832,8 +1832,7 @@ input:checked+.toggle-slider:hover {
 
 .help-toggle {
   position: fixed;
-  bottom: 140px;
-  
+  bottom: 100px;
   right: 0;
   width: 50px;
   height: 50px;

@@ -2,15 +2,6 @@ const MOCK_BOOKMARKS = [
     { title: "Google", url: "https://google.com" },
 ];
 
-const CUSTOM_ICONS = {
-    "https://invinsense-launcher.netlify.app/dashboard": "assets/images/invinsense.svg",
-    "https://invinsense-launcher.netlify.app/xdr": "assets/images/icn-xdr.svg",
-    "https://invinsense-launcher.netlify.app/xdr-plus": "assets/images/icn-dxr-plus.svg",
-    "https://invinsense-launcher.netlify.app/oxdr": "assets/images/icn-oxdr.svg",
-    "https://invinsense-launcher.netlify.app/gsos": "assets/images/icn-gsos.svg",
-    "https://invinsense-launcher.netlify.app/pulse": "assets/images/icn-pulse.svg"
-};
-
 let allBookmarks = [];
 let selectedBookmarks = [];
 
@@ -221,21 +212,11 @@ function renderDock() {
         const img = document.createElement("img");
         img.alt = bm.title;
 
-        if (CUSTOM_ICONS[bm.url]) {
-            img.src = CUSTOM_ICONS[bm.url];
-            img.onerror = () => {
-                img.src = `/_favicon/?pageUrl=${encodeURIComponent(bm.url)}&size=64`;
-                img.onerror = () => {
-                    img.src = "assets/images/default-bookmark.png";
-                };
-            };
-        } else {
-            const nativeFavicon = `/_favicon/?pageUrl=${encodeURIComponent(bm.url)}&size=64`;
-            img.src = nativeFavicon;
-            img.onerror = () => {
-                img.src = "assets/images/default-bookmark.png";
-            };
-        }
+        const nativeFavicon = `/_favicon/?pageUrl=${encodeURIComponent(bm.url)}&size=64`;
+        img.src = nativeFavicon;
+        img.onerror = () => {
+            img.src = "assets/images/default-bookmark.png";
+        };
 
         a.appendChild(img);
         dock.appendChild(a);

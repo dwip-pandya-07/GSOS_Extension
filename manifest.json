@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
-  "name": "Invinsense",
-  "version": "2.1.0",
+  "name": "Invinsense Dashboard",
+  "version": "1.0",
   "description": "Invinsense Dashboard - Your personalized new tab with dynamic wallpapers, cybersecurity news, bookmarks, and security tips",
   "permissions": [
     "storage",
@@ -12,8 +12,16 @@
   "content_security_policy": {
     "extension_pages": "script-src 'self'; object-src 'self';"
   },
-  "host_permissions": [
-    "http://127.0.0.1:8000/*"
+  "host_permissions": [],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "assets/style/overlay.css"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
+    }
   ],
   "chrome_url_overrides": {
     "newtab": "index.html"
