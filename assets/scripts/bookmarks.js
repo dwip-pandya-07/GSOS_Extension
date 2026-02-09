@@ -1,3 +1,4 @@
+import { handleError } from "./utils.js";
 const MOCK_BOOKMARKS = [
     { title: "Google", url: "https://google.com" },
 ];
@@ -63,7 +64,7 @@ async function loadBookmarksForModal() {
             const tree = await chrome.bookmarks.getTree();
             allBookmarks = parseBookmarks(tree);
         } catch (e) {
-            console.warn("Error fetching bookmarks", e);
+            handleError(e, true);
             allBookmarks = MOCK_BOOKMARKS;
         }
     } else {
@@ -176,6 +177,7 @@ function loadSavedBookmarks() {
                 localStorage.removeItem("gsos_bookmarks");
                 renderDock();
             } catch (e) {
+                handleError(e, true);
                 selectedBookmarks = [];
                 renderDock();
             }

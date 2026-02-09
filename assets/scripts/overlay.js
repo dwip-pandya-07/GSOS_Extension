@@ -1,4 +1,11 @@
 (function () {
+    const DEV_MODE = false;
+
+    function handleInternalError(err, silent = true) {
+        if (DEV_MODE) console.error(err);
+        if (!silent) alert("An unexpected error occurred. Please try again.");
+    }
+
     const HOST_ID = 'invinsense-overlay-host';
     const CONTAINER_ID = 'invinsense-recent-tabs-overlay-container';
     const LIST_ID = 'invinsense-recent-tabs-list';
@@ -155,7 +162,7 @@
                 list.appendChild(emptyMsg);
             }
         } catch (e) {
-            console.warn('Invinsense: Failed to update recent tabs:', e);
+            handleInternalError(e);
         }
     }
 

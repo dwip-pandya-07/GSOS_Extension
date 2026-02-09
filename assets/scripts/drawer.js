@@ -3,6 +3,7 @@ import { showNotification } from "./utils.js";
 import { saveSettingsToStorage } from "./storage.js";
 import { loadWallpaper, downloadWallpaper } from "./wallpaper.js";
 import { updateClock } from "./clock.js";
+import { handleError } from "./utils.js";
 import { BRAND_LOGOS } from "./config.js";
 
 export function initDrawer() {
@@ -71,14 +72,16 @@ export function initDrawer() {
     const logoUrlInput = document.getElementById("logo-url-input");
     const loadUrlBtn = document.getElementById("load-url-btn");
 
+    const MAX_LOGO_SIZE = 2 * 1024 * 1024;
+    const ALLOWED_TYPES = ['image/png', 'image/jpeg', 'image/jpg'];
+
     const setCustomLogo = (url) => {
         State.customLogoUrl = url;
         saveSettingsToStorage();
 
-        const brandLogo = document.getElementById("brand-logo");
-        if (brandLogo) {
-            brandLogo.src = url;
-        }
+        import('./ui.js').then(module => {
+            module.loadRandomLogo();
+        });
 
         if (logoPreviewImg && logoPreview) {
             logoPreviewImg.src = url;
@@ -101,20 +104,19 @@ export function initDrawer() {
             const file = e.target.files[0];
             if (!file) return;
 
-            const validTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/svg+xml'];
-            if (!validTypes.includes(file.type)) {
-                showNotification("Please upload a valid image (PNG, JPG, or SVG)", "warning");
+            if (!ALLOWED_TYPES.includes(file.type)) {
+                showNotification("Invalid file type. Only PNG and JPG are allowed.", "warning");
                 return;
             }
 
-            if (file.size > 2 * 1024 * 1024) {
-                showNotification("Image size should be less than 2MB", "warning");
+            if (file.size > MAX_LOGO_SIZE) {
+                showNotification("Image size must be less than 2MB.", "warning");
                 return;
             }
 
             const reader = new FileReader();
             reader.onload = (event) => {
-                setCustomLogo(event.target.result);
+                setCustomLogo(event.target.result); // Store as Base64
                 showNotification("Custom logo uploaded successfully!", "success");
             };
             reader.readAsDataURL(file);
@@ -122,14 +124,31 @@ export function initDrawer() {
     }
 
     if (loadUrlBtn && logoUrlInput) {
-        const handleUrlLoad = () => {
-            const url = logoUrlInput.value.trim();
-            if (!url) return;
+        const handleUrlLoad = async () => {
+            const urlInput = logoUrlInput.value.trim();
+            if (!urlInput) return;
 
+            // 1. Strict URL and Protocol Validation
+            let url;
             try {
-                new URL(url);
+                url = new URL(urlInput);
             } catch (e) {
-                showNotification("Please enter a valid URL", "warning");
+                handleError(new Error("Please enter a valid logo URL."));
+                return;
+            }
+
+            if (url.protocol !== 'https:') {
+                handleError(new Error("Logo URL must use HTTPS."));
+                return;
+            }
+
+            if (url.port && url.port !== '443') {
+                handleError(new Error("Non-standard ports are not allowed."));
+                return;
+            }
+
+            if (urlInput.length > 2048) {
+                handleError(new Error("URL is too long."));
                 return;
             }
 
@@ -137,22 +156,53 @@ export function initDrawer() {
             loadUrlBtn.textContent = "Loading...";
             loadUrlBtn.disabled = true;
 
-            const img = new Image();
-            img.crossOrigin = "anonymous";
-            img.onload = () => {
-                setCustomLogo(url);
-                showNotification("Logo loaded from URL!", "success");
+            try {
+                // 2. Fetch and Validate Content
+                const response = await fetch(urlInput);
+
+                if (!response.ok) {
+                    throw new Error("Unable to download image from the provided URL.");
+                }
+
+                const contentType = response.headers.get('content-type');
+                if (contentType && contentType.includes("svg")) {
+                    throw new Error("SVG images are not allowed for security reasons.");
+                }
+
+                if (!contentType || !ALLOWED_TYPES.some(type => contentType.startsWith(type))) {
+                    throw new Error("URL does not point to a valid image.");
+                }
+
+                // 3. Size Validation
+                const blob = await response.blob();
+                if (blob.size > MAX_LOGO_SIZE) {
+                    throw new Error("Image size must be less than 2MB.");
+                }
+
+                // 4. Convert to Base64 for Storage
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                    setCustomLogo(reader.result);
+                    showNotification("Logo loaded from URL!", "success");
+                    resetBtnState();
+                };
+                reader.onerror = () => {
+                    throw new Error("Unable to download image from the provided URL.");
+                };
+                reader.readAsDataURL(blob);
+
+            } catch (error) {
+                // Map fetch/network errors to "Unable to download"
+                const msg = error.message === "Failed to fetch" ? "Unable to download image from the provided URL." : error.message;
+                handleError(new Error(msg));
+                resetBtnState();
+            }
+
+            function resetBtnState() {
                 loadUrlBtn.textContent = "";
                 originalContent.forEach(node => loadUrlBtn.appendChild(node));
                 loadUrlBtn.disabled = false;
-            };
-            img.onerror = () => {
-                showNotification("Failed to load image. Check URL or CORS.", "error");
-                loadUrlBtn.textContent = "";
-                originalContent.forEach(node => loadUrlBtn.appendChild(node));
-                loadUrlBtn.disabled = false;
-            };
-            img.src = url;
+            }
         };
 
         loadUrlBtn.onclick = handleUrlLoad;

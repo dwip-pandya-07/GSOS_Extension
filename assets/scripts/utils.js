@@ -1,3 +1,5 @@
+import { DEV_MODE } from "./config.js";
+
 export function showNotification(message, type = "info") {
     document.querySelectorAll(".notification").forEach((n) => n.remove());
     const n = document.createElement("div");
@@ -17,6 +19,34 @@ export function showNotification(message, type = "info") {
         n.style.animation = "slideOut 0.4s ease-in";
         setTimeout(() => n.remove(), 400);
     }, 3000);
+}
+
+/**
+ * Production-safe error handler
+ * @param {Error|any} error - The error object to handle
+ * @param {boolean} silent - If true, no UI notification is shown
+ */
+export function handleError(error, silent = false) {
+    if (DEV_MODE) {
+        console.error("DEBUG:", error);
+    }
+
+    if (!silent) {
+        let displayMessage = "An unexpected error occurred. Please try again.";
+
+
+        if (error && error.message) {
+            const msg = error.message;
+            // Refined regex to avoid masking legitimate English "at" while catching stack trace "at "
+            const isTechnical = /stack|TypeError|ReferenceError|SyntaxError|\[object|{|at\s+.*\.js:/.test(msg);
+
+            if (!isTechnical) {
+                displayMessage = msg;
+            }
+        }
+
+        showNotification(displayMessage, "error");
+    }
 }
 
 export function hideLoader() {

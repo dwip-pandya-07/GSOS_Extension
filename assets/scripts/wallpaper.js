@@ -1,6 +1,6 @@
 import State from "./state.js";
 import { BACKUP_IMAGES } from "./config.js";
-import { hideLoader } from "./utils.js";
+import { hideLoader, handleError } from "./utils.js";
 
 function setWallpaper(url) {
     const bg = document.getElementById("bg");
@@ -56,8 +56,7 @@ export async function downloadWallpaper() {
         a.click();
         URL.revokeObjectURL(url);
         showNotification("Downloaded!", "success");
-    } catch {
-        const { showNotification } = await import("./utils.js");
-        showNotification("Download failed", "error");
+    } catch (error) {
+        handleError(error);
     }
 }

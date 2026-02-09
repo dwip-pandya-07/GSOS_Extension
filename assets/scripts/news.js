@@ -1,4 +1,9 @@
-const DEFAULT_RSS_FEED = "https://feeds.feedburner.com/TheHackersNews";
+import { handleError } from "./utils.js";
+const DEFAULT_RSS_FEEDS = [
+    "https://feeds.feedburner.com/TheHackersNews",
+    "https://www.bleepingcomputer.com/feed/",
+    "https://krebsonsecurity.com/feed/"
+];
 const RSS_TO_JSON_BASE = "https://api.rss2json.com/v1/api.json?rss_url=";
 
 let newsData = [];
@@ -84,7 +89,7 @@ function initRSSFeedsUI() {
     const headerTitle = document.createElement("h4");
     headerTitle.textContent = "RSS Feeds Configuration";
     const headerDesc = document.createElement("p");
-    headerDesc.textContent = "Add up to 10 feeds (priority order)";
+    headerDesc.textContent = "First 3 feeds are default. Add up to 7 more.";
     headerInfo.appendChild(headerTitle);
     headerInfo.appendChild(headerDesc);
     header.appendChild(headerInfo);
@@ -101,7 +106,17 @@ function initRSSFeedsUI() {
         input.type = "url";
         input.id = `rss-feed-${i + 1}`;
         input.className = "rss-feed-input";
-        input.placeholder = `Feed ${i + 1} URL (Priority: ${10 - i})`;
+
+        if (i < 3) {
+            input.value = DEFAULT_RSS_FEEDS[i];
+            input.disabled = true;
+            input.title = "Default feed (cannot be changed)";
+            input.style.opacity = "0.7";
+            input.style.color = "#aaa";
+        } else {
+            input.placeholder = `Feed ${i + 1} URL (Priority: ${10 - i})`;
+        }
+
         input.style.width = "100%";
         input.style.padding = "10px";
         input.style.background = "rgba(255,255,255,0.05)";
@@ -201,6 +216,11 @@ function loadSavedFeeds() {
                 console.error("Migration error", e);
             }
         }
+        for (let i = 0; i < 3; i++) {
+            feeds[i] = DEFAULT_RSS_FEEDS[i];
+            const input = document.getElementById(`rss-feed-${i + 1}`);
+            if (input) input.value = DEFAULT_RSS_FEEDS[i];
+        }
 
         if (feeds.length > 0) {
             feeds.forEach((url, index) => {
@@ -209,41 +229,167 @@ function loadSavedFeeds() {
                     input.value = url;
                 }
             });
-        } else {
-            const firstInput = document.getElementById("rss-feed-1");
-            if (firstInput) {
-                firstInput.value = DEFAULT_RSS_FEED;
-            }
         }
     });
 }
 
-function saveRSSFeeds() {
-    const feeds = [];
-    for (let i = 1; i <= 10; i++) {
-        const input = document.getElementById(`rss-feed-${i}`);
-        if (input && input.value.trim()) {
-            feeds.push(input.value.trim());
-        } else {
-            feeds.push("");
-        }
+function isValidRSSUrl(string) {
+    if (!string || string.trim() === "") return false;
+    try {
+        const url = new URL(string);
+        if (url.protocol !== "https:") return false;
+        if (url.port && url.port !== "443") return false;
+        if (string.length > 2048) return false;
+        return true;
+    } catch (_) {
+        return false;
+    }
+}
+
+async function validateFeedSource(url) {
+    if (!url || url.trim() === "") return true;
+
+    // Step 1: URL Validation (Protocol, Port, Length)
+    if (!url.startsWith("https://")) {
+        throw new Error("RSS feed must use a secure HTTPS URL.");
     }
 
-    chrome.storage.local.set({ rss_feeds: feeds }, () => {
-        newsData = [];
-        lastFetchTime = 0;
-        alert("RSS Feeds saved successfully! News will reload on next open.");
-        closeSettingsDrawer();
-    });
+    try {
+        const urlObj = new URL(url);
+        if (urlObj.port && urlObj.port !== "443") {
+            throw new Error("Only the standard HTTPS port (443) is allowed.");
+        }
+    } catch (e) {
+        throw new Error("Please enter a valid RSS feed URL.");
+    }
+
+    if (url.length > 2048) {
+        throw new Error("URL is too long (max 2048 characters).");
+    }
+
+    try {
+        // Step 2: Fetch Validation
+        const response = await fetch(`${RSS_TO_JSON_BASE}${encodeURIComponent(url)}`);
+        if (!response.ok) {
+            throw new Error("Unable to reach the RSS feed. Please check the URL.");
+        }
+
+        const data = await response.json();
+
+        // Step 3: Structure and Content Validation
+        if (data.status === "error") {
+            // rss2json returns status: error if the URL is not a valid RSS feed
+            throw new Error("The provided URL is not a valid RSS feed.");
+        }
+
+        if (!data.items || !Array.isArray(data.items)) {
+            throw new Error("RSS feed format is not supported.");
+        }
+
+        if (data.items.length === 0) {
+            throw new Error("The feed at this URL contains no articles.");
+        }
+
+        // Validate first item schema as a representative sample
+        const item = data.items[0];
+        if (!item.title || !item.link || !item.pubDate) {
+            throw new Error("RSS feed format is not supported.");
+        }
+
+        if (typeof item.title !== 'string' || item.title.trim() === "") {
+            throw new Error("RSS feed format is not supported.");
+        }
+
+        if (!isValidRSSUrl(item.link)) {
+            throw new Error("Insecure or invalid link detected in feed articles.");
+        }
+
+        return true;
+    } catch (e) {
+        // Specifically catch timeout or network failure if possible, otherwise use specific mapping
+        if (e.name === 'AbortError' || e.message.includes('timeout')) {
+            throw new Error("RSS feed took too long to respond.");
+        }
+
+        // Re-throw specific errors already handled above
+        const userFriendlyMessages = [
+            "RSS feed must use a secure HTTPS URL.",
+            "Please enter a valid RSS feed URL.",
+            "Only the standard HTTPS port (443) is allowed.",
+            "URL is too long (max 2048 characters).",
+            "Unable to reach the RSS feed. Please check the URL.",
+            "The provided URL is not a valid RSS feed.",
+            "RSS feed format is not supported.",
+            "The feed at this URL contains no articles.",
+            "Insecure or invalid link detected in feed articles."
+        ];
+
+        if (userFriendlyMessages.includes(e.message)) {
+            throw e;
+        }
+
+        // Fallback for unexpected fetch/JSON errors
+        throw new Error("Unable to reach the RSS feed. Please check the URL.");
+    }
+}
+
+async function saveRSSFeeds() {
+    const saveBtn = document.getElementById("save-rss-feeds");
+    if (!saveBtn) return;
+
+    const originalText = saveBtn.textContent;
+    saveBtn.textContent = "Validating...";
+    saveBtn.disabled = true;
+
+    try {
+        const feeds = [];
+        for (let i = 0; i < 3; i++) {
+            feeds.push(DEFAULT_RSS_FEEDS[i]);
+        }
+
+        for (let i = 4; i <= 10; i++) {
+            const input = document.getElementById(`rss-feed-${i}`);
+            if (input) {
+                const val = input.value.trim();
+                if (val !== "") {
+                    await validateFeedSource(val);
+                    feeds.push(val);
+                } else {
+                    feeds.push("");
+                }
+            }
+        }
+
+        chrome.storage.local.set({ rss_feeds: feeds }, () => {
+            newsData = [];
+            lastFetchTime = 0;
+            showNotification("RSS Feeds validated and saved successfully!", "success");
+            closeSettingsDrawer();
+            resetBtn();
+        });
+
+    } catch (error) {
+        handleError(error);
+        resetBtn();
+    }
+
+    function resetBtn() {
+        saveBtn.textContent = originalText;
+        saveBtn.disabled = false;
+    }
 }
 
 function resetRSSFeeds() {
-    if (confirm("Reset all RSS feeds to default?")) {
+    if (confirm("Reset all custom RSS feeds? Defaults will remain.")) {
         chrome.storage.local.remove("rss_feeds", () => {
             for (let i = 1; i <= 10; i++) {
                 const input = document.getElementById(`rss-feed-${i}`);
                 if (input) {
-                    input.value = i === 1 ? DEFAULT_RSS_FEED : "";
+                    if (i <= 3) {
+                        input.value = DEFAULT_RSS_FEEDS[i - 1];
+                    } else {
+                        input.value = "";
+                    }
                 }
             }
 
@@ -257,19 +403,18 @@ function resetRSSFeeds() {
 async function getConfiguredFeeds() {
     return new Promise((resolve) => {
         chrome.storage.local.get(['rss_feeds'], (result) => {
+            let feeds = [];
             if (result.rss_feeds) {
-                resolve(result.rss_feeds.filter(url => url && url.trim()));
+                feeds = result.rss_feeds;
             } else {
-                const legacySaved = localStorage.getItem("rss-feeds");
-                if (legacySaved) {
-                    try {
-                        const feeds = JSON.parse(legacySaved);
-                        resolve(feeds.filter(url => url && url.trim()));
-                        return;
-                    } catch (e) { }
-                }
-                resolve([DEFAULT_RSS_FEED]);
+                feeds = [...DEFAULT_RSS_FEEDS];
             }
+
+            for (let i = 0; i < 3; i++) {
+                feeds[i] = DEFAULT_RSS_FEEDS[i];
+            }
+
+            resolve(feeds.filter(url => url && url.trim()));
         });
     });
 }
@@ -306,7 +451,7 @@ async function loadNews() {
             fetch(`${RSS_TO_JSON_BASE}${encodeURIComponent(feedUrl)}`)
                 .then(res => res.json())
                 .catch(err => {
-                    console.error(`${feedUrl}:`, err);
+                    handleError(err, true);
                     return null;
                 })
         );
@@ -316,16 +461,20 @@ async function loadNews() {
         const allArticles = [];
 
         feedResults.forEach((data, feedIndex) => {
-            if (data && data.status === "ok" && data.items) {
+            if (isValidFeedData(data)) {
                 const weight = PRIORITY_WEIGHTS[feedIndex] || 1;
                 const items = data.items.slice(0, 10);
 
                 items.forEach((item, itemIndex) => {
-                    const article = processArticle(item, feedIndex, data.feed);
-                    article.priority = weight;
-                    article.feedIndex = feedIndex;
-                    allArticles.push(article);
+                    if (item && item.title && item.link && item.pubDate && typeof item.title === 'string' && isValidRSSUrl(item.link)) {
+                        const article = processArticle(item, feedIndex, data.feed);
+                        article.priority = weight;
+                        article.feedIndex = feedIndex;
+                        allArticles.push(article);
+                    }
                 });
+            } else {
+                console.warn(`Invalid feed structure skipped for index ${feedIndex}`);
             }
         });
 
@@ -347,15 +496,28 @@ async function loadNews() {
         renderNewsItems();
 
     } catch (error) {
-        console.error(error);
+        handleError(error, true);
         container.textContent = "";
         const errorDiv = document.createElement("div");
         errorDiv.style.textAlign = "center";
         errorDiv.style.padding = "20px";
         errorDiv.style.color = "#ff6b6b";
-        errorDiv.textContent = "Yet to Configure the RSS Feeds ";
+
+        // Show descriptive message if safe
+        let displayMsg = "An unexpected error occurred. Please try again.";
+        if (error && error.message && !/stack|at |\.js|TypeError|ReferenceError|SyntaxError|\[object|{/.test(error.message)) {
+            displayMsg = error.message;
+        }
+
+        errorDiv.textContent = displayMsg;
         container.appendChild(errorDiv);
     }
+}
+
+function isValidFeedData(data) {
+    if (!data || data.status !== 'ok') return false;
+    if (!data.items || !Array.isArray(data.items)) return false;
+    return true;
 }
 
 function processArticle(item, feedIndex, feedInfo) {
@@ -376,9 +538,9 @@ function processArticle(item, feedIndex, feedInfo) {
     }
 
     let icon = null;
-    if (item.thumbnail) {
+    if (item.thumbnail && isValidRSSUrl(item.thumbnail)) {
         icon = item.thumbnail;
-    } else if (item.enclosure && item.enclosure.link) {
+    } else if (item.enclosure && item.enclosure.link && isValidRSSUrl(item.enclosure.link)) {
         icon = item.enclosure.link;
     }
 

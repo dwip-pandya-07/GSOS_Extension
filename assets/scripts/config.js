@@ -49,4 +49,5 @@ const BACKUP_IMAGES = [
     "backup/image7.png", "backup/image9.png", "backup/image12.png"
 ];
 
-export { CONFIG, BRAND_LOGOS, SECURITY_TIPS, BACKUP_IMAGES };
+const DEV_MODE = false;
+export { CONFIG, BRAND_LOGOS, SECURITY_TIPS, BACKUP_IMAGES, DEV_MODE };

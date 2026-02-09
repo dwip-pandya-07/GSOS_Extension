@@ -1,3 +1,4 @@
+import { handleError } from "./utils.js";
 import { loadSettingsFromStorage } from "./storage.js";
 import { startClock } from "./clock.js";
 import { loadTip } from "./tips.js";
@@ -29,6 +30,17 @@ async function init() {
     initRecentTabs();
     initShortcuts();
     initHelp();
+
+    // Global Error Protection
+    window.onerror = (message, source, lineno, colno, error) => {
+        handleError(error);
+        return true; // Suppress default browser error logging in UI
+    };
+
+    window.addEventListener('unhandledrejection', (event) => {
+        handleError(event.reason);
+        event.preventDefault(); // Suppress default browser rejection logging
+    });
 }
 
 if (document.readyState === "loading") {

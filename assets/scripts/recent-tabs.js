@@ -1,3 +1,4 @@
+import { handleError } from "./utils.js";
 const CLEAR_RECENT_TABS_ON_DASHBOARD_REFRESH = false;
 
 export function initRecentTabs() {
@@ -164,7 +165,8 @@ function handlePageNavigation(url, hostname) {
         const domainMatch = tabs.find(t => {
             try {
                 return new URL(t.url).hostname === hostname;
-            } catch {
+            } catch (e) {
+                handleError(e, true);
                 return false;
             }
         });
