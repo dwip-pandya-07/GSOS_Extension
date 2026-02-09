@@ -166,7 +166,7 @@ export function initDrawer() {
 
                 const contentType = response.headers.get('content-type');
                 if (contentType && contentType.includes("svg")) {
-                    throw new Error("SVG images are not allowed for security reasons.");
+                    throw new Error("SVG images are not allowed only PNG and JPG are allowed.");
                 }
 
                 if (!contentType || !ALLOWED_TYPES.some(type => contentType.startsWith(type))) {

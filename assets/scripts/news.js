@@ -1,4 +1,4 @@
-import { handleError } from "./utils.js";
+import { handleError, showNotification } from "./utils.js";
 const DEFAULT_RSS_FEEDS = [
     "https://feeds.feedburner.com/TheHackersNews",
     "https://www.bleepingcomputer.com/feed/",
@@ -270,15 +270,17 @@ async function validateFeedSource(url) {
     try {
         // Step 2: Fetch Validation
         const response = await fetch(`${RSS_TO_JSON_BASE}${encodeURIComponent(url)}`);
-        if (!response.ok) {
-            throw new Error("Unable to reach the RSS feed. Please check the URL.");
+
+        let data;
+        try {
+            data = await response.json();
+        } catch (e) {
+            if (!response.ok) throw new Error("Unable to reach the RSS feed provider.");
+            throw e;
         }
 
-        const data = await response.json();
-
-        // Step 3: Structure and Content Validation
-        if (data.status === "error") {
-            // rss2json returns status: error if the URL is not a valid RSS feed
+        // Step 3: Handle API-level errors (even if response.ok is false)
+        if (data.status === "error" || !response.ok) {
             throw new Error("The provided URL is not a valid RSS feed.");
         }
 
