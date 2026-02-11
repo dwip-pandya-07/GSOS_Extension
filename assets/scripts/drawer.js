@@ -114,12 +114,33 @@ export function initDrawer() {
                 return;
             }
 
+            // Magic Number Verification
             const reader = new FileReader();
             reader.onload = (event) => {
-                setCustomLogo(event.target.result); // Store as Base64
-                showNotification("Custom logo uploaded successfully!", "success");
+                const arr = new Uint8Array(event.target.result).subarray(0, 4);
+                let header = "";
+                for (let i = 0; i < arr.length; i++) {
+                    header += arr[i].toString(16).padStart(2, '0').toUpperCase();
+                }
+
+                const isPNG = header.startsWith("89504E47");
+                const isJPG = header.startsWith("FFD8FF");
+
+                if (!isPNG && !isJPG) {
+                    showNotification("Malicious or invalid file content detected.", "error");
+                    logoFileInput.value = "";
+                    return;
+                }
+
+                // If valid, convert to data URL for storage
+                const dataReader = new FileReader();
+                dataReader.onload = (e) => {
+                    setCustomLogo(e.target.result);
+                    showNotification("Custom logo uploaded successfully!", "success");
+                };
+                dataReader.readAsDataURL(file);
             };
-            reader.readAsDataURL(file);
+            reader.readAsArrayBuffer(file.slice(0, 4));
         };
     }
 

@@ -308,12 +308,11 @@ async function validateFeedSource(url) {
 
         return true;
     } catch (e) {
-        // Specifically catch timeout or network failure if possible, otherwise use specific mapping
+
         if (e.name === 'AbortError' || e.message.includes('timeout')) {
             throw new Error("RSS feed took too long to respond.");
         }
 
-        // Re-throw specific errors already handled above
         const userFriendlyMessages = [
             "RSS feed must use a secure HTTPS URL.",
             "Please enter a valid RSS feed URL.",

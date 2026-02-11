@@ -205,6 +205,10 @@ function renderDock() {
     };
 
     selectedBookmarks.forEach(bm => {
+        if (!bm.url || !bm.url.startsWith("https://")) {
+            return;
+        }
+
         const a = document.createElement("a");
         a.href = bm.url;
         a.target = "_blank";
