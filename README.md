@@ -1,102 +1,84 @@
 # Invinsense Dashboard
 
-Invinsense Dashboard is a security-focused Chrome browser extension that replaces the default "New Tab" page with a personalized, high-performance workspace. It integrates productivity tools—including specialized bookmark management and recent tab tracking—with security-centric features such as curated daily tips and encapsulated content scripts for enhanced privacy and DOM isolation.
+Invinsense Dashboard is a security-focused Chrome browser extension that replaces the default "New Tab" page with a personalized, high-performance workspace. It integrates advanced productivity tools—including specialized bookmark management and recent tab tracking—with security-centric features such as curated daily tips and encapsulated content scripts for enhanced privacy and DOM isolation.
 
-## Architecture Overview
+---
 
-The extension is built on a modular, event-driven architecture using Manifest V3. It consists of the following primary architectural layers:
+## 🚀 Key Features
 
-### 1. Dashboard UI (Extension Context)
-Located in `index.html` and powered by a modular JavaScript stack (`assets/scripts/`), this layer serves as the primary user interface. It operates within the high-privilege `chrome-extension://` context, allowing direct access to Chrome APIs for storage and bookmark management.
+### 🛡️ Security-First Design
+- **Daily Security Tips**: A rotating library of cybersecurity best practices, providing a fresh tip every 24 hours based on a deterministic rotation algorithm.
+- **Transitional URL Filtering**: Automatically detects and excludes sensitive URLs (login pages, callback handlers, tokens, and session identifiers) from history to prevent data leakage.
+- **Text-Only Sanitization**: All external content (tips, news) is rendered using `textContent` to provide inherent protection against DOM-based XSS attacks.
+- **DOM Isolation (Shadow DOM)**: The Recent Tabs Overlay uses a **closed Shadow Root** to ensure maximum isolation between the extension UI and the host webpage context, preventing host-script interference.
+- **Strict CSP**: Adheres to a rigid Manifest V3 Content Security Policy (`script-src 'self'`), fundamentally blocking unauthorized script execution.
+
+### 📦 Productivity & Utility
+- **Recent Tabs Overlay (`Ctrl + Space`)**: A global shortcut that triggers a powerful search overlay on any website, allowing instant navigation across recently visited pages.
+- **Domain-Grouped History**: Intelligently groups browsing history by host, making it easier to discover pages within large domains.
+- **Intelligent Tab Switching**: Automatically focuses existing tabs/windows for requested URLs instead of creating duplicates.
+- **Integrated Bookmark Dock**: A sleek, accessible dock with site icons (favicons), featuring a selection modal for bulk management of dashboard shortcuts.
+- **Google Search Integration**: A minimalist search bar available directly on the dashboard.
+
+### 🖼️ Personalization & Branding
+- **Local Wallpaper Library**: High-resolution, locally-hosted backgrounds with randomized selection on initialization.
+- **Wallpaper Management**: Supports static wallpaper locking and user-triggered high-res downloads via blob processing.
+- **Custom Branding**: Features "Powered by infopercept consulting pvt ltd" attribution and support for custom brand logo uploads.
+- **Hidden Admin Panels**: Shift-based or sequence-based triggers reveal administrative panels for professional branding and source customization.
+
+---
+
+## ⌨️ Keyboard Shortcuts
+
+| Shortcut | Action |
+| :--- | :--- |
+| `Ctrl + Space` | Toggle Recent Tabs Overlay (on any page) |
+| `Shift + S` | Toggle Settings Drawer |
+| `Shift + N` | Toggle News Drawer |
+| `Shift + B` | Toggle Bookmarks Dock |
+| `Shift + H` | Toggle Help & Shortcuts Guide |
+| `Esc` | Close any active Drawer or Modal |
+| `U` (3 times) | Reveal Custom Logo Upload Panel (in settings) |
+| `R` (3 times) | Reveal RSS Configuration Panel (in news) |
+
+---
+
+## 🛠️ Architecture Overview
+
+The extension is built on a modular, event-driven architecture using Manifest V3:
+
+### 1. Dashboard UI (`index.html`)
+The primary interface, powered by a modular JavaScript stack (`assets/scripts/`). It operates within the high-privilege `chrome-extension://` context for direct API access.
 
 ### 2. Background Service Worker (`background.js`)
-The background service worker acts as the central orchestrator for data persistence and event tracking. It manages:
-- **Domain-based Tab History**: Groups visited URLs by hostname and persists them to `chrome.storage.local`.
-- **Transitional URL Filtering**: Automatically excludes authentication and redirect patterns (`/login`, `token=`, etc.) from history to prevent sensitive data leakage.
-- **Message Routing**: Handles requests from content scripts to switch or focus existing tabs.
+The central orchestrator for data persistence and event tracking:
+- **State Management**: Manages domain-based history and persists it to `chrome.storage.local`.
+- **Security Logic**: Implements URL normalization and transitional filtering regex.
+- **Message Routing**: Handles inter-context communication between content scripts and the extension core.
 
 ### 3. Content Scripts (`assets/scripts/overlay.js`)
-The Recent Tabs Overlay resides in a content script injected into every web page. It uses a **closed Shadow DOM** to ensure maximum isolation between the extension UI and the host webpage context.
-
-### 4. Storage & State Management
-- **Persistence**: Managed through `chrome.storage.local` to ensure data survives browser restarts without external synchronization overhead.
-- **State Object**: A centralized `State` singleton (`state.js`) provides a reactive bridge between storage operations and UI rendering components.
+Injected into every web page to provide the `Ctrl + Space` functionality. Uses encapsulation through the **Shadow DOM** to prevent CSS leakage and host-script traversal.
 
 ---
 
-## Technical Features
+## 🔒 Privacy & Data Boundaries
 
-### Recent Tabs Overlay
-- **Trigger**: `Ctrl + Space` global shortcut.
-- **Mechanism**: Dynamically fetches domain-grouped history from local storage.
-- **Intelligence**: Implements intelligent switching logic. If a selected URL is already open in another tab/window, the extension focuses the existing tab rather than creating a duplicate.
-
-### Local Wallpapers
-- **Library**: High-resolution backgrounds hosted locally within the extension package.
-- **Selection**: Implements randomized selection on initialization, with optional persistence via a "Static Wallpaper" configuration.
-- **Failover**: Automatic fallback to programmatic CSS gradients if local image assets fail to resolve.
-- **Persistence**: Supports user-triggered downloads by fetching the image blob and generating a temporary object URL for local saving.
-
-### Security Tips
-- **Rotation**: Employs a deterministic rotation algorithm based on the day of the year (`dayOfYear % totalTips`) to ensure a fresh experience every 24 hours.
-- **Content**: Pulls from a curated, static library of cybersecurity best practices.
-- **Safety**: Renders content strictly via `textContent` to prevent DOM-based XSS from static strings.
-
-### News & RSS Integration
-- **Processing**: Fetches data from configured RSS feeds through a JSON proxy.
-- **Rendering**: Employs a text-only sanitization strategy (`textContent`) to mitigate risks associated with untrusted HTML content in RSS descriptions.
-
-### Branding & Customization
-- **Hidden Configuration**: Secret key sequences (`press U three times` for logo, `press R three times` for RSS) toggle administrative UI panels, allowing professional branding and source customization without cluttering the primary interface.
+- **100% Local Storage**: No user browsing data, bookmarks, or configurations are transmitted to external servers (except for RSS fetch requests directly to identified feed providers).
+- **History Normalization**: URLs are normalized (fragments/hashes removed) to reduce storage footprint and avoid persisting transient state data.
+- **Zero Third-Party Tracking**: The extension does not utilize analytics or telemetry of any kind.
 
 ---
 
-## Security Architecture
-
-### DOM Isolation (Shadow DOM)
-The content script overlay is injected into a Host element and attached to a **closed Shadow Root**. This design achieves:
-- **CSS Encapsulation**: Host page styles cannot leak into and break the extension's UI.
-- **Script Isolation**: Host page scripts cannot traverse the DOM to read or modify the extension's internal UI components.
-
-### Content Security Policy (CSP)
-The extension adheres to a strict Manifest V3 CSP:
-- `script-src 'self'`: Disallows execution of remote or inline scripts, fundamentally preventing most classes of XSS.
-- `object-src 'self'`: Restricts the use of plugins.
-
-### Data Exposure Boundaries
-- **No Third-Party Transmission**: All user data (bookmarks, history, settings) is stored locally on the client.
-- **Authenticated Path Exclusion**: The background script uses regex pattern matching to ensure URLs containing potential session identifiers or authentication tokens are never recorded in history.
-
----
-
-## Privacy Considerations
-
-- **Local Storage Only**: No user browsing data or configuration is transmitted to external servers (excluding standard RSS fetch requests).
-- **History Normalization**: URLs are normalized (removal of fragments/hashes) to reduce storage footprint and prevent the persistence of transient state data.
-- **Minimal Metadata**: Favicons are loaded via the `favicon` permission only when necessary, minimizing exposure to third-party image trackers.
-
----
-
-## Manifest & Permissions
+## ⚙️ Permissions
 
 | Permission | Rationale |
 | :--- | :--- |
-| `storage` | Required for persisting user settings, wallpapers, and domain-grouped history. |
-| `bookmarks` | Enables the integrated bookmark dock and selection modal. |
-| `tabs` | Necessary for tracking browsing history and implementing tab switching logic. |
-| `favicon` | Used for rendering site identifiers in the Recent Tabs and Bookmarks displays. |
-| `<all_urls>` | Required for injecting the `overlay.js` content script and checking existing tab states. |
+| `storage` | Persisting user settings, wallpaper choices, and domain-grouped history. |
+| `bookmarks` | Enabling the integrated bookmark dock and selection modal. |
+| `tabs` | Tracking browsing history (with filtering) and implementing tab switching logic. |
+| `favicon` | Rendering site identifiers in the Recent Tabs and Bookmarks displays. |
+| `<all_urls>` | Injecting the overlay content script and monitoring existing tab states. |
 
 ---
 
-## Development and Maintenance
-
-### State Synchronization
-The extension uses a "Load-Modify-Store" pattern. Modules import the `State` object, modify it, and call `saveSettingsToStorage()` from `storage.js`.
-
-### Rendering Patterns
-- **Standard UI**: Modular imports handle discrete sections of the `index.html` file.
-- **Encapsulated UI**: The `overlay.js` script dynamically creates its own styles and structure within the Shadow Root.
-
-### Error Handling
-A defensive programming approach is used throughout. `favicon.onerror` fallbacks ensure UI consistency regardless of site-specific favicon availability, and `try/catch` blocks wrap all `URL` parsing logic.
+© 2026 infopercept consulting pvt ltd. All rights reserved.

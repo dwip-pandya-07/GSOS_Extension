@@ -1,0 +1,34 @@
+1. Scripting Permission Justification
+The "scripting" permission is required to enable the "Invinsense Dashboard" lightweight overlay system. This permission allows the extension to dynamically manage the user interface components of the overlay, such as the recent tabs list and security navigation, ensuring they function correctly across different web contexts.
+
+All script execution is limited strictly to UI-related tasks for the overlay feature. No page content is scraped, analyzed, or stored, and no sensitive user data is ever accessed or modified through this permission.
+
+2. ActiveTab Permission Justification
+The "activeTab" permission is used to provide a seamless interaction between the dashboard and the user's current browsing context. It allows the extension to perform temporary, user-initiated actions, such as capturing site metadata for the "Quick-access bookmarks" feature or triggering the overlay UI on the specific page the user is currently viewing.
+
+Access is granted only when the user explicitly interacts with the extension (e.g., via the keyboard shortcut or action button). Once the interaction is complete, access is terminated. No data is collected or transmitted during this process.
+
+3. Bookmarks Permission Justification
+The "bookmarks" permission is essential for the core functionality of the "Invinsense Dashboard" new tab override. It allows the extension to read the user's existing bookmarks so they can be displayed and managed within the personalized dashboard layout for quick access.
+
+Bookmark data is read strictly for presentation within the dashboard's UI. This information remains local to the user's browser, is never sent to external servers, and is not used for any purposes outside of enhancing the user's dashboard experience.
+
+4. ContextMenus Permission Justification
+The "contextMenus" permission is used to enhance the user experience by providing quick-access shortcuts to dashboard features from the browser's right-click menu. This allows users to easily interact with their personalized security dashboard or save bookmarks without needing to navigate back to the new tab page.
+
+This permission is strictly UI-based and does not involve the collection or processing of any user data. It merely facilitates a faster way to access the extension's existing features.
+
+5. Host Permission Justification
+Host permissions for <all_urls> are required to support the "Invinsense Dashboard" lightweight overlay feature across all web pages. This ensures that users can access their dashboard navigation and recent tabs history via the overlay regardless of the website they are currently visiting.
+
+Usage of this permission is limited to the injection of the overlay UI and does not involve reading, storing, or transmitting any content from the host pages. The extension operates with a "privacy-first" approach, ensuring that no browsing history or personal data is collected from the domains the user visits.
+
+6. Tabs Permission Justification
+The "tabs" permission is necessary for the extension to manage tab interactions effectively. It is used to prevent the creation of duplicate tabs by checking if a requested URL is already open and switching focus to that tab instead of opening a new one. It also enables basic navigation features when clicking links within the dashboard or overlay.
+
+The extension uses this permission solely for tab management and navigational purposes. No browsing habits are tracked, and no tab-specific data is ever transmitted to external servers.
+
+7. Storage Permission Justification
+The "storage" permission is used to save and retrieve user-defined preferences, dashboard configuration settings, and local metadata for the recent tabs history. This ensures that the user's personalized layout and security settings are preserved between browser sessions.
+
+All data governed by this permission is stored locally on the user's device. No personal information is collected, and the stored configuration data is never shared with third parties or transmitted externally.
